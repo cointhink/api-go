@@ -10,4 +10,4 @@ protoc3:
 	rm protoc-3.3.0-linux-x86_64.zip
 
 watch:
-	while true; do inotifywait -r src -e MODIFY; make main; done
+	while true; do echo; inotifywait -r src -e MODIFY 2> /dev/null; make main; done

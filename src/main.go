@@ -15,7 +15,6 @@ func main() {
     sfrm := signup_form.SignupForm{Email: "nobody@example.com"}
     fmt.Println(sfrm)
 
-
     pflag.Parse()
     log.SetFlags(0)
     http.HandleFunc("/", Upgrade)
