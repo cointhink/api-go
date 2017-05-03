@@ -13,6 +13,7 @@ import (
 
 type WsResponse struct {
     id    string
+    object interface{}
 }
 
 var upgrader = websocket.Upgrader{
@@ -47,8 +48,13 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
         }
         log.Printf("newTest: %+v", newTest)
 
-        resp := map[string]interface{}{"id": "Ab12", "object": newTest}
-        json, _ := json.Marshal(resp)
+        //resp := WsResponse{"Ab12", newTest} ??
+        resp := map[string]interface{}{"id": "Ab12", "class": "SignupFormResponse", "object": newTest}
+        json, err := json.Marshal(resp)
+        if err != nil {
+            log.Println("write:", err)
+            break
+        }
         log.Printf("returning: %s", json)
         err = c.WriteMessage(mt, json)
         if err != nil {
