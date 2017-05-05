@@ -4,6 +4,8 @@ import (
     "net/http"
     "encoding/json"
     "log"
+    "reflect"
+    "strings"
 
     "github.com/gorilla/websocket"
 )
@@ -18,7 +20,7 @@ var upgrader = websocket.Upgrader{
 }
 
 func Upgrade(w http.ResponseWriter, r *http.Request) {
-    log.Print("upgrading", r.Header.Get("Origin"))
+    log.Printf("\nupgrading %s", r.Header.Get("Origin"))
     c, err := upgrader.Upgrade(w, r, nil)
     if err != nil {
         log.Print("websocket upgrade fail:", err)
@@ -31,17 +33,16 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
             log.Println("read:", err)
             break
         }
-        log.Printf("recv: %s", payload)
+        log.Printf("ws: %s", payload)
 
         var dat map[string]interface{}
-
         json.Unmarshal(payload, &dat)
-        log.Printf("%+v", dat["object"])
 
-        response_class, response_object := Dispatch(dat["method"].(string), dat["object"])
-
-        //resp := WsResponse{"Ab12", newTest} ??
-        resp := map[string]interface{}{"id": dat["id"], "method": response_class,
+        response_object := Dispatch(dat["method"].(string), dat["object"])
+        response_class := reflect.TypeOf(response_object).String()
+        method := strings.Split(response_class, ".")[1]
+        resp := map[string]interface{}{"id": dat["id"],
+                                       "method": method,
                                        "object": response_object }
         json, err := json.Marshal(resp)
         if err != nil {

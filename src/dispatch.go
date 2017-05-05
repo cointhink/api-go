@@ -9,16 +9,26 @@ import (
     "github.com/golang/protobuf/jsonpb"
 )
 
-func Dispatch(class string, object interface{}) (string, interface{}) {
-    log.Print()
-    object_json, _ := json.Marshal(object)
-    newTest := &proto.SignupForm{}
-    err := jsonpb.UnmarshalString(string(object_json), newTest)
-    if err != nil {
-        log.Print("unmarshaling error: ", err)
-    }
-    log.Printf("newTest: %+v", newTest)
-    sfrm := proto.SignupFormResponse{Ok: true}
+type empty struct {}
 
-    return "SignupFormResponse", sfrm
+func Dispatch(class string, object interface{}) interface{} {
+    log.Printf("dispatch %s %+v", class, object)
+    object_json, _ := json.Marshal(object)
+    var ret interface{}
+    switch class {
+    case "SignupForm":
+        obj := &proto.SignupForm{}
+        err := jsonpb.UnmarshalString(string(object_json), obj)
+        if err != nil {
+            log.Print("unmarshaling error: ", err)
+        }
+        ret = doSignupform(obj)
+    }
+
+    return ret
+}
+
+func doSignupform(form *proto.SignupForm) proto.SignupFormResponse {
+    resp := proto.SignupFormResponse{Ok: true}
+    return resp
 }
