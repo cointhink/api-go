@@ -5,9 +5,6 @@ import (
     "encoding/json"
     "log"
 
-    "pb"
-
-    "github.com/golang/protobuf/jsonpb"
     "github.com/gorilla/websocket"
 )
 
@@ -24,32 +21,28 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
     log.Print("upgrading", r.Header.Get("Origin"))
     c, err := upgrader.Upgrade(w, r, nil)
     if err != nil {
-        log.Print("upgrade:", err)
+        log.Print("websocket upgrade fail:", err)
         return
     }
     defer c.Close()
     for {
-        mt, message, err := c.ReadMessage()
+        mt, payload, err := c.ReadMessage()
         if err != nil {
             log.Println("read:", err)
             break
         }
-        log.Printf("recv: %s", message)
+        log.Printf("recv: %s", payload)
 
         var dat map[string]interface{}
 
-        json.Unmarshal(message, &dat)
+        json.Unmarshal(payload, &dat)
         log.Printf("%+v", dat["object"])
-        object_json, _ := json.Marshal(dat["object"])
-        newTest := &signup_form.SignupForm{}
-        err = jsonpb.UnmarshalString(string(object_json), newTest)
-        if err != nil {
-            log.Print("unmarshaling error: ", err)
-        }
-        log.Printf("newTest: %+v", newTest)
+
+        response_class, response_object := Dispatch(dat["method"].(string), dat["object"])
 
         //resp := WsResponse{"Ab12", newTest} ??
-        resp := map[string]interface{}{"id": "Ab12", "class": "SignupFormResponse", "object": newTest}
+        resp := map[string]interface{}{"id": dat["id"], "method": response_class,
+                                       "object": response_object }
         json, err := json.Marshal(resp)
         if err != nil {
             log.Println("write:", err)
@@ -61,5 +54,6 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
             log.Println("write:", err)
             break
         }
+
     }
 }

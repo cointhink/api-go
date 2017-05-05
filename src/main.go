@@ -1,20 +1,16 @@
 package main
 
 import (
-    "fmt"
     "net/http"
     "log"
 
-    "pb"
     "github.com/ogier/pflag"
 )
 
 var addr = pflag.String("addr", "localhost:8085", "http service address")
 
 func main() {
-    sfrm := signup_form.SignupForm{Email: "nobody@example.com"}
-    fmt.Println(sfrm)
-
+    log.Printf("listening %s", *addr)
     pflag.Parse()
     log.SetFlags(0)
     http.HandleFunc("/", Upgrade)

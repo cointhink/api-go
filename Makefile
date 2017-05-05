@@ -1,6 +1,6 @@
 all: main
 
-main: src/*go
+main: src/*go src/proto/**
 	go build -o main src/*.go
 
 protoc3:
