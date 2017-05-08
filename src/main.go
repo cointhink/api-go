@@ -13,8 +13,13 @@ func main() {
 	var err error
 
 	// config
+	config_file := "config.hjson"
 	config := Config{}
-	config.read("config.hjson")
+	err = config.read(config_file)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("loaded %s", config_file)
 
 	// db
 	db := Db{}
@@ -23,6 +28,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	log.Printf("db open %s", db_url)
 
 	// net
 	log.Printf("listening %s", *addr)

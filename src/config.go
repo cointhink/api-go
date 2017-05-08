@@ -10,10 +10,9 @@ type Config struct {
 	config map[string]interface{}
 }
 
-func (c Config) read(filename string) {
+func (c Config) read(filename string) error {
 	var err error
 	json, err := ioutil.ReadFile(filename)
-	if err = hjson.Unmarshal(json, &c.config); err != nil {
-		panic(err)
-	}
+	err = hjson.Unmarshal(json, &c.config)
+	return err
 }

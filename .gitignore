@@ -1,4 +1,6 @@
 /pkg/
 /src/github.com
 /main
+/config.hjson
+
 
