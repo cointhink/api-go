@@ -19,14 +19,19 @@ func Dispatch(class string, object interface{}) interface{} {
 		err := jsonpb.UnmarshalString(string(object_json), obj)
 		if err != nil {
 			log.Print("unmarshaling error: ", err)
+			ret = proto.SignupFormResponse{Ok: true}
+		} else {
+			ret = doSignupform(obj)
 		}
-		ret = doSignupform(obj)
 	}
-
 	return ret
 }
 
 func doSignupform(form *proto.SignupForm) proto.SignupFormResponse {
+	err := db.upsert(*form)
+	if err != nil {
+		log.Printf("upsert %+v", err)
+	}
 	resp := proto.SignupFormResponse{Ok: true}
 	return resp
 }

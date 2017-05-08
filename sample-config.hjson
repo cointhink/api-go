@@ -1,4 +1,9 @@
 {
-  bob: ant
+  http: {
+    listen_address: "localhost:8085"
+  }
+  db: {
+    url: "postgres://user:pass@localhost/cointhink_dev"
+  }
 }
 

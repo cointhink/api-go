@@ -20,7 +20,7 @@ var upgrader = websocket.Upgrader{
 }
 
 func Upgrade(w http.ResponseWriter, r *http.Request) {
-	log.Printf("\nupgrading %s", r.Header.Get("Origin"))
+	log.Printf("http websocket upgrade from %s", r.Header.Get("Origin"))
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Print("websocket upgrade fail:", err)
