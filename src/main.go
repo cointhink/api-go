@@ -16,6 +16,7 @@ func main() {
 	config_file := "config.hjson"
 	config := Config{}
 	err = config.read(config_file)
+	log.Printf("cparser got %+v", config.parser)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -23,7 +24,7 @@ func main() {
 
 	// db
 	db := Db{}
-	db_url := "postgres://pqgotest:password@localhost/pqgotest?sslmode=verify-full"
+	db_url := config.queryString("db.url")
 	err = db.open(db_url)
 	if err != nil {
 		log.Fatal(err)
