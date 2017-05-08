@@ -33,7 +33,7 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
 			log.Println("read:", err)
 			break
 		}
-		log.Printf("ws: %s", payload)
+		log.Printf("ws_recv: %s", payload)
 
 		var dat map[string]interface{}
 		json.Unmarshal(payload, &dat)
@@ -49,7 +49,7 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
 			log.Println("write:", err)
 			break
 		}
-		log.Printf("returning: %s", json)
+		log.Printf("ws_send: %s", json)
 		err = c.WriteMessage(mt, json)
 		if err != nil {
 			log.Println("write:", err)
