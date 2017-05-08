@@ -22,17 +22,13 @@ func (c *Config) read(filename string) error {
 		return err
 	}
 
-	log.Printf("cstruct %+v", c.config)
 	json, err := json.Marshal(c.config)
-	log.Printf("json %s", json)
 
 	c.parser, err = gojq.NewStringQuery(string(json))
-	log.Printf("c.parser set %+v", c.parser)
 	return err
 }
 
 func (c *Config) queryString(query string) string {
-	log.Printf("c.parser is %+v", c.parser)
 	response, err := c.parser.Query(query)
 	if err != nil {
 		log.Fatal(err)
