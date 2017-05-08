@@ -7,15 +7,17 @@ import (
 	"github.com/ogier/pflag"
 )
 
-var addr = pflag.String("addr", "localhost:8085", "http listen address")
 var db = Db{}
 var config = Config{}
 
+// command line parameters
+
 func main() {
 	var err error
+	pflag.Parse()
+	config_file := *pflag.String("config", "config.hjson", "config file in (h)json")
 
 	// config
-	config_file := "config.hjson"
 	err = config.read(config_file)
 	if err != nil {
 		log.Fatal(err)
@@ -31,11 +33,10 @@ func main() {
 	log.Printf("db open %s", db_url)
 
 	// net
-	log.Printf("http listening %s", *addr)
-	pflag.Parse()
-	log.SetFlags(0)
+	listen_address := config.queryString("http.listen_address")
+	log.Printf("http listening %s", listen_address)
 	http.HandleFunc("/", Upgrade)
 
 	// http mainloop
-	log.Fatal(http.ListenAndServe(*addr, nil))
+	log.Fatal(http.ListenAndServe(listen_address, nil))
 }
