@@ -31,9 +31,9 @@ func doSignupform(form proto.SignupForm) proto.SignupFormResponse {
 	rows, err := db.handle.Query(
 		"insert into accounts (id, email, username, fullname) values ($1, $2, $3, $4)",
 		NewId("accounts"),
-		form.GetEmail(),
-		form.GetUsername(),
-		form.GetFullname())
+		form.Account.GetEmail(),
+		form.Account.GetUsername(),
+		form.Account.GetFullname())
 	if err != nil {
 		log.Printf("upsert %+v", err)
 		return proto.SignupFormResponse{Ok: false}

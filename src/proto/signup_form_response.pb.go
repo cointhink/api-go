@@ -20,7 +20,7 @@ type SignupFormResponse struct {
 func (m *SignupFormResponse) Reset()                    { *m = SignupFormResponse{} }
 func (m *SignupFormResponse) String() string            { return proto1.CompactTextString(m) }
 func (*SignupFormResponse) ProtoMessage()               {}
-func (*SignupFormResponse) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{0} }
+func (*SignupFormResponse) Descriptor() ([]byte, []int) { return fileDescriptor2, []int{0} }
 
 func (m *SignupFormResponse) GetOk() bool {
 	if m != nil {
@@ -33,9 +33,9 @@ func init() {
 	proto1.RegisterType((*SignupFormResponse)(nil), "proto.SignupFormResponse")
 }
 
-func init() { proto1.RegisterFile("proto/signup_form_response.proto", fileDescriptor1) }
+func init() { proto1.RegisterFile("proto/signup_form_response.proto", fileDescriptor2) }
 
-var fileDescriptor1 = []byte{
+var fileDescriptor2 = []byte{
 	// 94 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0x28, 0x28, 0xca, 0x2f,
 	0xc9, 0xd7, 0x2f, 0xce, 0x4c, 0xcf, 0x2b, 0x2d, 0x88, 0x4f, 0xcb, 0x2f, 0xca, 0x8d, 0x2f, 0x4a,
