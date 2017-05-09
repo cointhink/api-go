@@ -9,11 +9,13 @@ It is generated from these files:
 	proto/signup_form.proto
 	proto/account.proto
 	proto/signup_form_response.proto
+	proto/authenticated.proto
 
 It has these top-level messages:
 	SignupForm
 	Account
 	SignupFormResponse
+	Authenticated
 */
 package proto
 

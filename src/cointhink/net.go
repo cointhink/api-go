@@ -28,7 +28,7 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
 	}
 	defer c.Close()
 	for {
-		mt, payload, err := c.ReadMessage()
+		_, payload, err := c.ReadMessage()
 		if err != nil {
 			log.Println("read:", err)
 			break
@@ -38,23 +38,29 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
 		var dat map[string]interface{}
 		json.Unmarshal(payload, &dat)
 
-		response_object := Dispatch(dat["method"].(string), dat["object"])
-		response_class := reflect.TypeOf(response_object).String()
-		method := strings.Split(response_class, ".")[1]
-		resp := map[string]interface{}{"id": dat["id"],
-			"method": method,
-			"object": response_object}
-		json, err := json.Marshal(resp)
-		if err != nil {
-			log.Println("write:", err)
-			break
-		}
-		log.Printf("ws_send: %s", json)
-		err = c.WriteMessage(mt, json)
-		if err != nil {
-			log.Println("write:", err)
-			break
+		responses := Dispatch(dat["method"].(string), dat["object"])
+		for _, response := range responses {
+			respond(c, response, dat["id"].(string))
 		}
 
+	}
+}
+
+func respond(client *websocket.Conn, response interface{}, id string) {
+	response_class := reflect.TypeOf(response).String()
+	method := strings.Split(response_class, ".")[1]
+	resp := map[string]interface{}{"id": id,
+		"method": method,
+		"object": response}
+	json, err := json.Marshal(resp)
+	if err != nil {
+		log.Println("tojson:", err)
+		return
+	}
+	log.Printf("ws_send: %s", json)
+	err = client.WriteMessage(websocket.TextMessage, json)
+	if err != nil {
+		log.Println("ws_send:", err)
+		return
 	}
 }

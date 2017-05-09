@@ -10,11 +10,11 @@ import (
 	"github.com/golang/protobuf/jsonpb"
 )
 
-func DoSignupform(form proto.SignupForm, json string) proto.SignupFormResponse {
+func DoSignupform(form proto.SignupForm, json string) []interface{} {
 	err := jsonpb.UnmarshalString(json, &form)
 	if err != nil {
 		log.Print("unmarshaling error: ", err)
-		return proto.SignupFormResponse{Ok: true}
+		return []interface{}{proto.SignupFormResponse{Ok: true}}
 	}
 
 	rows, _ := db.D.Handle.Query(
@@ -26,9 +26,9 @@ func DoSignupform(form proto.SignupForm, json string) proto.SignupFormResponse {
 		rows.Scan(&count)
 		if count > 0 {
 			log.Printf("email check %d", count)
-			return proto.SignupFormResponse{Ok: false,
-				                              Reason: proto.SignupFormResponse_EMAIL_ALERT,
-				                              Message: "email already in use"}
+			return []interface{}{proto.SignupFormResponse{Ok: false,
+				Reason:  proto.SignupFormResponse_EMAIL_ALERT,
+				Message: "email already in use"}}
 		}
 	}
 
@@ -41,9 +41,9 @@ func DoSignupform(form proto.SignupForm, json string) proto.SignupFormResponse {
 			rows.Scan(&count)
 			if count > 0 {
 				log.Printf("username check %d", count)
-				return proto.SignupFormResponse{Ok: false,
-					                              Reason: proto.SignupFormResponse_USERNAME_ALERT,
-					                              Message: "email already in use"}
+				return []interface{}{proto.SignupFormResponse{Ok: false,
+					Reason:  proto.SignupFormResponse_USERNAME_ALERT,
+					Message: "email already in use"}}
 			}
 		}
 	}
@@ -51,7 +51,7 @@ func DoSignupform(form proto.SignupForm, json string) proto.SignupFormResponse {
 	stmt, err := db.D.Handle.Prepare("insert into accounts (id, fullname, email) values ($1, $2, $3)")
 	if err != nil {
 		log.Printf("prepare %+v", err)
-		return proto.SignupFormResponse{Ok: false}
+		return []interface{}{proto.SignupFormResponse{Ok: false}}
 	}
 	sql_result, err := stmt.Exec(
 		db.NewId("accounts"),
@@ -59,11 +59,12 @@ func DoSignupform(form proto.SignupForm, json string) proto.SignupFormResponse {
 		form.Account.Email)
 	if err != nil {
 		log.Printf("upsert %+v", err)
-		return proto.SignupFormResponse{Ok: false}
+		return []interface{}{proto.SignupFormResponse{Ok: false}}
 	}
 	new_id, err := sql_result.LastInsertId()
 	log.Printf("new id %s", new_id)
 
-	resp := proto.SignupFormResponse{Ok: true}
+	resp := []interface{}{proto.SignupFormResponse{Ok: true},
+		proto.Authenticated{Account: form.Account}}
 	return resp
 }
