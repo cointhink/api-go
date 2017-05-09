@@ -1,4 +1,4 @@
-package main
+package db
 
 import (
 	"database/sql"
@@ -7,18 +7,24 @@ import (
 )
 
 type Db struct {
-	handle *sql.DB
+	Handle *sql.DB
 }
 
-func (db *Db) open(db_url string) error {
+var D Db
+
+func init() {
+	D = Db{}
+}
+
+func (db *Db) Open(db_url string) error {
 	var err error
-	db.handle, err = sql.Open("postgres", db_url)
+	db.Handle, err = sql.Open("postgres", db_url)
 	return err
 }
 
 func (db *Db) upsert(thing interface{}) error {
 	var err error
-	_, err = db.handle.Query("select * from accounts")
+	_, err = db.Handle.Query("select * from accounts")
 	return err
 }
 

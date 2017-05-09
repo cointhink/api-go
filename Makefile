@@ -1,7 +1,7 @@
 all: main
 
-main: src/*go src/proto/**
-	go build -o main src/*.go
+main: src/**/*go
+	go build -o main src/cmd/*.go
 
 protoc3:
 	wget https://github.com/google/protobuf/releases/download/v3.3.0/protoc-3.3.0-linux-x86_64.zip

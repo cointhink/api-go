@@ -1,4 +1,4 @@
-package main
+package cointhink
 
 import (
 	"encoding/json"
@@ -11,10 +11,16 @@ import (
 
 type Config struct {
 	config map[string]interface{}
-	parser *gojq.JQ
+	Parser *gojq.JQ
 }
 
-func (c *Config) read(filename string) error {
+var C Config
+
+func init() {
+	C = Config{}
+}
+
+func (c *Config) Read(filename string) error {
 	var err error
 	humanjson, err := ioutil.ReadFile(filename)
 	err = hjson.Unmarshal(humanjson, &c.config)
@@ -24,12 +30,12 @@ func (c *Config) read(filename string) error {
 
 	json, err := json.Marshal(c.config)
 
-	c.parser, err = gojq.NewStringQuery(string(json))
+	c.Parser, err = gojq.NewStringQuery(string(json))
 	return err
 }
 
-func (c *Config) queryString(query string) string {
-	response, err := c.parser.Query(query)
+func (c *Config) QueryString(query string) string {
+	response, err := c.Parser.Query(query)
 	if err != nil {
 		log.Fatal(err)
 	}
