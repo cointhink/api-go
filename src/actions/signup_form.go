@@ -6,6 +6,8 @@ import (
 
 	"db"
 	"proto"
+	"token"
+	"validate"
 
 	"github.com/golang/protobuf/jsonpb"
 )
@@ -32,6 +34,8 @@ func DoSignupform(form proto.SignupForm, json string) []interface{} {
 		}
 	}
 
+	validate.Email(form.Account.Email)
+
 	if len(strings.TrimSpace(form.Account.Username)) > 0 {
 		rows, _ = db.D.Handle.Query(
 			"select count(*) from accounts where username = $1",
@@ -53,8 +57,10 @@ func DoSignupform(form proto.SignupForm, json string) []interface{} {
 		log.Printf("prepare %+v", err)
 		return []interface{}{proto.SignupFormResponse{Ok: false}}
 	}
+
+	id := db.NewId("accounts")
 	sql_result, err := stmt.Exec(
-		db.NewId("accounts"),
+		id,
 		form.Account.Fullname,
 		form.Account.Email)
 	if err != nil {
@@ -64,6 +70,6 @@ func DoSignupform(form proto.SignupForm, json string) []interface{} {
 	new_id, err := sql_result.LastInsertId()
 	log.Printf("new id %s", new_id)
 
-	resp := []interface{}{proto.SignupFormResponse{Ok: true, Token: "abc123"}}
+	resp := []interface{}{proto.SignupFormResponse{Ok: true, Token: token.MakeToken(id)}}
 	return resp
 }

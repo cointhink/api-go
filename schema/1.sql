@@ -4,3 +4,8 @@ create table if not exists accounts (
   email text not null unique,
   username text
 );
+
+create table if not exists tokens (
+  token varchar(128) primary key,
+  account_id varchar(128)
+);
