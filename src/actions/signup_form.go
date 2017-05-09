@@ -64,7 +64,6 @@ func DoSignupform(form proto.SignupForm, json string) []interface{} {
 	new_id, err := sql_result.LastInsertId()
 	log.Printf("new id %s", new_id)
 
-	resp := []interface{}{proto.SignupFormResponse{Ok: true},
-		proto.Authenticated{Account: form.Account}}
+	resp := []interface{}{proto.SignupFormResponse{Ok: true, Token: "abc123"}}
 	return resp
 }
