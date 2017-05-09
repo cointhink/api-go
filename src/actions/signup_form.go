@@ -16,7 +16,32 @@ func DoSignupform(form proto.SignupForm, json string) proto.SignupFormResponse {
 		return proto.SignupFormResponse{Ok: true}
 	}
 
-	rows, err := db.D.Handle.Query(
+	rows, _ := db.D.Handle.Query(
+		"select count(*) from accounts where email = $1",
+		form.Account.GetEmail())
+
+	if rows.Next() {
+		var count int
+		rows.Scan(&count)
+		if count > 0 {
+			log.Printf("email check %+v", count)
+			return proto.SignupFormResponse{Ok: false, Reason: proto.SignupFormResponse_EMAIL_TAKEN}
+		}
+	}
+
+	rows, _ = db.D.Handle.Query(
+		"select count(*) from accounts where username is not null and username = $1",
+		form.Account.GetUsername())
+	if rows.Next() {
+		var count int
+		rows.Scan(&count)
+		if count > 0 {
+			log.Printf("username check %+v", count)
+			return proto.SignupFormResponse{Ok: false, Reason: proto.SignupFormResponse_USERNAME_TAKEN}
+		}
+	}
+
+	rows, err = db.D.Handle.Query(
 		"insert into accounts (id, email, username, fullname) values ($1, $2, $3, $4)",
 		db.NewId("accounts"),
 		form.Account.GetEmail(),
