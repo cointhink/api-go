@@ -26,7 +26,9 @@ func DoSignupform(form proto.SignupForm, json string) proto.SignupFormResponse {
 		rows.Scan(&count)
 		if count > 0 {
 			log.Printf("email check %d", count)
-			return proto.SignupFormResponse{Ok: false, Reason: proto.SignupFormResponse_EMAIL_TAKEN}
+			return proto.SignupFormResponse{Ok: false,
+				                              Reason: proto.SignupFormResponse_EMAIL_ALERT,
+				                              Message: "email already in use"}
 		}
 	}
 
@@ -39,7 +41,9 @@ func DoSignupform(form proto.SignupForm, json string) proto.SignupFormResponse {
 			rows.Scan(&count)
 			if count > 0 {
 				log.Printf("username check %d", count)
-				return proto.SignupFormResponse{Ok: false, Reason: proto.SignupFormResponse_USERNAME_TAKEN}
+				return proto.SignupFormResponse{Ok: false,
+					                              Reason: proto.SignupFormResponse_USERNAME_ALERT,
+					                              Message: "email already in use"}
 			}
 		}
 	}
