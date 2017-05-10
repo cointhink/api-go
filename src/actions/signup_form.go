@@ -16,12 +16,19 @@ func DoSignupform(form proto.SignupForm, json string) []interface{} {
 	err := jsonpb.UnmarshalString(json, &form)
 	if err != nil {
 		log.Print("unmarshaling error: ", err)
-		return []interface{}{proto.SignupFormResponse{Ok: true}}
+		return []interface{}{proto.SignupFormResponse{Ok: false}}
 	}
 
 	rows, _ := db.D.Handle.Query(
 		"select count(*) from accounts where email = $1",
 		form.Account.Email)
+
+	emailGood, emailFailReason := validate.Email(form.Account.Email)
+	if emailGood == false {
+		return []interface{}{proto.SignupFormResponse{Ok: false,
+			Reason:  proto.SignupFormResponse_EMAIL_ALERT,
+			Message: "malformed email"}}
+	}
 
 	if rows.Next() {
 		var count int
@@ -33,8 +40,6 @@ func DoSignupform(form proto.SignupForm, json string) []interface{} {
 				Message: "email already in use"}}
 		}
 	}
-
-	validate.Email(form.Account.Email)
 
 	if len(strings.TrimSpace(form.Account.Username)) > 0 {
 		rows, _ = db.D.Handle.Query(

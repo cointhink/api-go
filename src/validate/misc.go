@@ -1,4 +1,5 @@
 package validate
 
-func Email(email string) {
+func Email(email string) (bool, string) {
+	return true, ""
 }
