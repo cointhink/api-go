@@ -24,8 +24,6 @@ func DoSessionCreate(sessionCreate proto.SessionCreate, json string) []interface
 	}
 
 	if rows.Next() {
-		log.Printf("toekn lookup got next")
-
 		var accountId string
 		rows.Scan(&accountId)
 		rows2, err := db.D.Handle.Query("select fullname, email from accounts where id = $1", accountId)
@@ -37,7 +35,7 @@ func DoSessionCreate(sessionCreate proto.SessionCreate, json string) []interface
 				var fullname string
 				var email string
 				rows2.Scan(&fullname, &email)
-				log.Printf("account found %s %s", fullname, email)
+				log.Printf("Token good for Account %#v %#v", fullname, email)
 				acct := proto.Account{Fullname: fullname, Email: email}
 				responses = append(responses, proto.SessionCreateResponse{Ok: true, Account: &acct})
 			} else {

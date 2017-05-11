@@ -30,10 +30,9 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
 	for {
 		_, payload, err := c.ReadMessage()
 		if err != nil {
-			log.Println("read:", err)
+			log.Println("ws_recv err:", err)
 			break
 		}
-		log.Printf("ws_recv: %s", payload)
 
 		var dat map[string]interface{}
 		json.Unmarshal(payload, &dat)

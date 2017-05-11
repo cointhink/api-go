@@ -27,7 +27,7 @@ func DoSignupform(form proto.SignupForm, json string) []interface{} {
 	if emailGood == false {
 		return []interface{}{proto.SignupFormResponse{Ok: false,
 			Reason:  proto.SignupFormResponse_EMAIL_ALERT,
-			Message: "malformed email"}}
+			Message: emailFailReason}}
 	}
 
 	if rows.Next() {
@@ -73,7 +73,7 @@ func DoSignupform(form proto.SignupForm, json string) []interface{} {
 		return []interface{}{proto.SignupFormResponse{Ok: false}}
 	}
 	new_id, err := sql_result.LastInsertId()
-	log.Printf("new id %s", new_id)
+	log.Printf("Account new id %s", new_id)
 
 	resp := []interface{}{proto.SignupFormResponse{Ok: true, Token: token.MakeToken(id)}}
 	return resp

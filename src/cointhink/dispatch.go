@@ -9,7 +9,7 @@ import (
 )
 
 func Dispatch(class string, object interface{}) []interface{} {
-	log.Printf("dispatch %s %+v", class, object)
+	log.Printf("*- dispatch %#v %#v", class, object)
 	object_json, _ := json.Marshal(object)
 	json := string(object_json)
 	var resp []interface{}
