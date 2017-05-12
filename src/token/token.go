@@ -15,3 +15,7 @@ func MakeToken(id string) string {
 
 	return uuid_str
 }
+
+func Find(acct_id string) (string, error) {
+	return "", nil
+}
