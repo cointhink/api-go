@@ -2,6 +2,7 @@ package mailer
 
 import "log"
 import "config"
+import "crypto/tls"
 import "gopkg.in/gomail.v2"
 
 func MailToken(to string, token string) {
@@ -15,6 +16,7 @@ func MailToken(to string, token string) {
 	m.SetBody("text/html", "Hello <b>Bob</b> and <i>Cora</i>!")
 
 	d := gomail.NewDialer(config.C.QueryString("email.smtp"), 25, "", "")
+	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 
 	err := d.DialAndSend(m)
 	if err != nil {
