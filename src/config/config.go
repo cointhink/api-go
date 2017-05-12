@@ -1,4 +1,4 @@
-package cointhink
+package config
 
 import (
 	"encoding/json"

@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"db"
+	"mailer"
 	"proto"
 	"token"
 	"validate"
@@ -75,6 +76,8 @@ func DoSignupform(form proto.SignupForm, json string) []interface{} {
 	new_id, err := sql_result.LastInsertId()
 	log.Printf("Account new id %s", new_id)
 
-	resp := []interface{}{proto.SignupFormResponse{Ok: true, Token: token.MakeToken(id)}}
+	token := token.MakeToken(id)
+	mailer.MailToken(token, form.Account.Email)
+	resp := []interface{}{proto.SignupFormResponse{Ok: true, Token: token}}
 	return resp
 }

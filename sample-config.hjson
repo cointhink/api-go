@@ -5,5 +5,8 @@
   db: {
     url: "postgres://user:pass@localhost/cointhink_dev"
   }
+  email: {
+    from: "system@cointhink.com"
+  }
 }
 

@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"cointhink"
+	"config"
 	"db"
 
 	"github.com/ogier/pflag"
@@ -16,14 +17,14 @@ func main() {
 	config_file := *pflag.String("config", "config.hjson", "config file in (h)json")
 
 	// config
-	err = cointhink.C.Read(config_file)
+	err = config.C.Read(config_file)
 	if err != nil {
 		log.Fatal(err)
 	}
 	log.Printf("config loaded %s", config_file)
 
 	// db
-	db_url := cointhink.C.QueryString("db.url")
+	db_url := config.C.QueryString("db.url")
 	err = db.D.Open(db_url)
 	if err != nil {
 		log.Fatal(err)
@@ -31,7 +32,7 @@ func main() {
 	log.Printf("db open %s", db_url)
 
 	// net
-	listen_address := cointhink.C.QueryString("http.listen_address")
+	listen_address := config.C.QueryString("http.listen_address")
 	log.Printf("http listening %s", listen_address)
 	http.HandleFunc("/", cointhink.Upgrade)
 
