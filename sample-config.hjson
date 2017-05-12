@@ -1,6 +1,7 @@
 {
   http: {
     listen_address: "localhost:8085"
+    base_url: "http://localhost"
   }
   db: {
     url: "postgres://user:pass@localhost/cointhink_dev"

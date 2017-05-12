@@ -13,7 +13,8 @@ func MailToken(to string, token string) {
 	m.SetHeader("To", to)
 	//m.SetAddressHeader("Cc", "dan@example.com", "Dan")
 	m.SetHeader("Subject", "Web Login")
-	m.SetBody("text/html", "Hello <b>Bob</b> and <i>Cora</i>!")
+	m.SetBody("text/html", "Here is your magic link to sign in to cointhink.\n"+
+		config.C.QueryString("http.base_url")+"/?token="+token)
 
 	d := gomail.NewDialer(config.C.QueryString("email.smtp"), 25, "", "")
 	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
