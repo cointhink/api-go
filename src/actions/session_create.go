@@ -39,10 +39,13 @@ func DoSessionCreate(sessionCreate proto.SessionCreate, json string) []interface
 				acct := proto.Account{Fullname: fullname, Email: email}
 				responses = append(responses, proto.SessionCreateResponse{Ok: true, Account: &acct})
 			} else {
-				log.Printf("toekn lookup no next", rows)
+				log.Printf("Token has no Account %#v", rows2)
 				responses = append(responses, proto.SessionCreateResponse{Ok: false})
 			}
 		}
+	} else {
+		log.Printf("Bad token %#v", sessionCreate.Token)
+		responses = append(responses, proto.SessionCreateResponse{Ok: false})
 	}
 	rows.Close()
 	return responses

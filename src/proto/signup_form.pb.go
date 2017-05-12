@@ -11,6 +11,7 @@ It is generated from these files:
 	proto/account.proto
 	proto/signup_form_response.proto
 	proto/session_create.proto
+	proto/signin_email.proto
 
 It has these top-level messages:
 	SignupForm
@@ -18,6 +19,7 @@ It has these top-level messages:
 	Account
 	SignupFormResponse
 	SessionCreate
+	SigninEmail
 */
 package proto
 
