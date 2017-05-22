@@ -1,8 +1,11 @@
 package main
 
 import (
+	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
+	"strconv"
 
 	"cointhink"
 	"config"
@@ -15,6 +18,10 @@ func main() {
 	var err error
 	pflag.Parse()
 	config_file := *pflag.String("config", "config.hjson", "config file in (h)json")
+
+	// pid
+	pid := os.Getpid()
+	ioutil.WriteFile("pid", []byte(strconv.Itoa(pid)), 0644)
 
 	// config
 	err = config.C.Read(config_file)
