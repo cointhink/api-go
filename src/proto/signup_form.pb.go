@@ -10,6 +10,7 @@ It is generated from these files:
 	proto/session_create_response.proto
 	proto/account.proto
 	proto/signup_form_response.proto
+	proto/signin_email_response.proto
 	proto/session_create.proto
 	proto/signin_email.proto
 
@@ -18,6 +19,7 @@ It has these top-level messages:
 	SessionCreateResponse
 	Account
 	SignupFormResponse
+	SigninEmailResponse
 	SessionCreate
 	SigninEmail
 */

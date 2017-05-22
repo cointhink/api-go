@@ -51,6 +51,7 @@ func respond(client *websocket.Conn, response interface{}, id string) {
 	resp := map[string]interface{}{"id": id,
 		"method": method,
 		"object": response}
+	log.Printf("resp wtf %#v", response)
 	json, err := json.Marshal(resp)
 	if err != nil {
 		log.Println("tojson:", err)

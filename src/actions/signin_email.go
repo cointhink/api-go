@@ -23,7 +23,9 @@ func DoSigninEmail(msg proto.SigninEmail, json string) []interface{} {
 	log.Printf("account lookup %s", msg.Email)
 	account_id, err := model.AccountFindByEmail(msg.Email)
 	if err != nil {
-		return resp
+		log.Printf("account lookup err %#v", err)
+		errResp := []interface{}{proto.SigninEmailResponse{Ok: false, Message: "email not found"}}
+		return errResp
 	}
 
 	token, err := token.Find(account_id)
