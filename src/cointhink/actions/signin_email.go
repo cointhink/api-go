@@ -3,10 +3,10 @@ package actions
 import (
 	"log"
 
-	"mailer"
-	"model"
-	"proto"
-	"token"
+	"cointhink/mailer"
+	"cointhink/model"
+	"cointhink/proto"
+	"cointhink/token"
 
 	"github.com/golang/protobuf/jsonpb"
 )

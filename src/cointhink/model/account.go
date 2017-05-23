@@ -1,7 +1,7 @@
 package model
 
-import "proto"
-import "db"
+import "cointhink/proto"
+import "cointhink/db"
 import "errors"
 
 func AccountSave(account proto.Account) {

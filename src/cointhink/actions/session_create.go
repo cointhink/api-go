@@ -3,8 +3,8 @@ package actions
 import (
 	"log"
 
-	"db"
-	"proto"
+	"cointhink/db"
+	"cointhink/proto"
 
 	"github.com/golang/protobuf/jsonpb"
 )

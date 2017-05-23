@@ -1,7 +1,7 @@
 all: main
 
-main: src/**/*go
-	go build -o main src/cmd/*.go
+main: src/cointhink/**/*go
+	go build -o main src/cointhink/cmd/*.go
 
 protoc3:
 	wget https://github.com/google/protobuf/releases/download/v3.3.0/protoc-3.3.0-linux-x86_64.zip
@@ -10,4 +10,4 @@ protoc3:
 	rm protoc-3.3.0-linux-x86_64.zip
 
 watch:
-	while true; do echo; inotifywait -r src -e MODIFY 2> /dev/null; gofmt -w .; make main; done
+	while true; do echo; inotifywait -r src/cointhink -e MODIFY 2> /dev/null; gofmt -w .; make main; done

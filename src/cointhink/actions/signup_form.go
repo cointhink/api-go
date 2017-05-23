@@ -4,11 +4,11 @@ import (
 	"log"
 	"strings"
 
-	"db"
-	"mailer"
-	"proto"
-	"token"
-	"validate"
+	"cointhink/db"
+	"cointhink/mailer"
+	"cointhink/proto"
+	"cointhink/token"
+	"cointhink/validate"
 
 	"github.com/golang/protobuf/jsonpb"
 )

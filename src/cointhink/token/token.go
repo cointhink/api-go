@@ -1,6 +1,6 @@
 package token
 
-import "db"
+import "cointhink/db"
 import "log"
 import "github.com/satori/go.uuid"
 import "errors"

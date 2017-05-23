@@ -7,9 +7,9 @@ import (
 	"os"
 	"strconv"
 
-	"cointhink"
-	"config"
-	"db"
+	"cointhink/common"
+	"cointhink/config"
+	"cointhink/db"
 
 	"github.com/ogier/pflag"
 )

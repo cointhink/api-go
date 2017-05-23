@@ -1,7 +1,7 @@
 package mailer
 
 import "log"
-import "config"
+import "cointhink/config"
 import "crypto/tls"
 import "gopkg.in/gomail.v2"
 

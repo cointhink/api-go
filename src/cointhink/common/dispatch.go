@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"log"
 
-	"actions"
-	"proto"
+	"cointhink/actions"
+	"cointhink/proto"
 )
 
 func Dispatch(class string, object interface{}) []interface{} {
