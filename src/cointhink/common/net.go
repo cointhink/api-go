@@ -1,4 +1,4 @@
-package cointhink
+package common
 
 import (
 	"encoding/json"
@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"reflect"
 	"strings"
+
+	"cointhink/model"
 
 	"github.com/gorilla/websocket"
 )
@@ -36,8 +38,22 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
 
 		var dat map[string]interface{}
 		json.Unmarshal(payload, &dat)
+		method := dat["method"].(string)
 
-		responses := Dispatch(dat["method"].(string), dat["object"])
+		var responses []interface{}
+		responses = DispatchPublic(method, dat["object"])
+		if responses == nil {
+			if dat["token"] != nil {
+				token := dat["token"].(string)
+				accountId, err := model.TokenFindAccountId(token)
+				if err != nil {
+					log.Printf("msg token %s BAD", token)
+					return
+				}
+				responses = DispatchAuth(method, dat["object"], accountId)
+			}
+		}
+
 		for _, response := range responses {
 			respond(c, response, dat["id"].(string))
 		}

@@ -41,7 +41,7 @@ func main() {
 	// net
 	listen_address := config.C.QueryString("http.listen_address")
 	log.Printf("http listening %s", listen_address)
-	http.HandleFunc("/", cointhink.Upgrade)
+	http.HandleFunc("/", common.Upgrade)
 
 	// http mainloop
 	log.Fatal(http.ListenAndServe(listen_address, nil))
