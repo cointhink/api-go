@@ -18,7 +18,7 @@ func DoScheduleCreate(scheduleCreate proto.ScheduleCreate, json string) []interf
 
 	var responses []interface{}
 
-	_, err := db.D.Handle.Query("select account_id from tokens where token = $1",
+	_, err = db.D.Handle.Query("select account_id from tokens where token = $1",
 		scheduleCreate.Schedule.AlgorithmId)
 	if err != nil {
 		log.Print("token sql error: ", err)
