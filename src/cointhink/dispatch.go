@@ -20,6 +20,8 @@ func Dispatch(class string, object interface{}) []interface{} {
 		resp = actions.DoSessionCreate(proto.SessionCreate{}, json)
 	case "SigninEmail":
 		resp = actions.DoSigninEmail(proto.SigninEmail{}, json)
+	case "ScheduleCreate":
+		resp = actions.DoScheduleCreate(proto.ScheduleCreate{}, json)
 	default:
 		log.Printf("unknown method: %s", class)
 	}
