@@ -20,22 +20,6 @@ func DispatchPublic(class string, object interface{}) []interface{} {
 		resp = actions.DoSessionCreate(proto.SessionCreate{}, json)
 	case "SigninEmail":
 		resp = actions.DoSigninEmail(proto.SigninEmail{}, json)
-	case "ScheduleCreate":
-		resp = actions.DoScheduleCreate(proto.ScheduleCreate{}, json)
-	default:
-		log.Printf("unknown method: %s", class)
-	}
-	return resp
-}
-
-func DispatchAuth(class string, object interface{}, accountId string) []interface{} {
-	log.Printf("*- dispatch-auth %#v %#v %#v", class, object, accountId)
-	object_json, _ := json.Marshal(object)
-	json := string(object_json)
-	var resp []interface{}
-	switch class {
-	case "ScheduleCreate":
-		resp = actions.DoScheduleCreate(proto.ScheduleCreate{}, json)
 	default:
 		log.Printf("unknown method: %s", class)
 	}

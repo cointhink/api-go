@@ -3,27 +3,31 @@ package actions
 import (
 	"log"
 
-	"cointhink/db"
+	"cointhink/model"
 	"cointhink/proto"
 
 	"github.com/golang/protobuf/jsonpb"
 )
 
-func DoScheduleCreate(scheduleCreate proto.ScheduleCreate, json string) []interface{} {
+func DoScheduleCreate(scheduleCreate proto.ScheduleCreate, json string, accountId string) []interface{} {
 	err := jsonpb.UnmarshalString(json, &scheduleCreate)
 	if err != nil {
 		log.Print("unmarshaling error: ", err)
-		return []interface{}{proto.SessionCreateResponse{Ok: false}}
+		return []interface{}{proto.ScheduleCreateResponse{Ok: false}}
 	}
 
 	var responses []interface{}
 
-	_, err = db.D.Handle.Query("select account_id from tokens where token = $1",
-		scheduleCreate.Schedule.AlgorithmId)
+	_, err = model.AccountFind(accountId)
 	if err != nil {
-		log.Print("token sql error: ", err)
-		responses = append(responses, proto.SessionCreateResponse{Ok: false})
 	}
 
+	err = model.ScheduleInsert(accountId, scheduleCreate.Schedule.AlgorithmId, "active")
+	if err != nil {
+		responses = append(responses, proto.ScheduleCreateResponse{Ok: false, Message: err.Error()})
+		return responses
+	}
+
+	responses = append(responses, proto.ScheduleCreateResponse{Ok: true})
 	return responses
 }

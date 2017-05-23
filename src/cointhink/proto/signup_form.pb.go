@@ -7,6 +7,7 @@ Package proto is a generated protocol buffer package.
 
 It is generated from these files:
 	proto/signup_form.proto
+	proto/schedule_create_response.proto
 	proto/schedule_create.proto
 	proto/schedule.proto
 	proto/session_create_response.proto
@@ -19,6 +20,7 @@ It is generated from these files:
 
 It has these top-level messages:
 	SignupForm
+	ScheduleCreateResponse
 	ScheduleCreate
 	Schedule
 	SessionCreateResponse

@@ -23,7 +23,7 @@ type Schedule struct {
 func (m *Schedule) Reset()                    { *m = Schedule{} }
 func (m *Schedule) String() string            { return proto1.CompactTextString(m) }
 func (*Schedule) ProtoMessage()               {}
-func (*Schedule) Descriptor() ([]byte, []int) { return fileDescriptor2, []int{0} }
+func (*Schedule) Descriptor() ([]byte, []int) { return fileDescriptor3, []int{0} }
 
 func (m *Schedule) GetId() string {
 	if m != nil {
@@ -57,9 +57,9 @@ func init() {
 	proto1.RegisterType((*Schedule)(nil), "proto.Schedule")
 }
 
-func init() { proto1.RegisterFile("proto/schedule.proto", fileDescriptor2) }
+func init() { proto1.RegisterFile("proto/schedule.proto", fileDescriptor3) }
 
-var fileDescriptor2 = []byte{
+var fileDescriptor3 = []byte{
 	// 136 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x29, 0x28, 0xca, 0x2f,
 	0xc9, 0xd7, 0x2f, 0x4e, 0xce, 0x48, 0x4d, 0x29, 0xcd, 0x49, 0xd5, 0x03, 0x73, 0x85, 0x58, 0xc1,
