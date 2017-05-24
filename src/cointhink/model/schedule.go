@@ -19,13 +19,28 @@ func ScheduleFind(id string) (string, error) {
 }
 
 func ScheduleList(accountId string) ([]*proto.Schedule, error) {
-	_, err := db.D.Handle.Query(
-		"select * from schedules where account_id = $1",
+	rows, err := db.D.Handle.Query(
+		"select id, account_id, algorithm_id, status from schedules where account_id = $1",
 		accountId)
 	if err != nil {
 		return nil, err
 	}
-	return []*proto.Schedule{}, nil
+	schedules := []*proto.Schedule{}
+	for rows.Next() {
+		newSchedule := proto.Schedule{}
+		err := rows.Scan(&newSchedule.Id,
+			&newSchedule.AccountId,
+			&newSchedule.AlgorithmId,
+			&newSchedule.Status,
+		)
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Printf("%v", newSchedule)
+		schedules = append(schedules, &newSchedule)
+	}
+	rows.Close()
+	return schedules, nil
 }
 
 func ScheduleInsert(accountId string, algorithmId string, status string) error {
