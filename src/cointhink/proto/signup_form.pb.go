@@ -9,6 +9,7 @@ It is generated from these files:
 	proto/signup_form.proto
 	proto/schedule_create_response.proto
 	proto/schedule_list.proto
+	proto/schedule_list_response.proto
 	proto/schedule_create.proto
 	proto/schedule.proto
 	proto/session_create_response.proto
@@ -23,6 +24,7 @@ It has these top-level messages:
 	SignupForm
 	ScheduleCreateResponse
 	ScheduleList
+	ScheduleListResponse
 	ScheduleCreate
 	Schedule
 	SessionCreateResponse

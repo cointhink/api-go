@@ -16,6 +16,8 @@ func DispatchAuth(class string, object interface{}, accountId string) []interfac
 	switch class {
 	case "ScheduleCreate":
 		resp = actions.DoScheduleCreate(proto.ScheduleCreate{}, json, accountId)
+	case "ScheduleList":
+		resp = actions.DoScheduleList(proto.ScheduleList{}, json, accountId)
 	default:
 		log.Printf("unknown method: %s", class)
 	}

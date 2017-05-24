@@ -1,6 +1,7 @@
 package model
 
 import "cointhink/db"
+import "cointhink/proto"
 import "errors"
 import "log"
 
@@ -17,6 +18,16 @@ func ScheduleFind(id string) (string, error) {
 	}
 }
 
+func ScheduleList(accountId string) ([]*proto.Schedule, error) {
+	_, err := db.D.Handle.Query(
+		"select * from schedules where account_id = $1",
+		accountId)
+	if err != nil {
+		return nil, err
+	}
+	return []*proto.Schedule{}, nil
+}
+
 func ScheduleInsert(accountId string, algorithmId string, status string) error {
 	stmt, err := db.D.Handle.Prepare(
 		"insert into schedules (id, account_id, algorithm_id, status) values ($1, $2, $3, $4)")
@@ -31,6 +42,7 @@ func ScheduleInsert(accountId string, algorithmId string, status string) error {
 		accountId,
 		algorithmId,
 		status)
+	stmt.Close()
 	if err != nil {
 		log.Printf("upsert %+v", err)
 		return err
