@@ -28,7 +28,8 @@ func ScheduleList(accountId string) ([]*proto.Schedule, error) {
 	schedules := []*proto.Schedule{}
 	for rows.Next() {
 		newSchedule := proto.Schedule{}
-		err := rows.Scan(&newSchedule.Id,
+		err := rows.Scan(
+			&newSchedule.Id,
 			&newSchedule.AccountId,
 			&newSchedule.AlgorithmId,
 			&newSchedule.Status,
