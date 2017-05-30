@@ -4,6 +4,7 @@ import "cointhink/db"
 import "cointhink/proto"
 import "errors"
 import "log"
+import "database/sql"
 
 func ScheduleFind(id string) (string, error) {
 	rows, _ := db.D.Handle.Query(
@@ -28,12 +29,7 @@ func ScheduleList(accountId string) ([]*proto.Schedule, error) {
 	schedules := []*proto.Schedule{}
 	for rows.Next() {
 		newSchedule := proto.Schedule{}
-		err := rows.Scan(
-			&newSchedule.Id,
-			&newSchedule.AccountId,
-			&newSchedule.AlgorithmId,
-			&newSchedule.Status,
-		)
+		err = SchedulePopulate(rows, &newSchedule)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -42,6 +38,15 @@ func ScheduleList(accountId string) ([]*proto.Schedule, error) {
 	}
 	rows.Close()
 	return schedules, nil
+}
+
+func SchedulePopulate(rows *sql.Rows, schedule *proto.Schedule) error {
+	return rows.Scan(
+		schedule.Id,
+		schedule.AccountId,
+		schedule.AlgorithmId,
+		schedule.Status,
+	)
 }
 
 func ScheduleInsert(accountId string, algorithmId string, status string) error {
