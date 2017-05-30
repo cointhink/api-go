@@ -21,7 +21,7 @@ func ScheduleFind(id string) (string, error) {
 
 func ScheduleList(accountId string) ([]*proto.Schedule, error) {
 	rows, err := db.D.Handle.Query(
-		"select id, account_id, algorithm_id, status from schedules where account_id = $1",
+		"select id, account_id, algorithm_id, status, initial_state from schedules where account_id = $1",
 		accountId)
 	if err != nil {
 		return nil, err
@@ -46,6 +46,7 @@ func SchedulePopulate(rows *sql.Rows, schedule *proto.Schedule) error {
 		&schedule.AccountId,
 		&schedule.AlgorithmId,
 		&schedule.Status,
+		&schedule.InitialState,
 	)
 }
 
