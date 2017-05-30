@@ -42,16 +42,21 @@ func ScheduleList(accountId string) ([]*proto.Schedule, error) {
 
 func SchedulePopulate(rows *sql.Rows, schedule *proto.Schedule) error {
 	return rows.Scan(
-		schedule.Id,
-		schedule.AccountId,
-		schedule.AlgorithmId,
-		schedule.Status,
+		&schedule.Id,
+		&schedule.AccountId,
+		&schedule.AlgorithmId,
+		&schedule.Status,
 	)
 }
 
-func ScheduleInsert(accountId string, algorithmId string, status string) error {
+func ScheduleInsert(accountId string,
+	algorithmId string,
+	status string,
+	initialState string) error {
 	stmt, err := db.D.Handle.Prepare(
-		"insert into schedules (id, account_id, algorithm_id, status) values ($1, $2, $3, $4)")
+		"insert into schedules " +
+			"(id, account_id, algorithm_id, status, initial_state) values " +
+			"($1, $2, $3, $4, $5)")
 	if err != nil {
 		log.Printf("prepare %+v", err)
 		return err
@@ -62,7 +67,8 @@ func ScheduleInsert(accountId string, algorithmId string, status string) error {
 		id,
 		accountId,
 		algorithmId,
-		status)
+		status,
+		initialState)
 	stmt.Close()
 	if err != nil {
 		log.Printf("upsert %+v", err)
