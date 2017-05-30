@@ -1,7 +1,7 @@
 /pkg/
 /src/github.com
 /src/gopkg.in
-/main
+/cointhink
 /config.hjson
 /pid
 
