@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -26,7 +27,7 @@ func main() {
 	// config
 	err = config.C.Read(config_file)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(fmt.Sprintf("%s: %s", config_file, err))
 	}
 	log.Printf("config loaded %s", config_file)
 
