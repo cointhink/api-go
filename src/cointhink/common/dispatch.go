@@ -21,7 +21,7 @@ func DispatchPublic(class string, object interface{}) []interface{} {
 	case "SigninEmail":
 		resp = actions.DoSigninEmail(proto.SigninEmail{}, json)
 	default:
-		log.Printf("unknown method: %s", class)
+		log.Printf("unknown public method: %s", class)
 	}
 	return resp
 }

@@ -21,7 +21,7 @@ type SigninEmailResponse struct {
 func (m *SigninEmailResponse) Reset()                    { *m = SigninEmailResponse{} }
 func (m *SigninEmailResponse) String() string            { return proto1.CompactTextString(m) }
 func (*SigninEmailResponse) ProtoMessage()               {}
-func (*SigninEmailResponse) Descriptor() ([]byte, []int) { return fileDescriptor10, []int{0} }
+func (*SigninEmailResponse) Descriptor() ([]byte, []int) { return fileDescriptor12, []int{0} }
 
 func (m *SigninEmailResponse) GetOk() bool {
 	if m != nil {
@@ -41,9 +41,9 @@ func init() {
 	proto1.RegisterType((*SigninEmailResponse)(nil), "proto.SigninEmailResponse")
 }
 
-func init() { proto1.RegisterFile("proto/signin_email_response.proto", fileDescriptor10) }
+func init() { proto1.RegisterFile("proto/signin_email_response.proto", fileDescriptor12) }
 
-var fileDescriptor10 = []byte{
+var fileDescriptor12 = []byte{
 	// 113 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0x2c, 0x28, 0xca, 0x2f,
 	0xc9, 0xd7, 0x2f, 0xce, 0x4c, 0xcf, 0xcb, 0xcc, 0x8b, 0x4f, 0xcd, 0x4d, 0xcc, 0xcc, 0x89, 0x2f,
