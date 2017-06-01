@@ -24,7 +24,7 @@ func DoScheduleCreate(scheduleCreate proto.ScheduleCreate, json string, accountI
 
 	err = model.ScheduleInsert(accountId,
 		scheduleCreate.Schedule.AlgorithmId,
-		"active",
+		"stopped",
 		scheduleCreate.Schedule.InitialState)
 	if err != nil {
 		responses = append(responses, proto.ScheduleCreateResponse{Ok: false, Message: err.Error()})
