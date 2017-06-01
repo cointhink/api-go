@@ -3,7 +3,6 @@ package actions
 import (
 	"log"
 
-	"cointhink/config"
 	"cointhink/net"
 	"cointhink/proto"
 
@@ -19,9 +18,12 @@ func DoScheduleStart(scheduleStart proto.ScheduleStart, json string, accountId s
 
 	var responses []interface{}
 
-	url := config.C.QueryString("lxd.api_url")
-	log.Printf("lxd call %s", url)
-	net.Client.Get(url)
+	resp, err := net.LxdStatus("c1")
+	if err != nil {
+		log.Print("LxdStatus: ", err)
+		return []interface{}{} //nothing
+	}
+	log.Printf("%v", resp)
 
 	return responses
 }
