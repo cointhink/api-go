@@ -31,6 +31,10 @@ func DoScheduleStart(scheduleStart proto.ScheduleStart, json string, accountId s
 			responses = append(responses, proto.ScheduleStartResponse{Ok: false, Message: "unknown status"})
 		}
 		log.Printf("%v", resp)
+		if resp.StatusCode == 404 {
+			net.LxdLaunch(net.Lxc{Name: schedule.Id,
+				Source: net.LxcSource{Type: "image", Alias: "alpine"}})
+		}
 	}
 
 	return responses

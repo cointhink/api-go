@@ -4,6 +4,8 @@ import "net/http"
 import "crypto/tls"
 import "time"
 import "log"
+import "encoding/json"
+import "bytes"
 
 import "cointhink/config"
 
@@ -38,11 +40,46 @@ func Client() *http.Client {
 
 func lxdCall(path string) (*http.Response, error) {
 	url := config.C.QueryString("lxd.api_url") + path
-	log.Printf("lxd call %s", url)
+	log.Printf("lxd get %s", url)
 	return Client().Get(url)
+}
+
+func lxdPost(path string, json []byte) (*http.Response, error) {
+	url := config.C.QueryString("lxd.api_url") + path
+	log.Printf("lxd post %s %s", url, json)
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(json))
+	if err != nil {
+		panic(err)
+	}
+	req.Header.Set("X-Custom-Header", "myvalue")
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	return client.Do(req)
 }
 
 func LxdStatus(name string) (*http.Response, error) {
 	log.Printf("lxd status for %s", name)
 	return lxdCall("/1.0/containers/" + name)
+}
+
+//{"name": "test01", "architecture": "x86_64", "profiles": ["default"],
+//"source": {"type": "image", "alias": "ubuntuimage"}}
+type Lxc struct {
+	Name   string    `json:"name"`
+	Source LxcSource `json:"source"`
+}
+
+type LxcSource struct {
+	Type  string `json:"type"`
+	Alias string `json:"alias"`
+}
+
+func LxdLaunch(lxc Lxc) {
+	json, _ := json.Marshal(lxc)
+	resp, err := lxdPost("/1.0/containers", json)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
 }
