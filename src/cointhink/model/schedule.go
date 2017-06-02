@@ -6,16 +6,33 @@ import "errors"
 import "log"
 import "database/sql"
 
-func ScheduleFind(id string) (string, error) {
-	rows, _ := db.D.Handle.Query(
-		"select id from schedules where id = $1",
-		id)
-	if rows.Next() {
-		var id string
-		rows.Scan(&id)
-		return id, nil
+var ScheduleColumns = "id, account_id, algorithm_id, status, initial_state"
+
+func SchedulePopulate(rows *sql.Rows, schedule *proto.Schedule) error {
+	return rows.Scan(
+		&schedule.Id,
+		&schedule.AccountId,
+		&schedule.AlgorithmId,
+		&schedule.Status,
+		&schedule.InitialState,
+	)
+}
+
+func ScheduleFind(scheduleId string, accountId string) (proto.Schedule, error) {
+	schedule := proto.Schedule{}
+	rows, err := db.D.Handle.Query(
+		"select "+ScheduleColumns+" from schedules where id = $1 and account_id = $2",
+		scheduleId, accountId)
+	if err != nil {
+		log.Printf("ScheduleFind SQL: %v", err)
+		return schedule, err
 	} else {
-		return "", errors.New("schedule id not found")
+		if rows.Next() {
+			SchedulePopulate(rows, &schedule)
+			return schedule, nil
+		} else {
+			return schedule, errors.New("schedule id not found")
+		}
 	}
 }
 
@@ -40,23 +57,13 @@ func ScheduleList(accountId string) ([]*proto.Schedule, error) {
 	return schedules, nil
 }
 
-func SchedulePopulate(rows *sql.Rows, schedule *proto.Schedule) error {
-	return rows.Scan(
-		&schedule.Id,
-		&schedule.AccountId,
-		&schedule.AlgorithmId,
-		&schedule.Status,
-		&schedule.InitialState,
-	)
-}
-
 func ScheduleInsert(accountId string,
 	algorithmId string,
 	status string,
 	initialState string) error {
 	stmt, err := db.D.Handle.Prepare(
 		"insert into schedules " +
-			"(id, account_id, algorithm_id, status, initial_state) values " +
+			"(" + ScheduleColumns + ") values " +
 			"($1, $2, $3, $4, $5)")
 	if err != nil {
 		log.Printf("prepare %+v", err)

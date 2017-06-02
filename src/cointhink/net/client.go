@@ -17,5 +17,6 @@ func lxdCall(path string) (*http.Response, error) {
 }
 
 func LxdStatus(name string) (*http.Response, error) {
+	log.Printf("lxd status for %s", name)
 	return lxdCall("/1.0/containers/" + name)
 }

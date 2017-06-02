@@ -3,6 +3,7 @@ package actions
 import (
 	"log"
 
+	"cointhink/model"
 	"cointhink/net"
 	"cointhink/proto"
 
@@ -13,17 +14,24 @@ func DoScheduleStart(scheduleStart proto.ScheduleStart, json string, accountId s
 	err := jsonpb.UnmarshalString(json, &scheduleStart)
 	if err != nil {
 		log.Print("unmarshaling error: ", err)
-		return []interface{}{} //nothing
+		return []interface{}{proto.ScheduleStartResponse{Ok: false}}
 	}
 
 	var responses []interface{}
 
-	resp, err := net.LxdStatus("c1")
+	log.Printf("ScheduleStart lookup %s %s", scheduleStart.ScheduleId, accountId)
+	schedule, err := model.ScheduleFind(scheduleStart.ScheduleId, accountId)
 	if err != nil {
-		log.Print("LxdStatus: ", err)
-		return []interface{}{} //nothing
+		responses = append(responses, proto.ScheduleStartResponse{Ok: false, Message: "unknown schedule id"})
+	} else {
+		log.Printf("schedule found %v", schedule)
+		resp, err := net.LxdStatus(schedule.Id)
+		if err != nil {
+			log.Print("LxdStatus: ", err)
+			responses = append(responses, proto.ScheduleStartResponse{Ok: false, Message: "unknown status"})
+		}
+		log.Printf("%v", resp)
 	}
-	log.Printf("%v", resp)
 
 	return responses
 }
