@@ -33,7 +33,7 @@ func DoScheduleStart(scheduleStart proto.ScheduleStart, json string, accountId s
 		log.Printf("%v", resp)
 		if resp.StatusCode == 404 {
 			net.LxdLaunch(net.Lxc{Name: schedule.Id,
-				Source: net.LxcSource{Type: "image", Alias: "alpine"}})
+				Source: net.LxcSource{Type: "image", Fingerprint: "6978077ac9f8"}})
 		}
 	}
 

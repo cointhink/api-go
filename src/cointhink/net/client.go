@@ -54,8 +54,7 @@ func lxdPost(path string, json []byte) (*http.Response, error) {
 	req.Header.Set("X-Custom-Header", "myvalue")
 	req.Header.Set("Content-Type", "application/json")
 
-	client := &http.Client{}
-	return client.Do(req)
+	return Client().Do(req)
 }
 
 func LxdStatus(name string) (*http.Response, error) {
@@ -71,8 +70,8 @@ type Lxc struct {
 }
 
 type LxcSource struct {
-	Type  string `json:"type"`
-	Alias string `json:"alias"`
+	Type        string `json:"type"`
+	Fingerprint string `json:"fingerprint"`
 }
 
 func LxdLaunch(lxc Lxc) {
