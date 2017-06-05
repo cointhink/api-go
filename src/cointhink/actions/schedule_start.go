@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"log"
 
+	"cointhink/container"
 	"cointhink/model"
 	"cointhink/net"
 	"cointhink/proto"
@@ -35,8 +36,7 @@ func DoScheduleStart(scheduleStart proto.ScheduleStart, json string, accountId s
 		log.Printf("LxdStatus %v %v", resp.Status, string(bodyBytes))
 		resp.Body.Close()
 		if resp.StatusCode == 404 {
-			net.LxdLaunch(net.Lxc{Name: schedule.Id,
-				Source: net.LxcSource{Type: "image", Fingerprint: "6978077ac9f8"}})
+			container.Launch(schedule.AlgorithmId)
 		}
 	}
 

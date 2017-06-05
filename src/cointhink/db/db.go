@@ -1,10 +1,8 @@
 package db
 
-import (
-	"database/sql"
-	_ "github.com/lib/pq"
-	"github.com/satori/go.uuid"
-)
+import "database/sql"
+import _ "github.com/lib/pq"
+import "github.com/satori/go.uuid"
 
 type Db struct {
 	Handle *sql.DB

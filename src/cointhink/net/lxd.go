@@ -38,20 +38,23 @@ func Client() *http.Client {
 	return clientCache
 }
 
+func lxdPath(path string) string {
+	return config.C.QueryString("lxd.api_url") + path
+}
+
 func lxdCall(path string) (*http.Response, error) {
-	url := config.C.QueryString("lxd.api_url") + path
+	url := lxdPath(path)
 	log.Printf("lxd get %s", url)
 	return Client().Get(url)
 }
 
 func lxdPost(path string, json []byte) (*http.Response, error) {
-	url := config.C.QueryString("lxd.api_url") + path
+	url := lxdPath(path)
 	log.Printf("lxd post %s %s", url, json)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(json))
 	if err != nil {
 		panic(err)
 	}
-	req.Header.Set("X-Custom-Header", "myvalue")
 	req.Header.Set("Content-Type", "application/json")
 
 	return Client().Do(req)
