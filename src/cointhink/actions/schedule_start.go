@@ -36,7 +36,9 @@ func DoScheduleStart(scheduleStart proto.ScheduleStart, json string, accountId s
 		log.Printf("LxdStatus %v %v", resp.Status, string(bodyBytes))
 		resp.Body.Close()
 		if resp.StatusCode == 404 {
-			container.Launch(schedule.AlgorithmId)
+			container.Launch(accountId, schedule.AlgorithmId)
+		} else {
+			log.Printf("container not launched: exists")
 		}
 	}
 

@@ -14,6 +14,7 @@ It is generated from these files:
 	proto/schedule_list_response.proto
 	proto/schedule_create.proto
 	proto/schedule_stop.proto
+	proto/algorun.proto
 	proto/schedule.proto
 	proto/session_create_response.proto
 	proto/account.proto
@@ -33,6 +34,7 @@ It has these top-level messages:
 	ScheduleListResponse
 	ScheduleCreate
 	ScheduleStop
+	Algorun
 	Schedule
 	SessionCreateResponse
 	Account
