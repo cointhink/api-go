@@ -1,6 +1,7 @@
 package actions
 
 import (
+	"io/ioutil"
 	"log"
 
 	"cointhink/model"
@@ -30,7 +31,9 @@ func DoScheduleStart(scheduleStart proto.ScheduleStart, json string, accountId s
 			log.Print("LxdStatus: ", err)
 			responses = append(responses, proto.ScheduleStartResponse{Ok: false, Message: "unknown status"})
 		}
-		log.Printf("%v", resp)
+		bodyBytes, _ := ioutil.ReadAll(resp.Body)
+		log.Printf("LxdStatus %v %v", resp.Status, string(bodyBytes))
+		resp.Body.Close()
 		if resp.StatusCode == 404 {
 			net.LxdLaunch(net.Lxc{Name: schedule.Id,
 				Source: net.LxcSource{Type: "image", Fingerprint: "6978077ac9f8"}})
