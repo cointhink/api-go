@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"cointhink/container"
-	"cointhink/model"
+	"cointhink/model/schedule"
 	"cointhink/net"
 	"cointhink/proto"
 
@@ -22,7 +22,7 @@ func DoScheduleStart(scheduleStart proto.ScheduleStart, json string, accountId s
 	var responses []interface{}
 
 	log.Printf("ScheduleStart lookup %s %s", scheduleStart.ScheduleId, accountId)
-	schedule, err := model.ScheduleFind(scheduleStart.ScheduleId, accountId)
+	schedule, err := schedule.Find(scheduleStart.ScheduleId, accountId)
 	if err != nil {
 		responses = append(responses, proto.ScheduleStartResponse{Ok: false, Message: "unknown schedule id"})
 	} else {

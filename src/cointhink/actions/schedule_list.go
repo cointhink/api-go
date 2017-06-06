@@ -3,7 +3,7 @@ package actions
 import (
 	"log"
 
-	"cointhink/model"
+	"cointhink/model/schedule"
 	"cointhink/proto"
 
 	"github.com/golang/protobuf/jsonpb"
@@ -18,7 +18,7 @@ func DoScheduleList(scheduleList proto.ScheduleList, json string, accountId stri
 
 	var responses []interface{}
 
-	schedules, err := model.ScheduleList(accountId)
+	schedules, err := schedule.List(accountId)
 	if err != nil {
 		responses = append(responses, proto.ScheduleListResponse{Ok: false, Message: err.Error()})
 		return responses

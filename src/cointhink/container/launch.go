@@ -14,7 +14,7 @@ func Launch(accountId string, algorithmId string) error {
 	} else {
 		log.Printf("Launch: algo ready. launching")
 		_algorun := proto.Algorun{AccountId: accountId, AlgorithmId: algorithmId}
-		algorun.Create(&_algorun)
+		algorun.Insert(&_algorun)
 		net.LxdLaunch(net.Lxc{Name: _algorun.Id,
 			Source: net.LxcSource{Type: "image", Fingerprint: "6978077ac9f8"}})
 	}

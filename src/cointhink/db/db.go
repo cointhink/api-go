@@ -19,7 +19,7 @@ func init() {
 func (db *Db) Open(db_url string) error {
 	var err error
 	db.Handle, err = sqlx.Open("postgres", db_url)
-	db.Handle.MapperFunc(nil) // leave fields as-is
+	db.Handle.MapperFunc(camelCase) // leave fields as-is
 	return err
 }
 
