@@ -7,7 +7,7 @@ import "log"
 func Find(scheduleId string, accountId string) (proto.Schedule, error) {
 	schedule := proto.Schedule{}
 	err := db.D.Handle.Get(&schedule,
-		"select * from schedules where id = $1 and account_id = $2",
+		"select "+Columns+" from schedules where id = $1 and account_id = $2",
 		scheduleId, accountId)
 	if err != nil {
 		log.Printf("ScheduleFind SQL: %v", err)
@@ -20,7 +20,7 @@ func Find(scheduleId string, accountId string) (proto.Schedule, error) {
 func List(accountId string) ([]*proto.Schedule, error) {
 	schedules := []*proto.Schedule{}
 	err := db.D.Handle.Select(&schedules,
-		"select id, account_id, algorithm_id, status, initial_state from schedules where account_id = $1",
+		"select "+Columns+" from schedules where account_id = $1",
 		accountId)
 	if err != nil {
 		log.Printf("ScheduleFind SQL: %v", err)

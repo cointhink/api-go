@@ -6,6 +6,7 @@ import "time"
 import "log"
 import "encoding/json"
 import "bytes"
+import "io/ioutil"
 
 import "cointhink/config"
 
@@ -78,10 +79,37 @@ type LxcSource struct {
 }
 
 func LxdLaunch(lxc Lxc) {
-	json, _ := json.Marshal(lxc)
-	resp, err := lxdPost("/1.0/containers", json)
+	_json, _ := json.Marshal(lxc)
+	resp, err := lxdPost("/1.0/containers", _json)
 	if err != nil {
 		panic(err)
 	}
-	defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+	op := LaunchResponse{}
+	err = json.Unmarshal(body, &op)
+	log.Printf("launch resp: %v %v", op.Operation, err)
+	resp.Body.Close()
+}
+
+type LaunchResponse struct {
+	Type       string `json:"type"`
+	Status     string `json:"status"`
+	StatusCode int    `json:"status_code"`
+	Operation  string `json:"operation"`
+	ErrorCode  int    `json:"error_code"`
+	Error      string `json:"error"`
+	Metadata   struct {
+		ID         string `json:"id"`
+		Class      string `json:"class"`
+		CreatedAt  string `json:"created_at"`
+		UpdatedAt  string `json:"updated_at"`
+		Status     string `json:"status"`
+		StatusCode int    `json:"status_code"`
+		Resources  struct {
+			Containers []string `json:"containers"`
+		} `json:"resources"`
+		Metadata  interface{} `json:"metadata"`
+		MayCancel bool        `json:"may_cancel"`
+		Err       string      `json:"err"`
+	} `json:"metadata"`
 }
