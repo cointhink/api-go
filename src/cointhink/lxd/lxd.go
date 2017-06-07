@@ -1,4 +1,4 @@
-package net
+package lxd
 
 import "net/http"
 import "crypto/tls"
@@ -61,7 +61,7 @@ func lxdPost(path string, json []byte) (*http.Response, error) {
 	return Client().Do(req)
 }
 
-func LxdStatus(name string) (*http.Response, error) {
+func Status(name string) (*http.Response, error) {
 	log.Printf("lxd status for %s", name)
 	return lxdCall("/1.0/containers/" + name)
 }
@@ -78,7 +78,7 @@ type LxcSource struct {
 	Fingerprint string `json:"fingerprint"`
 }
 
-func LxdLaunch(lxc Lxc) {
+func Launch(lxc Lxc) {
 	_json, _ := json.Marshal(lxc)
 	resp, err := lxdPost("/1.0/containers", _json)
 	if err != nil {

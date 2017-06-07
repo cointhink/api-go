@@ -5,8 +5,8 @@ import (
 	"log"
 
 	"cointhink/container"
+	"cointhink/lxd"
 	"cointhink/model/schedule"
-	"cointhink/net"
 	"cointhink/proto"
 
 	gproto "github.com/golang/protobuf/proto"
@@ -21,7 +21,11 @@ func DoScheduleStart(scheduleStart *proto.ScheduleStart, accountId string) []gpr
 		responses = append(responses, &proto.ScheduleStartResponse{Ok: false, Message: "unknown schedule id"})
 	} else {
 		log.Printf("schedule found %v", schedule)
-		resp, err := net.LxdStatus(schedule.Id)
+		if schedule.AccountId != accountId {
+			return []gproto.Message{&proto.ScheduleStopResponse{Ok: false, Message: "not owner"}}
+		}
+
+		resp, err := lxd.Status(schedule.Id)
 		if err != nil {
 			log.Print("LxdStatus: ", err)
 			responses = append(responses, &proto.ScheduleStartResponse{Ok: false, Message: "unknown status"})

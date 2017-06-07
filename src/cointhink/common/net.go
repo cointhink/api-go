@@ -43,9 +43,6 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
 		method := dat["method"].(string)
 		objectBytes, _ := json.Marshal(dat["object"])
 		objectJson := string(objectBytes)
-		log.Printf("doiz %s %s", method, objectJson)
-		//		var gmsg gproto.Message // proto.SignupForm{}
-		//		jsonpb.UnmarshalString(objectJson, gmsg)
 
 		var responses []gproto.Message
 		responses = DispatchPublic(method, objectJson)
@@ -77,7 +74,6 @@ func respond(client *websocket.Conn, response gproto.Message, id string) {
 		log.Println("objJson:", err)
 		return
 	}
-	log.Printf("objJson %s", objJson)
 	var jsonified interface{}
 	err = json.Unmarshal([]byte(objJson), &jsonified)
 	if err != nil {

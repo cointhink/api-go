@@ -1,6 +1,6 @@
 package container
 
-import "cointhink/net"
+import "cointhink/lxd"
 import "cointhink/model/algorun"
 import "cointhink/proto"
 import "errors"
@@ -15,8 +15,8 @@ func Launch(accountId string, algorithmId string) error {
 		log.Printf("Launch: algo ready. launching")
 		_algorun := proto.Algorun{AccountId: accountId, AlgorithmId: algorithmId}
 		algorun.Insert(&_algorun)
-		net.LxdLaunch(net.Lxc{Name: _algorun.Id,
-			Source: net.LxcSource{Type: "image", Fingerprint: "6978077ac9f8"}})
+		lxd.Launch(lxd.Lxc{Name: _algorun.Id,
+			Source: lxd.LxcSource{Type: "image", Fingerprint: "6978077ac9f8"}})
 	}
 	return nil
 }
