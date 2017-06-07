@@ -10,17 +10,10 @@ import (
 	"cointhink/token"
 	"cointhink/validate"
 
-	"github.com/golang/protobuf/jsonpb"
 	gproto "github.com/golang/protobuf/proto"
 )
 
-func DoSignupform(form proto.SignupForm, json string) []gproto.Message {
-	err := jsonpb.UnmarshalString(json, &form)
-	if err != nil {
-		log.Print("unmarshaling error: ", err)
-		return []gproto.Message{&proto.SignupFormResponse{Ok: false}}
-	}
-
+func DoSignupform(form *proto.SignupForm) []gproto.Message {
 	rows, _ := db.D.Handle.Query(
 		"select count(*) from accounts where email = $1",
 		form.Account.Email)

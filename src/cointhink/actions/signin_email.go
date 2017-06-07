@@ -8,18 +8,11 @@ import (
 	"cointhink/proto"
 	"cointhink/token"
 
-	"github.com/golang/protobuf/jsonpb"
 	gproto "github.com/golang/protobuf/proto"
 )
 
-func DoSigninEmail(msg proto.SigninEmail, json string) []gproto.Message {
+func DoSigninEmail(msg *proto.SigninEmail) []gproto.Message {
 	resp := []gproto.Message{}
-
-	err := jsonpb.UnmarshalString(json, &msg)
-	if err != nil {
-		log.Print("unmarshaling error: ", err)
-		return resp
-	}
 
 	log.Printf("account lookup %s", msg.Email)
 	account_id, err := model.AccountFindByEmail(msg.Email)

@@ -41,13 +41,14 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
 		var dat map[string]interface{}
 		json.Unmarshal(payload, &dat)
 		method := dat["method"].(string)
-		objectJson, _ := json.Marshal(dat["object"])
-		log.Printf("objectJson %s %s", method, string(objectJson))
-		pbMsg := rpcClass(method)
-		_ = jsonpb.UnmarshalString(string(objectJson), pbMsg)
+		objectBytes, _ := json.Marshal(dat["object"])
+		objectJson := string(objectBytes)
+		log.Printf("doiz %s %s", method, objectJson)
+		//		var gmsg gproto.Message // proto.SignupForm{}
+		//		jsonpb.UnmarshalString(objectJson, gmsg)
 
 		var responses []gproto.Message
-		responses = DispatchPublic(method, pbMsg)
+		responses = DispatchPublic(method, objectJson)
 		if responses == nil {
 			if dat["token"] != nil {
 				token := dat["token"].(string)
@@ -56,7 +57,7 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
 					log.Printf("msg token %s BAD", token)
 					return
 				}
-				responses = DispatchAuth(method, pbMsg, accountId)
+				responses = DispatchAuth(method, objectJson, accountId)
 			}
 		}
 

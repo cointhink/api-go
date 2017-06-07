@@ -9,17 +9,10 @@ import (
 	"cointhink/net"
 	"cointhink/proto"
 
-	"github.com/golang/protobuf/jsonpb"
 	gproto "github.com/golang/protobuf/proto"
 )
 
-func DoScheduleStart(scheduleStart proto.ScheduleStart, json string, accountId string) []gproto.Message {
-	err := jsonpb.UnmarshalString(json, &scheduleStart)
-	if err != nil {
-		log.Print("unmarshaling error: ", err)
-		return []gproto.Message{&proto.ScheduleStartResponse{Ok: false}}
-	}
-
+func DoScheduleStart(scheduleStart *proto.ScheduleStart, accountId string) []gproto.Message {
 	var responses []gproto.Message
 
 	log.Printf("ScheduleStart lookup %s %s", scheduleStart.ScheduleId, accountId)

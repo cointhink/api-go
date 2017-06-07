@@ -7,17 +7,10 @@ import (
 	"cointhink/model"
 	"cointhink/proto"
 
-	"github.com/golang/protobuf/jsonpb"
 	gproto "github.com/golang/protobuf/proto"
 )
 
-func DoSessionCreate(sessionCreate proto.SessionCreate, json string) []gproto.Message {
-	err := jsonpb.UnmarshalString(json, &sessionCreate)
-	if err != nil {
-		log.Print("unmarshaling error: ", err)
-		return []gproto.Message{&proto.SessionCreateResponse{Ok: false}}
-	}
-
+func DoSessionCreate(sessionCreate *proto.SessionCreate) []gproto.Message {
 	var responses []gproto.Message
 
 	accountId, err := model.TokenFindAccountId(sessionCreate.Token)

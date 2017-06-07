@@ -1,29 +1,35 @@
 package common
 
 import (
-	"encoding/json"
 	"log"
 
 	"cointhink/actions"
 	"cointhink/proto"
 
+	"github.com/golang/protobuf/jsonpb"
 	gproto "github.com/golang/protobuf/proto"
 )
 
-func DispatchAuth(class string, object interface{}, accountId string) []gproto.Message {
-	log.Printf("*- dispatch-auth %#v %#v %#v", class, object, accountId)
-	object_json, _ := json.Marshal(object)
-	json := string(object_json)
+func DispatchAuth(class string, json string, accountId string) []gproto.Message {
+	log.Printf("*- dispatch-auth %#v %#v %#v", class, json, accountId)
 	var resp []gproto.Message
 	switch class {
 	case "ScheduleCreate":
-		resp = actions.DoScheduleCreate(proto.ScheduleCreate{}, json, accountId)
+		it := proto.ScheduleCreate{}
+		jsonpb.UnmarshalString(json, &it)
+		resp = actions.DoScheduleCreate(&it, accountId)
 	case "ScheduleList":
-		resp = actions.DoScheduleList(proto.ScheduleList{}, json, accountId)
+		it := proto.ScheduleList{}
+		jsonpb.UnmarshalString(json, &it)
+		resp = actions.DoScheduleList(&it, accountId)
 	case "ScheduleStart":
-		resp = actions.DoScheduleStart(proto.ScheduleStart{}, json, accountId)
+		it := proto.ScheduleStart{}
+		jsonpb.UnmarshalString(json, &it)
+		resp = actions.DoScheduleStart(&it, accountId)
 	case "ScheduleStop":
-		resp = actions.DoScheduleStop(proto.ScheduleStop{}, json, accountId)
+		it := proto.ScheduleStop{}
+		jsonpb.UnmarshalString(json, &it)
+		resp = actions.DoScheduleStop(&it, accountId)
 	default:
 		log.Printf("unknown private method: %s", class)
 	}
