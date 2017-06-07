@@ -6,16 +6,17 @@ import (
 	"cointhink/proto"
 
 	"github.com/golang/protobuf/jsonpb"
+	gproto "github.com/golang/protobuf/proto"
 )
 
-func DoScheduleStop(scheduleStop proto.ScheduleStop, json string, accountId string) []interface{} {
+func DoScheduleStop(scheduleStop proto.ScheduleStop, json string, accountId string) []gproto.Message {
 	err := jsonpb.UnmarshalString(json, &scheduleStop)
 	if err != nil {
 		log.Print("unmarshaling error: ", err)
-		return []interface{}{} //nothing
+		return []gproto.Message{} //nothing
 	}
 
-	var responses []interface{}
+	var responses []gproto.Message
 
 	return responses
 }

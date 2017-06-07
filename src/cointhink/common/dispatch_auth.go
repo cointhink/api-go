@@ -6,13 +6,15 @@ import (
 
 	"cointhink/actions"
 	"cointhink/proto"
+
+	gproto "github.com/golang/protobuf/proto"
 )
 
-func DispatchAuth(class string, object interface{}, accountId string) []interface{} {
+func DispatchAuth(class string, object interface{}, accountId string) []gproto.Message {
 	log.Printf("*- dispatch-auth %#v %#v %#v", class, object, accountId)
 	object_json, _ := json.Marshal(object)
 	json := string(object_json)
-	var resp []interface{}
+	var resp []gproto.Message
 	switch class {
 	case "ScheduleCreate":
 		resp = actions.DoScheduleCreate(proto.ScheduleCreate{}, json, accountId)

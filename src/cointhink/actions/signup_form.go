@@ -11,13 +11,14 @@ import (
 	"cointhink/validate"
 
 	"github.com/golang/protobuf/jsonpb"
+	gproto "github.com/golang/protobuf/proto"
 )
 
-func DoSignupform(form proto.SignupForm, json string) []interface{} {
+func DoSignupform(form proto.SignupForm, json string) []gproto.Message {
 	err := jsonpb.UnmarshalString(json, &form)
 	if err != nil {
 		log.Print("unmarshaling error: ", err)
-		return []interface{}{proto.SignupFormResponse{Ok: false}}
+		return []gproto.Message{&proto.SignupFormResponse{Ok: false}}
 	}
 
 	rows, _ := db.D.Handle.Query(
@@ -26,7 +27,7 @@ func DoSignupform(form proto.SignupForm, json string) []interface{} {
 
 	emailGood, emailFailReason := validate.Email(form.Account.Email)
 	if emailGood == false {
-		return []interface{}{proto.SignupFormResponse{Ok: false,
+		return []gproto.Message{&proto.SignupFormResponse{Ok: false,
 			Reason:  proto.SignupFormResponse_EMAIL_ALERT,
 			Message: emailFailReason}}
 	}
@@ -36,7 +37,7 @@ func DoSignupform(form proto.SignupForm, json string) []interface{} {
 		rows.Scan(&count)
 		if count > 0 {
 			log.Printf("email check %d", count)
-			return []interface{}{proto.SignupFormResponse{Ok: false,
+			return []gproto.Message{&proto.SignupFormResponse{Ok: false,
 				Reason:  proto.SignupFormResponse_EMAIL_ALERT,
 				Message: "email already in use"}}
 		}
@@ -51,7 +52,7 @@ func DoSignupform(form proto.SignupForm, json string) []interface{} {
 			rows.Scan(&count)
 			if count > 0 {
 				log.Printf("username check %d", count)
-				return []interface{}{proto.SignupFormResponse{Ok: false,
+				return []gproto.Message{&proto.SignupFormResponse{Ok: false,
 					Reason:  proto.SignupFormResponse_USERNAME_ALERT,
 					Message: "email already in use"}}
 			}
@@ -61,7 +62,7 @@ func DoSignupform(form proto.SignupForm, json string) []interface{} {
 	stmt, err := db.D.Handle.Prepare("insert into accounts (id, fullname, email) values ($1, $2, $3)")
 	if err != nil {
 		log.Printf("prepare %+v", err)
-		return []interface{}{proto.SignupFormResponse{Ok: false}}
+		return []gproto.Message{&proto.SignupFormResponse{Ok: false}}
 	}
 
 	id := db.NewId("accounts")
@@ -71,13 +72,13 @@ func DoSignupform(form proto.SignupForm, json string) []interface{} {
 		form.Account.Email)
 	if err != nil {
 		log.Printf("upsert %+v", err)
-		return []interface{}{proto.SignupFormResponse{Ok: false}}
+		return []gproto.Message{&proto.SignupFormResponse{Ok: false}}
 	}
 	new_id, err := sql_result.LastInsertId()
 	log.Printf("Account new id %s", new_id)
 
 	token := token.MakeToken(id)
 	mailer.MailToken(token, form.Account.Email)
-	resp := []interface{}{proto.SignupFormResponse{Ok: true, Token: token}}
+	resp := []gproto.Message{&proto.SignupFormResponse{Ok: true, Token: token}}
 	return resp
 }

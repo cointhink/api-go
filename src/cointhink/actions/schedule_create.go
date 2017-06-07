@@ -8,16 +8,17 @@ import (
 	"cointhink/proto"
 
 	"github.com/golang/protobuf/jsonpb"
+	gproto "github.com/golang/protobuf/proto"
 )
 
-func DoScheduleCreate(scheduleCreate proto.ScheduleCreate, json string, accountId string) []interface{} {
+func DoScheduleCreate(scheduleCreate proto.ScheduleCreate, json string, accountId string) []gproto.Message {
 	err := jsonpb.UnmarshalString(json, &scheduleCreate)
 	if err != nil {
 		log.Print("unmarshaling error: ", err)
-		return []interface{}{proto.ScheduleCreateResponse{Ok: false}}
+		return []gproto.Message{&proto.ScheduleCreateResponse{Ok: false}}
 	}
 
-	var responses []interface{}
+	var responses []gproto.Message
 
 	_, err = model.AccountFind(accountId)
 	if err != nil {
@@ -29,10 +30,10 @@ func DoScheduleCreate(scheduleCreate proto.ScheduleCreate, json string, accountI
 		InitialState: scheduleCreate.Schedule.InitialState}
 	err = schedule.Insert(&_schedule)
 	if err != nil {
-		responses = append(responses, proto.ScheduleCreateResponse{Ok: false, Message: err.Error()})
+		responses = append(responses, &proto.ScheduleCreateResponse{Ok: false, Message: err.Error()})
 		return responses
 	}
 
-	responses = append(responses, proto.ScheduleCreateResponse{Ok: true})
+	responses = append(responses, &proto.ScheduleCreateResponse{Ok: true})
 	return responses
 }

@@ -9,6 +9,8 @@ import (
 
 	"cointhink/model"
 
+	"github.com/golang/protobuf/jsonpb"
+	gproto "github.com/golang/protobuf/proto"
 	"github.com/gorilla/websocket"
 )
 
@@ -39,9 +41,13 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
 		var dat map[string]interface{}
 		json.Unmarshal(payload, &dat)
 		method := dat["method"].(string)
+		objectJson, _ := json.Marshal(dat["object"])
+		log.Printf("objectJson %s %s", method, string(objectJson))
+		pbMsg := rpcClass(method)
+		_ = jsonpb.UnmarshalString(string(objectJson), pbMsg)
 
-		var responses []interface{}
-		responses = DispatchPublic(method, dat["object"])
+		var responses []gproto.Message
+		responses = DispatchPublic(method, pbMsg)
 		if responses == nil {
 			if dat["token"] != nil {
 				token := dat["token"].(string)
@@ -50,7 +56,7 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
 					log.Printf("msg token %s BAD", token)
 					return
 				}
-				responses = DispatchAuth(method, dat["object"], accountId)
+				responses = DispatchAuth(method, pbMsg, accountId)
 			}
 		}
 
@@ -61,12 +67,25 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func respond(client *websocket.Conn, response interface{}, id string) {
+func respond(client *websocket.Conn, response gproto.Message, id string) {
 	response_class := reflect.TypeOf(response).String()
 	method := strings.Split(response_class, ".")[1]
+	marsh := jsonpb.Marshaler{}
+	objJson, err := marsh.MarshalToString(response)
+	if err != nil {
+		log.Println("objJson:", err)
+		return
+	}
+	log.Printf("objJson %s", objJson)
+	var jsonified interface{}
+	err = json.Unmarshal([]byte(objJson), &jsonified)
+	if err != nil {
+		log.Printf("unmah: %s", err)
+		return
+	}
 	resp := map[string]interface{}{"id": id,
 		"method": method,
-		"object": response}
+		"object": jsonified}
 	json, err := json.Marshal(resp)
 	if err != nil {
 		log.Println("tojson:", err)

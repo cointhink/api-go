@@ -6,13 +6,15 @@ import (
 
 	"cointhink/actions"
 	"cointhink/proto"
+
+	gproto "github.com/golang/protobuf/proto"
 )
 
-func DispatchPublic(class string, object interface{}) []interface{} {
+func DispatchPublic(class string, object gproto.Message) []gproto.Message {
 	log.Printf("*- dispatch-public %#v %#v", class, object)
 	object_json, _ := json.Marshal(object)
 	json := string(object_json)
-	var resp []interface{}
+	var resp []gproto.Message
 	switch class {
 	case "SignupForm":
 		resp = actions.DoSignupform(proto.SignupForm{}, json)
