@@ -34,7 +34,7 @@ func DoScheduleStart(scheduleStart *proto.ScheduleStart, accountId string) []gpr
 		log.Printf("LxdStatus %v %v", resp.Status, string(bodyBytes))
 		resp.Body.Close()
 		if resp.StatusCode == 404 {
-			container.Launch(accountId, schedule.AlgorithmId)
+			container.Start(accountId, schedule)
 		} else {
 			log.Printf("container not launched: exists")
 		}

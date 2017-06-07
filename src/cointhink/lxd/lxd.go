@@ -43,10 +43,14 @@ func lxdPath(path string) string {
 	return config.C.QueryString("lxd.api_url") + path
 }
 
-func lxdCall(path string) (*http.Response, error) {
+func lxdCall(verb string, path string) (*http.Response, error) {
 	url := lxdPath(path)
-	log.Printf("lxd get %s", url)
-	return Client().Get(url)
+	log.Printf("lxd %s %s", verb, url)
+	req, err := http.NewRequest(verb, url, nil)
+	if err != nil {
+		panic(err)
+	}
+	return Client().Do(req)
 }
 
 func lxdPost(path string, json []byte) (*http.Response, error) {
@@ -63,7 +67,7 @@ func lxdPost(path string, json []byte) (*http.Response, error) {
 
 func Status(name string) (*http.Response, error) {
 	log.Printf("lxd status for %s", name)
-	return lxdCall("/1.0/containers/" + name)
+	return lxdCall("GET", "/1.0/containers/"+name)
 }
 
 //{"name": "test01", "architecture": "x86_64", "profiles": ["default"],
@@ -112,4 +116,9 @@ type LaunchResponse struct {
 		MayCancel bool        `json:"may_cancel"`
 		Err       string      `json:"err"`
 	} `json:"metadata"`
+}
+
+func Delete(containerId string) (*http.Response, error) {
+	log.Printf("lxd delete for %s", containerId)
+	return lxdCall("DELETE", "/1.0/containers/"+containerId)
 }
