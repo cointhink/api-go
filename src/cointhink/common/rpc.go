@@ -13,10 +13,17 @@ import "github.com/gorilla/websocket"
 
 // rpc
 var RPCq chan RpcMsg
+var OUTq chan Httpclient
 
 type RpcMsg struct {
 	client  Httpclient
 	payload []byte
+}
+
+type RpcOut struct {
+	client Httpclient
+	msg    gproto.Message
+	id     string
 }
 
 func Rpc(msg RpcMsg) {
@@ -42,12 +49,14 @@ func Rpc(msg RpcMsg) {
 
 	log.Printf("response: %d msg", len(responses))
 	for _, response := range responses {
-		respond(msg.client.socket, response, dat["id"].(string))
+		msg.client.out = append(msg.client.out, RpcOut{client: msg.client,
+			msg: response,
+			id:  dat["id"].(string)})
 	}
-
+	OUTq <- msg.client // signal to flush this client's out queue
 }
 
-func respond(client *websocket.Conn, response gproto.Message, id string) {
+func Respond(socket *websocket.Conn, response gproto.Message, id string) {
 	response_class := reflect.TypeOf(response).String()
 	method := strings.Split(response_class, ".")[1]
 	marsh := jsonpb.Marshaler{}
@@ -71,7 +80,7 @@ func respond(client *websocket.Conn, response gproto.Message, id string) {
 		return
 	}
 	log.Printf("ws_send: %s", json)
-	err = client.WriteMessage(websocket.TextMessage, json)
+	err = socket.WriteMessage(websocket.TextMessage, json)
 	if err != nil {
 		log.Println("ws_send:", err)
 		return

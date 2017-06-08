@@ -40,13 +40,26 @@ func main() {
 
 	// rpc
 	common.RPCq = make(chan common.RpcMsg)
+	common.OUTq = make(chan common.Httpclient)
 
 	// net
 	listen_address := config.C.QueryString("http.listen_address")
 	go common.Httploop(listen_address)
 
-	for {
-		msg := <-common.RPCq
-		common.Rpc(msg)
-	}
+	go func() {
+		for {
+			msg := <-common.RPCq
+			common.Rpc(msg)
+		}
+	}()
+
+	// client out msgs queued in one thread
+	go func() {
+		for {
+			client := <-common.OUTq
+			common.Pump(client)
+		}
+	}()
+
+	select {}
 }
