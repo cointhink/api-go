@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"net/http"
 	"os"
 	"strconv"
 
@@ -39,11 +38,15 @@ func main() {
 	}
 	log.Printf("db open %s", db_url)
 
+	// rpc
+	common.RPCq = make(chan common.RpcMsg)
+
 	// net
 	listen_address := config.C.QueryString("http.listen_address")
-	log.Printf("http listening %s", listen_address)
-	http.HandleFunc("/", common.Upgrade)
+	go common.Httploop(listen_address)
 
-	// http mainloop
-	log.Fatal(http.ListenAndServe(listen_address, nil))
+	for {
+		msg := <-common.RPCq
+		common.Rpc(msg)
+	}
 }
