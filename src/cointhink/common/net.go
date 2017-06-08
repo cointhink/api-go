@@ -58,6 +58,7 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
+		log.Printf("response: %d msg", len(responses))
 		for _, response := range responses {
 			respond(c, response, dat["id"].(string))
 		}
