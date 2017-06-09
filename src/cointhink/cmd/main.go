@@ -39,7 +39,7 @@ func main() {
 	}
 	log.Printf("db open %s", db_url)
 
-	container.Sync()
+	container.SyncAll()
 
 	// rpc
 	common.RPCq = make(chan common.RpcMsg)

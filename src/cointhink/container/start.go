@@ -15,7 +15,8 @@ func Start(accountId string, schedule proto.Schedule) error {
 		log.Printf("Start: algo ready. launching")
 		_algorun := proto.Algorun{AccountId: accountId,
 			AlgorithmId: schedule.AlgorithmId,
-			ScheduleId:  schedule.Id}
+			ScheduleId:  schedule.Id,
+			Status:      proto.Algorun_States_name[int32(proto.Algorun_stopped)]}
 		algorun.Insert(&_algorun)
 		lxd.Launch(lxd.Lxc{Name: _algorun.Id,
 			Source: lxd.LxcSource{Type: "image", Fingerprint: "6978077ac9f8"}})

@@ -30,9 +30,13 @@ func UpdateStatus(algorunInstance *proto.Algorun, newStatus proto.Algorun_States
 		if currentStatusInt == int32(proto.Algorun_running) ||
 			currentStatusInt == int32(proto.Algorun_stopped) {
 			newStateName := proto.Algorun_States_name[newStatusInt]
-			row := db.D.Handle.QueryRowx("update algoruns where id = $1 set status = $2",
-				algorunInstance.Id, newStateName)
-			log.Printf("%v", row)
+			row, err := db.D.Handle.Exec("update algoruns set status = $1 where id = $2",
+				newStateName, algorunInstance.Id)
+			if err != nil {
+				log.Printf("%v", err)
+			} else {
+				log.Printf("%v", row)
+			}
 		} else {
 			log.Printf("algorun %s in bad state (%s) for delete", algorunInstance.Id, algorunInstance.Status)
 		}
