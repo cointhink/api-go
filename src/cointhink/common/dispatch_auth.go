@@ -11,7 +11,7 @@ import (
 )
 
 func DispatchAuth(class string, json string, accountId string) []gproto.Message {
-	log.Printf("*- dispatch-auth %#v %#v %#v", class, json, accountId)
+	log.Printf("*- dispatch-auth %#v %s %#v", class, json, accountId)
 	var resp []gproto.Message
 	switch class {
 	case "ScheduleCreate":

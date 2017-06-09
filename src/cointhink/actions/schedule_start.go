@@ -16,16 +16,19 @@ func DoScheduleStart(scheduleStart *proto.ScheduleStart, accountId string) []gpr
 	var responses []gproto.Message
 
 	log.Printf("ScheduleStart lookup %s %s", scheduleStart.ScheduleId, accountId)
-	schedule, err := schedule.Find(scheduleStart.ScheduleId, accountId)
+	_schedule, err := schedule.Find(scheduleStart.ScheduleId, accountId)
 	if err != nil {
 		responses = append(responses, &proto.ScheduleStartResponse{Ok: false, Message: "unknown schedule id"})
 	} else {
-		log.Printf("schedule found %v", schedule)
-		if schedule.AccountId != accountId {
+		log.Printf("schedule found %v", _schedule)
+		if _schedule.AccountId != accountId {
 			return []gproto.Message{&proto.ScheduleStopResponse{Ok: false, Message: "not owner"}}
 		}
 
-		resp, err := lxd.Status(schedule.Id)
+		schedule.UpdateStatus(_schedule, proto.Schedule_running)
+
+		// push this somewhere else
+		resp, err := lxd.Status(_schedule.Id)
 		if err != nil {
 			log.Print("LxdStatus: ", err)
 			responses = append(responses, &proto.ScheduleStartResponse{Ok: false, Message: "unknown status"})
@@ -34,7 +37,7 @@ func DoScheduleStart(scheduleStart *proto.ScheduleStart, accountId string) []gpr
 		log.Printf("LxdStatus %v %v", resp.Status, string(bodyBytes))
 		resp.Body.Close()
 		if resp.StatusCode == 404 {
-			err = container.Start(accountId, schedule)
+			err = container.Start(accountId, _schedule)
 			if err != nil {
 				responses = append(responses, &proto.ScheduleStartResponse{Ok: false, Message: err.Error()})
 			}

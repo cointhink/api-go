@@ -9,6 +9,7 @@ import (
 
 	"cointhink/common"
 	"cointhink/config"
+	"cointhink/container"
 	"cointhink/db"
 
 	"github.com/ogier/pflag"
@@ -37,6 +38,8 @@ func main() {
 		log.Fatal(err)
 	}
 	log.Printf("db open %s", db_url)
+
+	container.Sync()
 
 	// rpc
 	common.RPCq = make(chan common.RpcMsg)

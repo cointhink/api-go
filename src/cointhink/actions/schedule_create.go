@@ -1,6 +1,8 @@
 package actions
 
 import (
+	"log"
+
 	"cointhink/model"
 	"cointhink/model/schedule"
 	"cointhink/proto"
@@ -19,6 +21,7 @@ func DoScheduleCreate(scheduleCreate *proto.ScheduleCreate, accountId string) []
 		AlgorithmId:  scheduleCreate.Schedule.AlgorithmId,
 		Status:       proto.Schedule_stopped,
 		InitialState: scheduleCreate.Schedule.InitialState}
+	log.Printf("inserting sched state %v", _schedule.Status)
 	err = schedule.Insert(&_schedule)
 	if err != nil {
 		responses = append(responses, &proto.ScheduleCreateResponse{Ok: false, Message: err.Error()})

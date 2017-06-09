@@ -14,9 +14,14 @@ func Insert(scheduleInstance *proto.Schedule) error {
 		log.Printf("Schedule Create err: %v", err)
 		return err
 	} else {
-		new_id, _ := result.LastInsertId()
-		log.Printf("Schedule new id %s", new_id)
 		log.Printf("Schedule Create result: %+v", result)
 	}
 	return nil
+}
+
+func UpdateStatus(_schedule proto.Schedule, newState proto.Schedule_States) {
+	log.Printf("UpdateStatus %s to %v", _schedule.Id, newState)
+	row, err := db.D.Handle.Exec("update schedules set status = $1 where id = $2",
+		newState, _schedule.Id)
+	log.Printf("%v %v", row, err)
 }
