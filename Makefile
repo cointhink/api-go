@@ -1,7 +1,7 @@
 all: main
 
 main: src/cointhink/**/*go
-	go build -o cointhink src/cointhink/cmd/*.go
+	GOPATH=`pwd` go build -o cointhink src/cointhink/cmd/*.go
 
 protoc3:
 	wget https://github.com/google/protobuf/releases/download/v3.3.0/protoc-3.3.0-linux-x86_64.zip

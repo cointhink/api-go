@@ -24,6 +24,9 @@ func UpdateStatus(algorunInstance *proto.Algorun, newStatus proto.Algorun_States
 	// go type screwery
 	currentStatusInt := proto.Algorun_States_value[algorunInstance.Status]
 	newStatusInt := int32(newStatus)
+	if currentStatusInt == newStatusInt {
+		return nil
+	}
 
 	// state machine goes here
 	if newStatus == proto.Algorun_deleted {

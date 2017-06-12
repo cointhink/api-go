@@ -89,13 +89,13 @@ func Launch(lxc Lxc) {
 		panic(err)
 	}
 	body, _ := ioutil.ReadAll(resp.Body)
-	op := LaunchResponse{}
+	op := OperationResponse{}
 	err = json.Unmarshal(body, &op)
 	log.Printf("launch resp: %v %v", op.Operation, err)
 	resp.Body.Close()
 }
 
-type LaunchResponse struct {
+type OperationResponse struct {
 	Type       string `json:"type"`
 	Status     string `json:"status"`
 	StatusCode int    `json:"status_code"`
@@ -118,7 +118,16 @@ type LaunchResponse struct {
 	} `json:"metadata"`
 }
 
-func Delete(containerId string) (*http.Response, error) {
+func Delete(containerId string) error {
 	log.Printf("lxd delete for %s", containerId)
-	return lxdCall("DELETE", "/1.0/containers/"+containerId)
+	resp, err := lxdCall("DELETE", "/1.0/containers/"+containerId)
+	if err != nil {
+		log.Printf("lxd Delete %v", err)
+	}
+	body, _ := ioutil.ReadAll(resp.Body)
+	op := OperationResponse{}
+	err = json.Unmarshal(body, &op)
+	log.Printf("launch resp: %v %v", op.Operation, err)
+	resp.Body.Close()
+	return nil
 }

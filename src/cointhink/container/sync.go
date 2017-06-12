@@ -19,7 +19,7 @@ func SyncAll() {
 func Sync(run *proto.Algorun) {
 	response, err := lxd.Status(run.Id)
 	if err != nil {
-		log.Printf("%v %v", run.Id, err)
+		log.Printf("sync err %v %v", run.Id, err)
 	} else {
 		log.Printf("C: %v %s %s", run.Id, run.Status, response.Status)
 		if response.StatusCode == 404 {

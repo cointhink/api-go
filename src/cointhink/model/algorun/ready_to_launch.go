@@ -16,8 +16,20 @@ func Find(accountId string, scheduleId string) ([]string, error) {
 	}
 }
 
+func FindReady(accountId string, scheduleId string) ([]string, error) {
+	ids := []string{}
+	err := db.D.Handle.Select(&ids,
+		"select id from algoruns where status != 'deleted' and account_id = $1 and schedule_id = $2",
+		accountId, scheduleId)
+	if err != nil {
+		return ids, err
+	} else {
+		return ids, nil
+	}
+}
+
 func ReadyToLaunch(accountId string, scheduleId string) error {
-	ids, err := Find(accountId, scheduleId)
+	ids, err := FindReady(accountId, scheduleId)
 	if err != nil {
 		return err
 	} else {
