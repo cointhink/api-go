@@ -2,18 +2,19 @@ package lxd
 
 import "log"
 
-var LXDOPq chan OperationResponse
+var LXDOPq chan AccountOperation
 
-var op_q []OperationResponse
+var op_q []AccountOperation
 
-func AddOp(msg OperationResponse) {
-	log.Printf("lxd ADD Type %v Status %v Operation %v", msg.Type, msg.Status, msg.Operation)
+func AddOp(msg AccountOperation) {
+	log.Printf("lxd ADD Type %v Status %v Operation %v",
+		msg.Operation.Type, msg.Operation.Status, msg.Operation.Operation)
 	op_q = append(op_q, msg)
 	WatchOp(msg)
 }
 
-func WatchOp(msg OperationResponse) {
-	op, err := lxdCallOperation("GET", msg.Operation+"/wait")
+func WatchOp(msg AccountOperation) {
+	op, err := lxdCallOperation("GET", msg.Operation.Operation+"/wait")
 	if err != nil {
 		log.Printf("lxd WATCH err: %v", err)
 	}

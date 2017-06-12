@@ -35,8 +35,8 @@ func DoScheduleStop(scheduleStop *proto.ScheduleStop, accountId string) []gproto
 			responses = append(responses, &proto.ScheduleStartResponse{Ok: false, Message: "unknown status"})
 		} else {
 			if len(boxes) > 0 {
-				boxId := boxes[0].Id
-				resp, err := lxd.Status(boxId)
+				box := boxes[0]
+				resp, err := lxd.Status(box.Id)
 				if err != nil {
 					log.Print("LxdStatus: ", err)
 					responses = append(responses, &proto.ScheduleStartResponse{Ok: false, Message: "unknown status"})
@@ -44,7 +44,7 @@ func DoScheduleStop(scheduleStop *proto.ScheduleStop, accountId string) []gproto
 				bodyBytes, _ := ioutil.ReadAll(resp.Body)
 				log.Printf("LxdStatus %v %v", resp.Status, string(bodyBytes))
 				resp.Body.Close()
-				container.Stop(boxId)
+				container.Stop(box)
 			}
 		}
 	}

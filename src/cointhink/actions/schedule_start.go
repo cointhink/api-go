@@ -6,6 +6,7 @@ import (
 
 	"cointhink/container"
 	"cointhink/lxd"
+	"cointhink/model/account"
 	"cointhink/model/schedule"
 	"cointhink/proto"
 
@@ -37,7 +38,8 @@ func DoScheduleStart(scheduleStart *proto.ScheduleStart, accountId string) []gpr
 		log.Printf("LxdStatus %v %v", resp.Status, string(bodyBytes))
 		resp.Body.Close()
 		if resp.StatusCode == 404 {
-			err = container.Start(accountId, _schedule)
+			_account, _ := account.Find(accountId)
+			err = container.Start(_account, _schedule)
 			if err != nil {
 				responses = append(responses, &proto.ScheduleStartResponse{Ok: false, Message: err.Error()})
 			}

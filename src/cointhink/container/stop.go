@@ -3,12 +3,17 @@ package container
 import "log"
 
 import "cointhink/lxd"
+import "cointhink/proto"
+import "cointhink/model/account"
 
-func Stop(algorunId string) error {
-	log.Printf("Stop: %s", algorunId)
-	op := lxd.Delete(algorunId)
+func Stop(algorun *proto.Algorun) error {
+	log.Printf("Stop: %s", algorun.Id)
+	op := lxd.Delete(algorun.Id)
 	if op.Type != "error" {
-		lxd.LXDOPq <- op
+		_account, err := account.Find(algorun.AccountId)
+		if err == nil {
+			lxd.LXDOPq <- lxd.AccountOperation{Account: _account, Operation: op}
+		}
 	}
 	return nil
 }

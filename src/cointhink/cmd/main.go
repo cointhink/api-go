@@ -45,7 +45,7 @@ func main() {
 	// rpc
 	common.RPCq = make(chan common.RpcMsg)
 	common.OUTq = make(chan common.Httpclient)
-	lxd.LXDOPq = make(chan lxd.OperationResponse)
+	lxd.LXDOPq = make(chan lxd.AccountOperation)
 
 	// net
 	listen_address := config.C.QueryString("http.listen_address")
