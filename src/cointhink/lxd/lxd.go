@@ -93,32 +93,10 @@ func Launch(lxc Lxc) {
 	err = json.Unmarshal(body, &op)
 	log.Printf("launch resp: %v %v", op.Operation, err)
 	resp.Body.Close()
+	LXDOPq <- op
 }
 
-type OperationResponse struct {
-	Type       string `json:"type"`
-	Status     string `json:"status"`
-	StatusCode int    `json:"status_code"`
-	Operation  string `json:"operation"`
-	ErrorCode  int    `json:"error_code"`
-	Error      string `json:"error"`
-	Metadata   struct {
-		ID         string `json:"id"`
-		Class      string `json:"class"`
-		CreatedAt  string `json:"created_at"`
-		UpdatedAt  string `json:"updated_at"`
-		Status     string `json:"status"`
-		StatusCode int    `json:"status_code"`
-		Resources  struct {
-			Containers []string `json:"containers"`
-		} `json:"resources"`
-		Metadata  interface{} `json:"metadata"`
-		MayCancel bool        `json:"may_cancel"`
-		Err       string      `json:"err"`
-	} `json:"metadata"`
-}
-
-func Delete(containerId string) error {
+func Delete(containerId string) {
 	log.Printf("lxd delete for %s", containerId)
 	resp, err := lxdCall("DELETE", "/1.0/containers/"+containerId)
 	if err != nil {
@@ -129,5 +107,5 @@ func Delete(containerId string) error {
 	err = json.Unmarshal(body, &op)
 	log.Printf("launch resp: %v %v", op.Operation, err)
 	resp.Body.Close()
-	return nil
+	LXDOPq <- op
 }

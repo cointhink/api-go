@@ -11,6 +11,7 @@ import (
 	"cointhink/config"
 	"cointhink/container"
 	"cointhink/db"
+	"cointhink/lxd"
 
 	"github.com/ogier/pflag"
 )
@@ -44,6 +45,7 @@ func main() {
 	// rpc
 	common.RPCq = make(chan common.RpcMsg)
 	common.OUTq = make(chan common.Httpclient)
+	lxd.LXDOPq = make(chan lxd.OperationResponse)
 
 	// net
 	listen_address := config.C.QueryString("http.listen_address")
@@ -61,6 +63,14 @@ func main() {
 		for {
 			client := <-common.OUTq
 			common.Pump(client)
+		}
+	}()
+
+	// watch LXD operations
+	go func() {
+		for {
+			op := <-lxd.LXDOPq
+			lxd.WatchOp(op)
 		}
 	}()
 
