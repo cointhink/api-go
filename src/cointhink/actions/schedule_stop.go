@@ -29,13 +29,13 @@ func DoScheduleStop(scheduleStop *proto.ScheduleStop, accountId string) []gproto
 		schedule.UpdateStatus(_schedule, proto.Schedule_stopped)
 
 		// move
-		boxIds, err := algorun.FindReady(accountId, _schedule.Id)
+		boxes, err := algorun.FindReady(accountId, _schedule.Id)
 		if err != nil {
 			log.Print("LxdStatus: ", err)
 			responses = append(responses, &proto.ScheduleStartResponse{Ok: false, Message: "unknown status"})
 		} else {
-			if len(boxIds) > 0 {
-				boxId := boxIds[0]
+			if len(boxes) > 0 {
+				boxId := boxes[0].Id
 				resp, err := lxd.Status(boxId)
 				if err != nil {
 					log.Print("LxdStatus: ", err)

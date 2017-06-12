@@ -121,5 +121,7 @@ func Delete(containerId string) {
 	if err != nil {
 		log.Printf("lxd Delete %v", err)
 	}
-	LXDOPq <- op
+	if op.Type != "error" {
+		LXDOPq <- op
+	}
 }
