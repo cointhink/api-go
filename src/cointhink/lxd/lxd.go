@@ -48,9 +48,28 @@ func lxdCall(verb string, path string) (*http.Response, error) {
 	log.Printf("lxd %s %s", verb, url)
 	req, err := http.NewRequest(verb, url, nil)
 	if err != nil {
-		panic(err)
+		log.Printf("%v", err)
 	}
 	return Client().Do(req)
+}
+
+func lxdCallOperation(verb string, path string) (OperationResponse, error) {
+	resp, err := lxdCall(verb, path)
+	op := OperationResponse{}
+	if err != nil {
+		return op, err
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return op, err
+	}
+	err = json.Unmarshal(body, &op)
+	if err != nil {
+		return op, err
+	}
+	log.Printf("lxd operation: %s %s", op.Type, op.Status)
+	resp.Body.Close()
+	return op, nil
 }
 
 func lxdPost(path string, json []byte) (*http.Response, error) {
@@ -98,14 +117,9 @@ func Launch(lxc Lxc) {
 
 func Delete(containerId string) {
 	log.Printf("lxd delete for %s", containerId)
-	resp, err := lxdCall("DELETE", "/1.0/containers/"+containerId)
+	op, err := lxdCallOperation("DELETE", "/1.0/containers/"+containerId)
 	if err != nil {
 		log.Printf("lxd Delete %v", err)
 	}
-	body, _ := ioutil.ReadAll(resp.Body)
-	op := OperationResponse{}
-	err = json.Unmarshal(body, &op)
-	log.Printf("launch resp: %v %v", op.Operation, err)
-	resp.Body.Close()
 	LXDOPq <- op
 }

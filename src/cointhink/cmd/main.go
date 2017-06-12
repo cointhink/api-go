@@ -70,7 +70,7 @@ func main() {
 	go func() {
 		for {
 			op := <-lxd.LXDOPq
-			lxd.WatchOp(op)
+			lxd.AddOp(op)
 		}
 	}()
 
