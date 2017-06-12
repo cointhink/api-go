@@ -11,7 +11,7 @@ func MailToken(to string, token string) {
 	m := gomail.NewMessage()
 	m.SetHeader("From", config.C.QueryString("email.from"))
 	m.SetHeader("To", to)
-	//m.SetAddressHeader("Cc", "dan@example.com", "Dan")
+	//m.SetHeader("Bcc", config.C.QueryString("email.bcc"))
 	m.SetHeader("Subject", "Web Login")
 	m.SetBody("text/plain", "Use the magic link below to sign in to cointhink.\n"+
 		config.C.QueryString("http.base_url")+"/?token="+token)
