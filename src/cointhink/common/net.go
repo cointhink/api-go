@@ -48,6 +48,9 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
 }
 
 func Pump(client Httpclient) {
+	if client.socket == nil {
+	}
+
 	for _, outmsg := range client.out {
 		Respond(client.socket, outmsg.msg, outmsg.id)
 	}

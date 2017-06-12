@@ -1,5 +1,12 @@
 package lxd
 
+import "cointhink/proto"
+
+type AccountOperation struct {
+	Account   proto.Account
+	Operation OperationResponse
+}
+
 type OperationResponse struct {
 	Type       string `json:"type"`
 	Status     string `json:"status"`

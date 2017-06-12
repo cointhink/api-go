@@ -101,7 +101,7 @@ type LxcSource struct {
 	Fingerprint string `json:"fingerprint"`
 }
 
-func Launch(lxc Lxc) {
+func Launch(lxc Lxc) OperationResponse {
 	_json, _ := json.Marshal(lxc)
 	resp, err := lxdPost("/1.0/containers", _json)
 	if err != nil {
@@ -112,16 +112,14 @@ func Launch(lxc Lxc) {
 	err = json.Unmarshal(body, &op)
 	log.Printf("launch resp: %v %v", op.Operation, err)
 	resp.Body.Close()
-	LXDOPq <- op
+	return op
 }
 
-func Delete(containerId string) {
+func Delete(containerId string) OperationResponse {
 	log.Printf("lxd delete for %s", containerId)
 	op, err := lxdCallOperation("DELETE", "/1.0/containers/"+containerId)
 	if err != nil {
 		log.Printf("lxd Delete %v", err)
 	}
-	if op.Type != "error" {
-		LXDOPq <- op
-	}
+	return op
 }

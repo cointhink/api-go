@@ -6,6 +6,9 @@ import "cointhink/lxd"
 
 func Stop(algorunId string) error {
 	log.Printf("Stop: %s", algorunId)
-	lxd.Delete(algorunId)
+	op := lxd.Delete(algorunId)
+	if op.Type != "error" {
+		lxd.LXDOPq <- op
+	}
 	return nil
 }

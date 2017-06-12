@@ -11,6 +11,7 @@ It is generated from these files:
 	proto/schedule_stop_response.proto
 	proto/schedule_run.proto
 	proto/schedule_start.proto
+	proto/schedule_list_partial.proto
 	proto/schedule_list.proto
 	proto/schedule_list_response.proto
 	proto/schedule_create.proto
@@ -32,6 +33,7 @@ It has these top-level messages:
 	ScheduleStopResponse
 	ScheduleRun
 	ScheduleStart
+	ScheduleListPartial
 	ScheduleList
 	ScheduleListResponse
 	ScheduleCreate

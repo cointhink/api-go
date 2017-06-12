@@ -18,8 +18,9 @@ func Start(accountId string, schedule proto.Schedule) error {
 			ScheduleId:  schedule.Id,
 			Status:      proto.Algorun_States_name[int32(proto.Algorun_stopped)]}
 		algorun.Insert(&_algorun)
-		lxd.Launch(lxd.Lxc{Name: _algorun.Id,
+		op := lxd.Launch(lxd.Lxc{Name: _algorun.Id,
 			Source: lxd.LxcSource{Type: "image", Fingerprint: "6978077ac9f8"}})
+		lxd.LXDOPq <- op
 	}
 	return nil
 }

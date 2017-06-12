@@ -18,5 +18,6 @@ func WatchOp(msg OperationResponse) {
 		log.Printf("lxd WATCH err: %v", err)
 	}
 	if op.Status == "Success" {
+
 	}
 }
