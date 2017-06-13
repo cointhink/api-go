@@ -12,6 +12,7 @@ import (
 	"cointhink/container"
 	"cointhink/db"
 	"cointhink/lxd"
+	"cointhink/q"
 
 	"github.com/ogier/pflag"
 )
@@ -43,8 +44,8 @@ func main() {
 	container.SyncAll()
 
 	// rpc
-	common.RPCq = make(chan common.RpcMsg)
-	common.OUTq = make(chan common.RpcOut)
+	common.RPCq = make(chan q.RpcMsg)
+	q.OUTq = make(chan q.RpcOut)
 	lxd.LXDOPq = make(chan lxd.AccountOperation)
 
 	// net
@@ -61,7 +62,7 @@ func main() {
 	// client out msgs queued in one thread
 	go func() {
 		for {
-			out := <-common.OUTq
+			out := <-q.OUTq
 			common.Respond(&out)
 		}
 	}()

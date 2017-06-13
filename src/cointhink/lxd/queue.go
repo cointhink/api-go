@@ -1,6 +1,8 @@
 package lxd
 
 import "cointhink/proto"
+import "cointhink/q"
+import "cointhink/httpclients"
 
 import "log"
 
@@ -23,10 +25,12 @@ func WatchOp(msg *AccountOperation) {
 	if op.Status == "Success" {
 		log.Printf("op success for %v", msg.Account.Email)
 
-		_ = proto.ScheduleListPartial{}
+		g := proto.ScheduleListPartial{}
 
-		//common.OUTq <- RpcOut{socket: msg.socket,
-		//	response: &RpcResponse{msg: &g, id: common.RpcId()}}
+		socket := httpclients.AccountIdToSocket(msg.Account.Id)
+		log.Printf("Watchop socket lookup %p", socket)
+		q.OUTq <- q.RpcOut{Socket: socket,
+			Response: &q.RpcResponse{Msg: &g, Id: "z"}}
 
 	}
 }

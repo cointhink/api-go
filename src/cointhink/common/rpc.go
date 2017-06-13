@@ -6,6 +6,8 @@ import "reflect"
 import "log"
 
 import "cointhink/model"
+import "cointhink/q"
+import "cointhink/httpclients"
 
 import "github.com/golang/protobuf/jsonpb"
 import gproto "github.com/golang/protobuf/proto"
@@ -15,29 +17,11 @@ import "github.com/gorilla/websocket"
 import "github.com/google/uuid"
 
 // rpc
-var RPCq chan RpcMsg
-var OUTq chan RpcOut
+var RPCq chan q.RpcMsg
 
-type RpcMsg struct {
-	socket    *websocket.Conn
-	accountId string
-	payload   []byte
-}
-
-type RpcResponse struct {
-	msg *gproto.Message
-	id  string
-}
-
-type RpcOut struct {
-	socket    *websocket.Conn
-	accountId string
-	response  *RpcResponse
-}
-
-func Rpc(msg *RpcMsg) {
+func Rpc(msg *q.RpcMsg) {
 	var dat map[string]interface{}
-	json.Unmarshal(msg.payload, &dat)
+	json.Unmarshal(msg.Payload, &dat)
 	method := dat["method"].(string)
 	objectBytes, _ := json.Marshal(dat["object"])
 	objectJson := string(objectBytes)
@@ -52,22 +36,25 @@ func Rpc(msg *RpcMsg) {
 				log.Printf("msg token %s BAD", token)
 				return
 			}
+			httpclient := httpclients.Clients[msg.Socket]
+			httpclient.AccountId = accountId
+			httpclients.Clients[msg.Socket] = httpclient
 			responses = DispatchAuth(method, objectJson, accountId)
 		}
 	}
 
-	log.Printf("response: %p %d msg", msg.socket, len(responses))
+	log.Printf("response: %p %d msg", msg.Socket, len(responses))
 	for _, response := range responses {
-		OUTq <- RpcOut{socket: msg.socket,
-			response: &RpcResponse{msg: &response, id: dat["id"].(string)}}
+		q.OUTq <- q.RpcOut{Socket: msg.Socket,
+			Response: &q.RpcResponse{Msg: response, Id: dat["id"].(string)}}
 	}
 }
 
-func Respond(out *RpcOut) {
-	response_class := reflect.TypeOf(*out.response.msg).String()
+func Respond(out *q.RpcOut) {
+	response_class := reflect.TypeOf(out.Response.Msg).String()
 	method := strings.Split(response_class, ".")[1]
 	marsh := jsonpb.Marshaler{}
-	objJson, err := marsh.MarshalToString(*out.response.msg)
+	objJson, err := marsh.MarshalToString(out.Response.Msg)
 	if err != nil {
 		log.Println("objJson:", err)
 		return
@@ -78,7 +65,7 @@ func Respond(out *RpcOut) {
 		log.Printf("unmah: %s", err)
 		return
 	}
-	resp := map[string]interface{}{"id": out.response.id,
+	resp := map[string]interface{}{"id": out.Response.Id,
 		"method": method,
 		"object": jsonified}
 	json, err := json.Marshal(resp)
@@ -86,8 +73,8 @@ func Respond(out *RpcOut) {
 		log.Println("tojson:", err)
 		return
 	}
-	log.Printf("ws_send: %p %s", out.socket, json)
-	err = out.socket.WriteMessage(websocket.TextMessage, json)
+	log.Printf("ws_send: %p %s", out.Socket, json)
+	err = out.Socket.WriteMessage(websocket.TextMessage, json)
 	if err != nil {
 		log.Println("ws_send err:", err)
 		return

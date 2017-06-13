@@ -1,24 +1,19 @@
 package common
 
 import (
+	"cointhink/httpclients"
+	"cointhink/q"
+
 	"log"
 	"net/http"
 
 	"github.com/gorilla/websocket"
 )
 
-type Httpclient struct {
-	socket    *websocket.Conn
-	accountId string
-	out       []*RpcOut
-}
-
-var clients map[*websocket.Conn]Httpclient
-
 func Httploop(listen_address string) {
 	log.Printf("http listening %s", listen_address)
 	http.HandleFunc("/", Upgrade)
-	clients = map[*websocket.Conn]Httpclient{}
+	httpclients.Clients = map[*websocket.Conn]httpclients.Httpclient{}
 	http.ListenAndServe(listen_address, nil)
 }
 
@@ -33,27 +28,18 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
 		log.Print("websocket upgrade fail:", err)
 		return
 	}
-	_client := Httpclient{socket: wsocket, out: []*RpcOut{}}
+	_client := httpclients.Httpclient{Socket: wsocket, Out: []*q.RpcOut{}}
 	log.Printf("wsocket open %p", wsocket)
-	clients[wsocket] = _client
+	httpclients.Clients[wsocket] = _client
 	for {
 		_, payload, err := wsocket.ReadMessage()
 		if err != nil {
 			log.Println("ws_recv err:", err)
 			break
 		}
-		RPCq <- RpcMsg{socket: _client.socket, payload: payload}
+		RPCq <- q.RpcMsg{Socket: _client.Socket, Payload: payload}
 	}
 	log.Printf("wsocket closing %p", wsocket)
 	wsocket.Close()
-	delete(clients, wsocket)
-}
-
-func AccountToSocket(accountId string) *websocket.Conn {
-	for _, c := range clients {
-		if c.accountId == accountId {
-			return c.socket
-		}
-	}
-	return nil
+	delete(httpclients.Clients, wsocket)
 }
