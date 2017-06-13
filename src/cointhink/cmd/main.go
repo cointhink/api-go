@@ -44,7 +44,7 @@ func main() {
 
 	// rpc
 	common.RPCq = make(chan common.RpcMsg)
-	common.OUTq = make(chan common.Httpclient)
+	common.OUTq = make(chan common.RpcOut)
 	lxd.LXDOPq = make(chan lxd.AccountOperation)
 
 	// net
@@ -54,15 +54,15 @@ func main() {
 	go func() {
 		for {
 			msg := <-common.RPCq
-			common.Rpc(msg)
+			common.Rpc(&msg)
 		}
 	}()
 
 	// client out msgs queued in one thread
 	go func() {
 		for {
-			client := <-common.OUTq
-			common.Pump(client)
+			out := <-common.OUTq
+			common.Respond(&out)
 		}
 	}()
 
@@ -70,7 +70,7 @@ func main() {
 	go func() {
 		for {
 			op := <-lxd.LXDOPq
-			lxd.AddOp(op)
+			lxd.AddOp(&op)
 		}
 	}()
 

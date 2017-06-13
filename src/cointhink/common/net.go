@@ -10,7 +10,7 @@ import (
 type Httpclient struct {
 	socket    *websocket.Conn
 	accountId string
-	out       []RpcOut
+	out       []*RpcOut
 }
 
 var clients map[*websocket.Conn]Httpclient
@@ -33,7 +33,8 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
 		log.Print("websocket upgrade fail:", err)
 		return
 	}
-	_client := Httpclient{socket: wsocket, out: []RpcOut{}}
+	_client := Httpclient{socket: wsocket, out: []*RpcOut{}}
+	log.Printf("wsocket open %p", wsocket)
 	clients[wsocket] = _client
 	for {
 		_, payload, err := wsocket.ReadMessage()
@@ -41,17 +42,18 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
 			log.Println("ws_recv err:", err)
 			break
 		}
-		RPCq <- RpcMsg{client: _client, payload: payload}
+		RPCq <- RpcMsg{socket: _client.socket, payload: payload}
 	}
+	log.Printf("wsocket closing %p", wsocket)
 	wsocket.Close()
 	delete(clients, wsocket)
 }
 
-func Pump(client Httpclient) {
-	if client.socket == nil {
+func AccountToSocket(accountId string) *websocket.Conn {
+	for _, c := range clients {
+		if c.accountId == accountId {
+			return c.socket
+		}
 	}
-
-	for _, outmsg := range client.out {
-		Respond(client.socket, outmsg.msg, outmsg.id)
-	}
+	return nil
 }

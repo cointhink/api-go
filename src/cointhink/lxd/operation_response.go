@@ -3,8 +3,8 @@ package lxd
 import "cointhink/proto"
 
 type AccountOperation struct {
-	Account   proto.Account
-	Operation OperationResponse
+	Account   *proto.Account
+	Operation *OperationResponse
 }
 
 type OperationResponse struct {

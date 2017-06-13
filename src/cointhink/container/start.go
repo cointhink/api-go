@@ -20,7 +20,7 @@ func Start(account proto.Account, schedule proto.Schedule) error {
 		algorun.Insert(&_algorun)
 		op := lxd.Launch(lxd.Lxc{Name: _algorun.Id,
 			Source: lxd.LxcSource{Type: "image", Fingerprint: "6978077ac9f8"}})
-		lxd.LXDOPq <- lxd.AccountOperation{Account: account, Operation: op}
+		lxd.LXDOPq <- lxd.AccountOperation{Account: &account, Operation: op}
 	}
 	return nil
 }

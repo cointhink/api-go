@@ -53,23 +53,23 @@ func lxdCall(verb string, path string) (*http.Response, error) {
 	return Client().Do(req)
 }
 
-func lxdCallOperation(verb string, path string) (OperationResponse, error) {
+func lxdCallOperation(verb string, path string) (*OperationResponse, error) {
 	resp, err := lxdCall(verb, path)
 	op := OperationResponse{}
 	if err != nil {
-		return op, err
+		return nil, err
 	}
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return op, err
+		return nil, err
 	}
 	err = json.Unmarshal(body, &op)
 	if err != nil {
-		return op, err
+		return nil, err
 	}
 	log.Printf("lxd operation: %s %s", op.Type, op.Status)
 	resp.Body.Close()
-	return op, nil
+	return &op, nil
 }
 
 func lxdPost(path string, json []byte) (*http.Response, error) {
@@ -101,7 +101,7 @@ type LxcSource struct {
 	Fingerprint string `json:"fingerprint"`
 }
 
-func Launch(lxc Lxc) OperationResponse {
+func Launch(lxc Lxc) *OperationResponse {
 	_json, _ := json.Marshal(lxc)
 	resp, err := lxdPost("/1.0/containers", _json)
 	if err != nil {
@@ -112,10 +112,10 @@ func Launch(lxc Lxc) OperationResponse {
 	err = json.Unmarshal(body, &op)
 	log.Printf("launch resp: %v %v", op.Operation, err)
 	resp.Body.Close()
-	return op
+	return &op
 }
 
-func Delete(containerId string) OperationResponse {
+func Delete(containerId string) *OperationResponse {
 	log.Printf("lxd delete for %s", containerId)
 	op, err := lxdCallOperation("DELETE", "/1.0/containers/"+containerId)
 	if err != nil {

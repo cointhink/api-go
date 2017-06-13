@@ -11,22 +11,31 @@ import "github.com/golang/protobuf/jsonpb"
 import gproto "github.com/golang/protobuf/proto"
 import "github.com/gorilla/websocket"
 
+//import "github.com/satori/go.uuid"
+import "github.com/google/uuid"
+
 // rpc
 var RPCq chan RpcMsg
-var OUTq chan Httpclient
+var OUTq chan RpcOut
 
 type RpcMsg struct {
-	client  Httpclient
-	payload []byte
+	socket    *websocket.Conn
+	accountId string
+	payload   []byte
+}
+
+type RpcResponse struct {
+	msg *gproto.Message
+	id  string
 }
 
 type RpcOut struct {
-	client Httpclient
-	msg    gproto.Message
-	id     string
+	socket    *websocket.Conn
+	accountId string
+	response  *RpcResponse
 }
 
-func Rpc(msg RpcMsg) {
+func Rpc(msg *RpcMsg) {
 	var dat map[string]interface{}
 	json.Unmarshal(msg.payload, &dat)
 	method := dat["method"].(string)
@@ -47,20 +56,18 @@ func Rpc(msg RpcMsg) {
 		}
 	}
 
-	log.Printf("response: %d msg", len(responses))
+	log.Printf("response: %p %d msg", msg.socket, len(responses))
 	for _, response := range responses {
-		msg.client.out = append(msg.client.out, RpcOut{client: msg.client,
-			msg: response,
-			id:  dat["id"].(string)})
+		OUTq <- RpcOut{socket: msg.socket,
+			response: &RpcResponse{msg: &response, id: dat["id"].(string)}}
 	}
-	OUTq <- msg.client // signal to flush this client's out queue
 }
 
-func Respond(socket *websocket.Conn, response gproto.Message, id string) {
-	response_class := reflect.TypeOf(response).String()
+func Respond(out *RpcOut) {
+	response_class := reflect.TypeOf(*out.response.msg).String()
 	method := strings.Split(response_class, ".")[1]
 	marsh := jsonpb.Marshaler{}
-	objJson, err := marsh.MarshalToString(response)
+	objJson, err := marsh.MarshalToString(*out.response.msg)
 	if err != nil {
 		log.Println("objJson:", err)
 		return
@@ -71,7 +78,7 @@ func Respond(socket *websocket.Conn, response gproto.Message, id string) {
 		log.Printf("unmah: %s", err)
 		return
 	}
-	resp := map[string]interface{}{"id": id,
+	resp := map[string]interface{}{"id": out.response.id,
 		"method": method,
 		"object": jsonified}
 	json, err := json.Marshal(resp)
@@ -79,10 +86,16 @@ func Respond(socket *websocket.Conn, response gproto.Message, id string) {
 		log.Println("tojson:", err)
 		return
 	}
-	log.Printf("ws_send: %s", json)
-	err = socket.WriteMessage(websocket.TextMessage, json)
+	log.Printf("ws_send: %p %s", out.socket, json)
+	err = out.socket.WriteMessage(websocket.TextMessage, json)
 	if err != nil {
-		log.Println("ws_send:", err)
+		log.Println("ws_send err:", err)
 		return
 	}
+}
+
+func RpcId() string {
+	uuid, _ := uuid.NewRandom()
+	uuidStr := uuid.String()
+	return uuidStr[16:35]
 }

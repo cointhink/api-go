@@ -12,7 +12,7 @@ func Stop(algorun *proto.Algorun) error {
 	if op.Type != "error" {
 		_account, err := account.Find(algorun.AccountId)
 		if err == nil {
-			lxd.LXDOPq <- lxd.AccountOperation{Account: _account, Operation: op}
+			lxd.LXDOPq <- lxd.AccountOperation{Account: &_account, Operation: op}
 		}
 	}
 	return nil
