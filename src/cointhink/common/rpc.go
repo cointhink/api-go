@@ -13,9 +13,6 @@ import "github.com/golang/protobuf/jsonpb"
 import gproto "github.com/golang/protobuf/proto"
 import "github.com/gorilla/websocket"
 
-//import "github.com/satori/go.uuid"
-import "github.com/google/uuid"
-
 // rpc
 var RPCq chan q.RpcMsg
 
@@ -79,10 +76,4 @@ func Respond(out *q.RpcOut) {
 		log.Println("ws_send err:", err)
 		return
 	}
-}
-
-func RpcId() string {
-	uuid, _ := uuid.NewRandom()
-	uuidStr := uuid.String()
-	return uuidStr[16:35]
 }

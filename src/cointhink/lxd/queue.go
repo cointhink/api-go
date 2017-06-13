@@ -6,6 +6,8 @@ import "cointhink/httpclients"
 
 import "log"
 
+import "github.com/google/uuid"
+
 var LXDOPq chan AccountOperation
 
 var op_q []*AccountOperation
@@ -23,14 +25,20 @@ func WatchOp(msg *AccountOperation) {
 		log.Printf("lxd WATCH err: %v", err)
 	}
 	if op.Status == "Success" {
-		log.Printf("op success for %v", msg.Account.Email)
+		log.Printf("op success for %v", msg.Account.Email, msg.Operation.Metadata.ID)
 
-		g := proto.ScheduleListPartial{}
+		sr := proto.ScheduleRun{Schedule: &proto.Schedule{}, Run: &proto.Algorun{}}
+		g := proto.ScheduleListPartial{ScheduleRun: &sr}
 
 		socket := httpclients.AccountIdToSocket(msg.Account.Id)
 		log.Printf("Watchop socket lookup %p", socket)
 		q.OUTq <- q.RpcOut{Socket: socket,
-			Response: &q.RpcResponse{Msg: &g, Id: "z"}}
-
+			Response: &q.RpcResponse{Msg: &g, Id: RpcId()}}
 	}
+}
+
+func RpcId() string {
+	uuid, _ := uuid.NewRandom()
+	uuidStr := uuid.String()
+	return uuidStr[19:35]
 }
