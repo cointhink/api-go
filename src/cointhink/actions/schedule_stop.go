@@ -25,7 +25,7 @@ func DoScheduleStop(scheduleStop *proto.ScheduleStop, accountId string) []gproto
 			return []gproto.Message{&proto.ScheduleStopResponse{Ok: false, Message: "not owner"}}
 		}
 
-		schedule.UpdateStatus(_schedule, proto.Schedule_stopped)
+		schedule.UpdateStatus(_schedule, proto.Schedule_disabled)
 
 		// move
 		boxes, err := algorun.FindReady(accountId, _schedule.Id)

@@ -24,7 +24,7 @@ func DoScheduleStart(scheduleStart *proto.ScheduleStart, accountId string) []gpr
 			return []gproto.Message{&proto.ScheduleStopResponse{Ok: false, Message: "not owner"}}
 		}
 
-		schedule.UpdateStatus(_schedule, proto.Schedule_running)
+		schedule.UpdateStatus(_schedule, proto.Schedule_enabled)
 		_account, err := account.Find(accountId)
 		if err != nil {
 			responses = append(responses, &proto.ScheduleStartResponse{Ok: false, Message: err.Error()})

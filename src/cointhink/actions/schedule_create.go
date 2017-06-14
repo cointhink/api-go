@@ -19,7 +19,7 @@ func DoScheduleCreate(scheduleCreate *proto.ScheduleCreate, accountId string) []
 
 	_schedule := proto.Schedule{AccountId: accountId,
 		AlgorithmId:  scheduleCreate.Schedule.AlgorithmId,
-		Status:       proto.Schedule_stopped,
+		Status:       proto.Schedule_disabled,
 		InitialState: scheduleCreate.Schedule.InitialState}
 	log.Printf("inserting sched state %v", _schedule.Status)
 	err = schedule.Insert(&_schedule)
