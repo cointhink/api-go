@@ -1,7 +1,6 @@
 package actions
 
 import (
-	"io/ioutil"
 	"log"
 
 	"cointhink/container"
@@ -17,7 +16,7 @@ func DoScheduleStop(scheduleStop *proto.ScheduleStop, accountId string) []gproto
 	var responses []gproto.Message
 
 	log.Printf("ScheduleStop lookup %s %s", scheduleStop.ScheduleId, accountId)
-	_schedule, err := schedule.Find(scheduleStop.ScheduleId, accountId)
+	_schedule, err := schedule.FindWithAccount(scheduleStop.ScheduleId, accountId)
 	if err != nil {
 		responses = append(responses, &proto.ScheduleStopResponse{Ok: false, Message: "unknown schedule id"})
 	} else {
@@ -36,15 +35,16 @@ func DoScheduleStop(scheduleStop *proto.ScheduleStop, accountId string) []gproto
 		} else {
 			if len(boxes) > 0 {
 				box := boxes[0]
-				resp, err := lxd.Status(box.Id)
+				stat, err := lxd.Status(box.Id)
 				if err != nil {
 					log.Print("LxdStatus: ", err)
 					responses = append(responses, &proto.ScheduleStartResponse{Ok: false, Message: "unknown status"})
 				}
-				bodyBytes, _ := ioutil.ReadAll(resp.Body)
-				log.Printf("LxdStatus %v %v", resp.Status, string(bodyBytes))
-				resp.Body.Close()
-				container.Stop(box)
+				log.Printf("LxdStatus %d %v", stat.ErrorCode, stat.Metadata.Status)
+				algorun.UpdateStatus(box, proto.Algorun_deleted)
+				if stat.ErrorCode != 404 {
+					container.Stop(box)
+				}
 			}
 		}
 	}

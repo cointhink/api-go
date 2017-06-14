@@ -1,11 +1,9 @@
 package actions
 
 import (
-	"io/ioutil"
 	"log"
 
 	"cointhink/container"
-	"cointhink/lxd"
 	"cointhink/model/account"
 	"cointhink/model/schedule"
 	"cointhink/proto"
@@ -17,7 +15,7 @@ func DoScheduleStart(scheduleStart *proto.ScheduleStart, accountId string) []gpr
 	var responses []gproto.Message
 
 	log.Printf("ScheduleStart lookup %s %s", scheduleStart.ScheduleId, accountId)
-	_schedule, err := schedule.Find(scheduleStart.ScheduleId, accountId)
+	_schedule, err := schedule.FindWithAccount(scheduleStart.ScheduleId, accountId)
 	if err != nil {
 		responses = append(responses, &proto.ScheduleStartResponse{Ok: false, Message: "unknown schedule id"})
 	} else {
@@ -27,25 +25,14 @@ func DoScheduleStart(scheduleStart *proto.ScheduleStart, accountId string) []gpr
 		}
 
 		schedule.UpdateStatus(_schedule, proto.Schedule_running)
-
-		// push this somewhere else
-		resp, err := lxd.Status(_schedule.Id)
+		_account, err := account.Find(accountId)
 		if err != nil {
-			log.Print("LxdStatus: ", err)
-			responses = append(responses, &proto.ScheduleStartResponse{Ok: false, Message: "unknown status"})
-		}
-		bodyBytes, _ := ioutil.ReadAll(resp.Body)
-		log.Printf("LxdStatus %v %v", resp.Status, string(bodyBytes))
-		resp.Body.Close()
-		if resp.StatusCode == 404 {
-			_account, _ := account.Find(accountId)
+			responses = append(responses, &proto.ScheduleStartResponse{Ok: false, Message: err.Error()})
+		} else {
 			err = container.Start(_account, _schedule)
 			if err != nil {
 				responses = append(responses, &proto.ScheduleStartResponse{Ok: false, Message: err.Error()})
 			}
-		} else {
-			responses = append(responses, &proto.ScheduleStartResponse{Ok: false, Message: "already running"})
-			log.Printf("container not launched: exists")
 		}
 	}
 

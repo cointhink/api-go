@@ -40,7 +40,7 @@ func Rpc(msg *q.RpcMsg) {
 		}
 	}
 
-	log.Printf("response: %p %d msg", msg.Socket, len(responses))
+	log.Printf("rpc response: %p/%s %d msg", msg.Socket, msg.AccountId, len(responses))
 	for _, response := range responses {
 		q.OUTq <- q.RpcOut{Socket: msg.Socket,
 			Response: &q.RpcResponse{Msg: response, Id: dat["id"].(string)}}

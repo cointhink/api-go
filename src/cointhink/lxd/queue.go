@@ -3,6 +3,9 @@ package lxd
 import "cointhink/proto"
 import "cointhink/q"
 import "cointhink/httpclients"
+import "cointhink/model/schedule"
+
+import "cointhink/model/algorun"
 
 import "log"
 
@@ -24,17 +27,31 @@ func WatchOp(msg *AccountOperation) {
 	if err != nil {
 		log.Printf("lxd WATCH err: %v", err)
 	}
-	if op.Status == "Success" {
-		log.Printf("op success for %v", msg.Account.Email, msg.Operation.Metadata.ID)
+	log.Printf("lxd.WatchOp finished %s %s", msg.Algorun.Id, op.Status)
+	status, err := Status(msg.Algorun.Id)
+	log.Printf("lxd.WatchOp status: id:%s status:%v err:%v", msg.Algorun.Id, status.Metadata.Status, err)
 
-		sr := proto.ScheduleRun{Schedule: &proto.Schedule{}, Run: &proto.Algorun{}}
-		g := proto.ScheduleListPartial{ScheduleRun: &sr}
+	var algorun_state proto.Algorun_States
+	if status.ErrorCode == 404 {
+		algorun_state = proto.Algorun_deleted
+	} else {
 
-		socket := httpclients.AccountIdToSocket(msg.Account.Id)
-		log.Printf("Watchop socket lookup %p", socket)
-		q.OUTq <- q.RpcOut{Socket: socket,
-			Response: &q.RpcResponse{Msg: &g, Id: RpcId()}}
+		switch status.Metadata.Status {
+		case "Stopped":
+			algorun_state = proto.Algorun_stopped
+		}
 	}
+
+	algorun.UpdateStatus(msg.Algorun, algorun_state)
+
+	s, _ := schedule.Find(msg.Algorun.ScheduleId)
+	sr := proto.ScheduleRun{Schedule: &s, Run: msg.Algorun}
+	g := proto.ScheduleListPartial{ScheduleRun: &sr}
+
+	socket := httpclients.AccountIdToSocket(msg.Algorun.AccountId)
+	log.Printf("Watchop socket lookup id %p", socket)
+	q.OUTq <- q.RpcOut{Socket: socket,
+		Response: &q.RpcResponse{Msg: &g, Id: RpcId()}}
 }
 
 func RpcId() string {

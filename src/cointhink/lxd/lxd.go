@@ -84,9 +84,20 @@ func lxdPost(path string, json []byte) (*http.Response, error) {
 	return Client().Do(req)
 }
 
-func Status(name string) (*http.Response, error) {
-	log.Printf("lxd status for %s", name)
-	return lxdCall("GET", "/1.0/containers/"+name)
+func Status(name string) (*LxcStatus, error) {
+	resp, err := lxdCall("GET", "/1.0/containers/"+name)
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	op := LxcStatus{}
+	err = json.Unmarshal(body, &op)
+	if err != nil {
+		return nil, err
+	}
+	resp.Body.Close()
+	log.Printf("lxd.Status for %s %s", name, op.Metadata.Status)
+	return &op, nil
 }
 
 //{"name": "test01", "architecture": "x86_64", "profiles": ["default"],
@@ -110,7 +121,7 @@ func Launch(lxc Lxc) *OperationResponse {
 	body, _ := ioutil.ReadAll(resp.Body)
 	op := OperationResponse{}
 	err = json.Unmarshal(body, &op)
-	log.Printf("launch resp: %v %v", op.Operation, err)
+	log.Printf("lxd.Launch resp: %v %v", op.Operation, err)
 	resp.Body.Close()
 	return &op
 }
