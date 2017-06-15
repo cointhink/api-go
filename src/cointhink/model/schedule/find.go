@@ -3,6 +3,7 @@ package schedule
 import "cointhink/db"
 import "cointhink/proto"
 import "log"
+import "strconv"
 
 func Find(scheduleId string) (proto.Schedule, error) {
 	schedule := proto.Schedule{}
@@ -33,7 +34,8 @@ func FindWithAccount(scheduleId string, accountId string) (proto.Schedule, error
 func List(accountId string) ([]*proto.Schedule, error) {
 	schedules := []*proto.Schedule{}
 	err := db.D.Handle.Select(&schedules,
-		"select "+Columns+" from schedules where account_id = $1",
+		"select "+Columns+" from schedules where status != "+
+			strconv.FormatInt(int64(proto.Schedule_States_value["deleted"]), 10)+" and account_id = $1",
 		accountId)
 	if err != nil {
 		log.Printf("ScheduleFind SQL: %v", err)

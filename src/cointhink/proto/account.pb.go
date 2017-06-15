@@ -23,7 +23,7 @@ type Account struct {
 func (m *Account) Reset()                    { *m = Account{} }
 func (m *Account) String() string            { return proto1.CompactTextString(m) }
 func (*Account) ProtoMessage()               {}
-func (*Account) Descriptor() ([]byte, []int) { return fileDescriptor13, []int{0} }
+func (*Account) Descriptor() ([]byte, []int) { return fileDescriptor14, []int{0} }
 
 func (m *Account) GetId() string {
 	if m != nil {
@@ -57,9 +57,9 @@ func init() {
 	proto1.RegisterType((*Account)(nil), "proto.Account")
 }
 
-func init() { proto1.RegisterFile("proto/account.proto", fileDescriptor13) }
+func init() { proto1.RegisterFile("proto/account.proto", fileDescriptor14) }
 
-var fileDescriptor13 = []byte{
+var fileDescriptor14 = []byte{
 	// 118 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x2e, 0x28, 0xca, 0x2f,
 	0xc9, 0xd7, 0x4f, 0x4c, 0x4e, 0xce, 0x2f, 0xcd, 0x2b, 0xd1, 0x03, 0xf3, 0x84, 0x58, 0xc1, 0x94,
