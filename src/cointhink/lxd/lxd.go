@@ -15,15 +15,14 @@ func lxdPath(path string) string {
 
 func lxdCall(verb string, path string, bodyParts ...interface{}) (*http.Response, error) {
 	url := lxdPath(path)
-	log.Printf("lxd %s %s %+v", verb, url, bodyParts)
+	log.Printf("lxdCall %s %s", verb, url)
 	var body io.Reader
 	body = nil
 	if len(bodyParts) > 0 {
-		log.Printf("using body index 0 %+v", bodyParts[0])
 		bodywtfs := bodyParts[0].([]interface{})
 		if len(bodywtfs) > 0 {
 			json, _ := json.Marshal(bodywtfs[0])
-			log.Printf("using body sub-array 0 %d %s", len(json), json)
+			log.Printf("lxdCall body %s", json)
 			body = bytes.NewBuffer(json)
 		}
 	}
@@ -32,7 +31,6 @@ func lxdCall(verb string, path string, bodyParts ...interface{}) (*http.Response
 		log.Printf("lxdCall error: %v", err)
 	}
 	if body != nil {
-		log.Printf("setting mime json")
 		req.Header.Set("Content-Type", "application/json")
 	}
 	httpResult, err := Client().Do(req)
@@ -54,7 +52,7 @@ func lxdCallOperation(verb string, path string, bodyParts ...interface{}) (*Oper
 	if err != nil {
 		return nil, err
 	}
-	log.Printf("lxd operation: %s %s", op.Type, op.Status)
+	log.Printf("lxdCallOperation: Type:'%s' Status:'%s' Error: '%s'", op.Type, op.Status, op.Error)
 	resp.Body.Close()
 	return &op, nil
 }
@@ -90,16 +88,51 @@ type LxcSource struct {
 func Launch(lxc Lxc) *OperationResponse {
 	op, err := lxdCallOperation("POST", "/1.0/containers", lxc)
 	if err != nil {
-		log.Printf("lxd Delete %v", err)
+		log.Printf("lxd Launc err %v", err)
+	}
+	return op
+}
+
+type Starter struct {
+	Action   string `json:"action"`
+	Timeout  int    `json:"timeout"`
+	Force    bool   `json:"force"`
+	Stateful bool   `json:"stateful"`
+}
+
+func Start(containerId string) *OperationResponse {
+	starter := Starter{Action: "start"}
+	op, err := lxdCallOperation("PUT", "/1.0/containers/"+containerId+"/state", starter)
+	if err != nil {
+		log.Printf("lxd Start err %v", err)
+	}
+	return op
+}
+
+type Runner struct {
+	Command     []string `json:"command"`
+	Environment struct {
+	} `json:"environment"`
+	WaitForWebsocket bool `json:"wait-for-websocket"`
+	RecordOutput     bool `json:"record-output"`
+	Interactive      bool `json:"interactive"`
+	Width            int  `json:"width"`
+	Height           int  `json:"height"`
+}
+
+func Exec(containerId string, command string) *OperationResponse {
+	runner := Runner{Command: []string{command}}
+	op, err := lxdCallOperation("POST", "/1.0/containers/"+containerId+"/exec", runner)
+	if err != nil {
+		log.Printf("lxd Exec err %v", err)
 	}
 	return op
 }
 
 func Delete(containerId string) *OperationResponse {
-	log.Printf("lxd delete for %s", containerId)
 	op, err := lxdCallOperation("DELETE", "/1.0/containers/"+containerId)
 	if err != nil {
-		log.Printf("lxd Delete %v", err)
+		log.Printf("lxd Delete err %v", err)
 	}
 	return op
 }
