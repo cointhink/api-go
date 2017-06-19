@@ -110,7 +110,7 @@ func Start(containerId string) *OperationResponse {
 }
 
 func Stop(containerId string) *OperationResponse {
-	starter := Starter{Action: "stop"}
+	starter := Starter{Action: "stop", Force: true}
 	op, err := lxdCallOperation("PUT", "/1.0/containers/"+containerId+"/state", starter)
 	if err != nil {
 		log.Printf("lxd Stop err %v", err)

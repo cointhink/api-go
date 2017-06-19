@@ -8,7 +8,7 @@ var Columns = "id, algorithm_id, account_id, schedule_id, status"
 
 func Insert(algorunInstance *proto.Algorun) error {
 	algorunInstance.Id = db.NewId("algoruns")
-	result, err := db.D.Handle.NamedExec("insert into algoruns ("+Columns+") "+
+	_, err := db.D.Handle.NamedExec("insert into algoruns ("+Columns+") "+
 		"values (:id, :algorithm_id, :account_id, :schedule_id, :status)", algorunInstance)
 	if err != nil {
 		log.Printf("algorun Create err: %v", err)
