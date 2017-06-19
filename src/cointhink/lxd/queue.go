@@ -23,38 +23,41 @@ func AddOp(msg *AccountOperation) {
 }
 
 func WatchOp(msg *AccountOperation) {
-	log.Printf("WatchOp for %+v", msg.Operation)
 	op, err := lxdCallOperation("GET", msg.Operation.Operation+"/wait")
 	if err != nil {
 		log.Printf("lxd WATCH err: %v", err)
 	}
 	log.Printf("lxd.WatchOp finished %s %s", msg.Algorun.Id, op.Status)
-	status, err := Status(msg.Algorun.Id)
-	log.Printf("lxd.WatchOp status: id:%s status:%v err:%v", msg.Algorun.Id, status.Metadata.Status, err)
 
-	var algorun_state proto.Algorun_States
-	if status.ErrorCode == 404 {
-		algorun_state = proto.Algorun_deleted
+	if op.Status == "error" {
+		log.Printf("WatchOp got error, skipping status check")
 	} else {
+		status, err := Status(msg.Algorun.Id)
+		log.Printf("lxd.WatchOp container status: id:%s status:%v err:%v", msg.Algorun.Id, status.Metadata.Status, err)
+		var algorun_state proto.Algorun_States
+		if status.ErrorCode == 404 {
+			algorun_state = proto.Algorun_deleted
+		} else {
 
-		switch status.Metadata.Status {
-		case "Stopped":
-			algorun_state = proto.Algorun_stopped
+			switch status.Metadata.Status {
+			case "Stopped":
+				algorun_state = proto.Algorun_stopped
+			}
 		}
-	}
 
-	algorun.UpdateStatus(msg.Algorun, algorun_state)
+		algorun.UpdateStatus(msg.Algorun, algorun_state)
 
-	s, _ := schedule.Find(msg.Algorun.ScheduleId)
-	sr := proto.ScheduleRun{Schedule: &s, Run: msg.Algorun}
-	g := proto.ScheduleListPartial{ScheduleRun: &sr}
+		s, _ := schedule.Find(msg.Algorun.ScheduleId)
+		sr := proto.ScheduleRun{Schedule: &s, Run: msg.Algorun}
+		g := proto.ScheduleListPartial{ScheduleRun: &sr}
 
-	socket := httpclients.AccountIdToSocket(msg.Algorun.AccountId)
-	if socket == nil {
-		log.Printf("Watchop client socket lookup fail #s", msg.Algorun.AccountId)
-	} else {
-		q.OUTq <- q.RpcOut{Socket: socket,
-			Response: &q.RpcResponse{Msg: &g, Id: RpcId()}}
+		socket := httpclients.AccountIdToSocket(msg.Algorun.AccountId)
+		if socket == nil {
+			log.Printf("Watchop client socket lookup fail #s", msg.Algorun.AccountId)
+		} else {
+			q.OUTq <- q.RpcOut{Socket: socket,
+				Response: &q.RpcResponse{Msg: &g, Id: RpcId()}}
+		}
 	}
 }
 

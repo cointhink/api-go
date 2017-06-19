@@ -13,8 +13,6 @@ func Insert(algorunInstance *proto.Algorun) error {
 	if err != nil {
 		log.Printf("algorun Create err: %v", err)
 		return err
-	} else {
-		log.Printf("algorun Create result: %+v", result)
 	}
 	return nil
 }

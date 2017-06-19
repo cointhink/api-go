@@ -109,6 +109,15 @@ func Start(containerId string) *OperationResponse {
 	return op
 }
 
+func Stop(containerId string) *OperationResponse {
+	starter := Starter{Action: "stop"}
+	op, err := lxdCallOperation("PUT", "/1.0/containers/"+containerId+"/state", starter)
+	if err != nil {
+		log.Printf("lxd Stop err %v", err)
+	}
+	return op
+}
+
 type Runner struct {
 	Command     []string `json:"command"`
 	Environment struct {
