@@ -4,6 +4,7 @@ import "net/http"
 import "log"
 import "encoding/json"
 import "bytes"
+import "io"
 import "io/ioutil"
 
 import "cointhink/config"
@@ -12,18 +13,35 @@ func lxdPath(path string) string {
 	return config.C.QueryString("lxd.api_url") + path
 }
 
-func lxdCall(verb string, path string) (*http.Response, error) {
+func lxdCall(verb string, path string, bodyParts ...interface{}) (*http.Response, error) {
 	url := lxdPath(path)
-	log.Printf("lxd %s %s", verb, url)
-	req, err := http.NewRequest(verb, url, nil)
-	if err != nil {
-		log.Printf("%v", err)
+	log.Printf("lxd %s %s %+v", verb, url, bodyParts)
+	var body io.Reader
+	body = nil
+	if len(bodyParts) > 0 {
+		log.Printf("using body index 0 %+v", bodyParts[0])
+		bodywtfs := bodyParts[0].([]interface{})
+		if len(bodywtfs) > 0 {
+			json, _ := json.Marshal(bodywtfs[0])
+			log.Printf("using body sub-array 0 %d %s", len(json), json)
+			body = bytes.NewBuffer(json)
+		}
 	}
-	return Client().Do(req)
+	req, err := http.NewRequest(verb, url, body)
+	if err != nil {
+		log.Printf("lxdCall error: %v", err)
+	}
+	if body != nil {
+		log.Printf("setting mime json")
+		req.Header.Set("Content-Type", "application/json")
+	}
+	httpResult, err := Client().Do(req)
+	log.Printf("lxdCall http result %d", httpResult.StatusCode)
+	return httpResult, err
 }
 
-func lxdCallOperation(verb string, path string) (*OperationResponse, error) {
-	resp, err := lxdCall(verb, path)
+func lxdCallOperation(verb string, path string, bodyParts ...interface{}) (*OperationResponse, error) {
+	resp, err := lxdCall(verb, path, bodyParts)
 	op := OperationResponse{}
 	if err != nil {
 		return nil, err
@@ -39,18 +57,6 @@ func lxdCallOperation(verb string, path string) (*OperationResponse, error) {
 	log.Printf("lxd operation: %s %s", op.Type, op.Status)
 	resp.Body.Close()
 	return &op, nil
-}
-
-func lxdPost(path string, json []byte) (*http.Response, error) {
-	url := lxdPath(path)
-	log.Printf("lxd post %s %s", url, json)
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(json))
-	if err != nil {
-		panic(err)
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	return Client().Do(req)
 }
 
 func Status(name string) (*LxcStatus, error) {
@@ -82,17 +88,11 @@ type LxcSource struct {
 }
 
 func Launch(lxc Lxc) *OperationResponse {
-	_json, _ := json.Marshal(lxc)
-	resp, err := lxdPost("/1.0/containers", _json)
+	op, err := lxdCallOperation("POST", "/1.0/containers", lxc)
 	if err != nil {
-		panic(err)
+		log.Printf("lxd Delete %v", err)
 	}
-	body, _ := ioutil.ReadAll(resp.Body)
-	op := OperationResponse{}
-	err = json.Unmarshal(body, &op)
-	log.Printf("lxd.Launch resp: %v %v", op.Operation, err)
-	resp.Body.Close()
-	return &op
+	return op
 }
 
 func Delete(containerId string) *OperationResponse {
