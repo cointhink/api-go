@@ -23,6 +23,7 @@ func AddOp(msg *AccountOperation) {
 }
 
 func WatchOp(msg *AccountOperation) {
+	log.Printf("WatchOp for %+v", msg.Operation)
 	op, err := lxdCallOperation("GET", msg.Operation.Operation+"/wait")
 	if err != nil {
 		log.Printf("lxd WATCH err: %v", err)
@@ -49,9 +50,12 @@ func WatchOp(msg *AccountOperation) {
 	g := proto.ScheduleListPartial{ScheduleRun: &sr}
 
 	socket := httpclients.AccountIdToSocket(msg.Algorun.AccountId)
-	log.Printf("Watchop socket lookup id %p", socket)
-	q.OUTq <- q.RpcOut{Socket: socket,
-		Response: &q.RpcResponse{Msg: &g, Id: RpcId()}}
+	if socket == nil {
+		log.Printf("Watchop client socket lookup fail #s", msg.Algorun.AccountId)
+	} else {
+		q.OUTq <- q.RpcOut{Socket: socket,
+			Response: &q.RpcResponse{Msg: &g, Id: RpcId()}}
+	}
 }
 
 func RpcId() string {
