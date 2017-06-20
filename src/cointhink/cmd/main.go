@@ -41,18 +41,13 @@ func main() {
 	}
 	log.Printf("db open %s", db_url)
 
-	container.SyncAll()
-
 	// rpc
 	common.RPCq = make(chan q.RpcMsg)
 	q.OUTq = make(chan q.RpcOut)
-	q.LXDOPq = make(chan q.AccountOperation)
-
-	// net
-	listen_address := config.C.QueryString("http.listen_address")
-	go common.Httploop(listen_address)
+	q.LXDOPq = make(chan q.AccountOperation, 2)
 
 	// rpc calls from httploop
+	log.Printf("starting rpc goroutine")
 	go func() {
 		for {
 			msg := <-common.RPCq
@@ -61,6 +56,7 @@ func main() {
 	}()
 
 	// client out msgs
+	log.Printf("starting rpc respond goroutine")
 	go func() {
 		for {
 			out := <-q.OUTq
@@ -69,6 +65,7 @@ func main() {
 	}()
 
 	// watch LXD operations
+	log.Printf("starting lxd goroutine")
 	go func() {
 		for {
 			op := <-q.LXDOPq
@@ -76,5 +73,15 @@ func main() {
 		}
 	}()
 
+	container.SyncAll()
+	log.Printf("SyncAll done")
+
+	// net
+	listen_address := config.C.QueryString("http.listen_address")
+
+	log.Printf("starting http %s", listen_address)
+	go common.Httploop(listen_address)
+
+	log.Printf("READY.")
 	select {}
 }

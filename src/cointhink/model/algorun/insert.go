@@ -31,6 +31,7 @@ func UpdateStatus(algorunInstance *proto.Algorun, newStatus proto.Algorun_States
 	if newStateName == proto.Algorun_States_name[int32(proto.Algorun_deleted)] {
 		if stateName == proto.Algorun_States_name[int32(proto.Algorun_building)] ||
 			stateName == proto.Algorun_States_name[int32(proto.Algorun_running)] ||
+			stateName == proto.Algorun_States_name[int32(proto.Algorun_destroying)] ||
 			stateName == proto.Algorun_States_name[int32(proto.Algorun_stopped)] {
 			updateState = &newStateName
 		} else {
@@ -39,10 +40,26 @@ func UpdateStatus(algorunInstance *proto.Algorun, newStatus proto.Algorun_States
 	} else if newStateName == proto.Algorun_States_name[int32(proto.Algorun_building)] {
 		log.Printf("algorun %s update to state building (initial state) makes no sense",
 			algorunInstance.Id, newStateName)
+	} else if newStateName == proto.Algorun_States_name[int32(proto.Algorun_starting)] {
+		if stateName == proto.Algorun_States_name[int32(proto.Algorun_building)] {
+			updateState = &newStateName
+		} else {
+			log.Printf("algorun %s update to starting from building (initial state) makes no sense",
+				algorunInstance.Id)
+		}
+	} else if newStateName == proto.Algorun_States_name[int32(proto.Algorun_running)] {
+		if stateName == proto.Algorun_States_name[int32(proto.Algorun_starting)] {
+			updateState = &newStateName
+		} else {
+			log.Printf("algorun %s update to running from %s makes no sense",
+				algorunInstance.Id, stateName)
+		}
 	} else if newStateName == proto.Algorun_States_name[int32(proto.Algorun_stopped)] {
 		updateState = &newStateName
+	} else if newStateName == proto.Algorun_States_name[int32(proto.Algorun_destroying)] {
+		updateState = &newStateName
 	} else {
-		log.Printf("algorun %s unhandled newState %s", algorunInstance.Id, newStateName)
+		log.Printf("!algorun %s unhandled newState %s", algorunInstance.Id, newStateName)
 	}
 
 	if updateState != nil {

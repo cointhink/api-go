@@ -53,7 +53,7 @@ func lxdCallOperation(verb string, path string, bodyParts ...interface{}) (*q.Op
 	if err != nil {
 		return nil, err
 	}
-	log.Printf("lxdCallOperation: Type:'%s' Status:'%s' Error: '%s'", op.Type, op.Status, op.Error)
+	log.Printf("lxdCallOperation result: Type:'%s' Status:'%s' Error: '%s'", op.Type, op.Status, op.Error)
 	resp.Body.Close()
 	return &op, nil
 }

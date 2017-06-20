@@ -11,7 +11,6 @@ import (
 )
 
 func Httploop(listen_address string) {
-	log.Printf("http listening %s", listen_address)
 	http.HandleFunc("/", Upgrade)
 	httpclients.Clients = map[*websocket.Conn]httpclients.Httpclient{}
 	http.ListenAndServe(listen_address, nil)
