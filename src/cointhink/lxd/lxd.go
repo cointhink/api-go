@@ -6,6 +6,7 @@ import "encoding/json"
 import "bytes"
 import "io"
 import "io/ioutil"
+import "reflect"
 
 import "cointhink/config"
 import "cointhink/q"
@@ -19,20 +20,28 @@ func lxdCall(verb string, path string, bodyParts ...interface{}) (*http.Response
 	log.Printf("lxdCall %s %s", verb, url)
 	var body io.Reader
 	body = nil
+	var mime string
 	if len(bodyParts) > 0 {
-		bodywtfs := bodyParts[0].([]interface{})
-		if len(bodywtfs) > 0 {
-			json, _ := json.Marshal(bodywtfs[0])
-			log.Printf("lxdCall body %s", json)
-			body = bytes.NewBuffer(json)
+		var payloadBytes []byte
+		if reflect.TypeOf(bodyParts[0]).Kind() == reflect.String {
+			payloadBytes = []byte(bodyParts[0].(string))
+			mime = "application/octet-stream"
+		} else {
+			bodywtfs := bodyParts[0].([]interface{})
+			if len(bodywtfs) > 0 {
+				payloadBytes, _ = json.Marshal(bodywtfs[0])
+				mime = "application/json"
+			}
 		}
+		log.Printf("lxdCall body %s", payloadBytes)
+		body = bytes.NewBuffer(payloadBytes)
 	}
 	req, err := http.NewRequest(verb, url, body)
 	if err != nil {
 		log.Printf("lxdCall error: %v", err)
 	}
 	if body != nil {
-		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("Content-Type", mime)
 	}
 	httpResult, err := Client().Do(req)
 	log.Printf("lxdCall http result %d", httpResult.StatusCode)
@@ -145,4 +154,11 @@ func Delete(containerId string) *q.OperationResponse {
 		log.Printf("lxd Delete err %v", err)
 	}
 	return op
+}
+
+func FilePut(containerId, filePath string, contents string) {
+	_, err := lxdCall("POST", "/1.0/containers/"+containerId+"/files?path="+filePath, contents)
+	if err != nil {
+		log.Printf("lxd FilePut err %v", err)
+	}
 }

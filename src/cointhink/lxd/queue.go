@@ -5,6 +5,7 @@ import "cointhink/q"
 import "cointhink/httpclients"
 import "cointhink/model/schedule"
 import "cointhink/model/algorun"
+import "cointhink/config"
 
 import "log"
 
@@ -62,7 +63,9 @@ func WatchOp(msg *q.AccountOperation) {
 				lxdStatus.Metadata.Status == "Running" {
 				algorun_state = proto.Algorun_running
 				algorun.UpdateStatus(algoRun, algorun_state)
-				op := Exec(algoRun.Id, "/home/cointhink/start")
+				scriptPath := config.C.QueryString("scripting.start_path")
+				FilePut(algoRun.Id, scriptPath, "I am woo")
+				op := Exec(algoRun.Id, scriptPath)
 				q.LXDOPq <- q.AccountOperation{Algorun: algoRun, Operation: op}
 			}
 		}
