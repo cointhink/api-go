@@ -15,7 +15,7 @@ func DoScheduleDelete(scheduleDelete *proto.ScheduleDelete, accountId string) []
 		responses = append(responses, &proto.ScheduleDeleteResponse{Ok: false, Message: "Unknown schedule"})
 	} else {
 		// best-effort algorun stop
-		_algorun, err := algorun.Find(accountId, _schedule.Id)
+		_algorun, err := algorun.FindFromSchedule(accountId, _schedule.Id)
 		if err != nil {
 		} else {
 			container.Stop(_algorun)

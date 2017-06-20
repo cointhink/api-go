@@ -4,7 +4,18 @@ import "cointhink/db"
 import "cointhink/proto"
 import "log"
 
-func Find(accountId string, scheduleId string) (*proto.Algorun, error) {
+func Find(id string) (*proto.Algorun, error) {
+	run := &proto.Algorun{}
+	err := db.D.Handle.Get(run,
+		"select "+Columns+" from algoruns where id = $1", id)
+	if err != nil {
+		return run, err
+	} else {
+		return run, nil
+	}
+}
+
+func FindFromSchedule(accountId string, scheduleId string) (*proto.Algorun, error) {
 	run := &proto.Algorun{}
 	err := db.D.Handle.Get(run,
 		"select "+Columns+" from algoruns where account_id = $1 and schedule_id = $2",

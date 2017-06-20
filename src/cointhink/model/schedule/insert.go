@@ -20,8 +20,10 @@ func Insert(scheduleInstance *proto.Schedule) error {
 }
 
 func UpdateStatus(_schedule proto.Schedule, newState proto.Schedule_States) {
-	log.Printf("UpdateStatus %s to %v", _schedule.Id, newState)
-	row, err := db.D.Handle.Exec("update schedules set status = $1 where id = $2",
+	log.Printf("schedule.UpdateState %s to %v", _schedule.Id, newState)
+	_, err := db.D.Handle.Exec("update schedules set status = $1 where id = $2",
 		newState, _schedule.Id)
-	log.Printf("%v %v", row, err)
+	if err != nil {
+		log.Printf("schedule.UpdateState err %v", err)
+	}
 }

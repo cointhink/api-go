@@ -18,13 +18,13 @@ func Start(account proto.Account, schedule proto.Schedule) error {
 			_algorun := proto.Algorun{AccountId: account.Id,
 				AlgorithmId: schedule.AlgorithmId,
 				ScheduleId:  schedule.Id,
-				Status:      proto.Algorun_States_name[int32(proto.Algorun_stopped)]}
+				Status:      proto.Algorun_States_name[int32(proto.Algorun_building)]}
 			algorun.Insert(&_algorun)
 			op := lxd.Launch(lxd.Lxc{Name: _algorun.Id,
 				Source: lxd.LxcSource{Type: "image", Fingerprint: "6978077ac9f8"}})
 			lxd.LXDOPq <- lxd.AccountOperation{Algorun: &_algorun, Operation: op}
-			op = lxd.Start(_algorun.Id)
-			op = lxd.Exec(_algorun.Id, "/bin/ls")
+			//op = lxd.Start(_algorun.Id)
+			//op = lxd.Exec(_algorun.Id, "/bin/ls")
 		} else {
 			log.Printf("Start aborted. existing algoruns %v", runs)
 			return errors.New("existing algorun")
