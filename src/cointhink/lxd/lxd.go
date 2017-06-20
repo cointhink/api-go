@@ -4,9 +4,9 @@ import "net/http"
 import "log"
 import "encoding/json"
 import "bytes"
-import "io"
 import "io/ioutil"
 import "reflect"
+import "mime/multipart"
 
 import "cointhink/config"
 import "cointhink/q"
@@ -18,23 +18,30 @@ func lxdPath(path string) string {
 func lxdCall(verb string, path string, bodyParts ...interface{}) (*http.Response, error) {
 	url := lxdPath(path)
 	log.Printf("lxdCall %s %s", verb, url)
-	var body io.Reader
-	body = nil
+	body := &bytes.Buffer{}
 	var mime string
 	if len(bodyParts) > 0 {
 		var payloadBytes []byte
 		if reflect.TypeOf(bodyParts[0]).Kind() == reflect.String {
 			payloadBytes = []byte(bodyParts[0].(string))
 			mime = "application/octet-stream"
+			body.Write(payloadBytes)
+		} else if reflect.TypeOf(bodyParts[0]).Name() == "HttpFile" {
+			httpFile := bodyParts[0].(HttpFile)
+			log.Printf("lxdCall extra type %s", reflect.TypeOf(bodyParts[0]))
+			writer := multipart.NewWriter(body)
+			part, _ := writer.CreateFormFile("start", httpFile.Name)
+			part.Write([]byte(httpFile.Contents))
+			mime = writer.FormDataContentType()
 		} else {
 			bodywtfs := bodyParts[0].([]interface{})
 			if len(bodywtfs) > 0 {
 				payloadBytes, _ = json.Marshal(bodywtfs[0])
 				mime = "application/json"
+				body.Write(payloadBytes)
 			}
 		}
-		log.Printf("lxdCall body %s", payloadBytes)
-		body = bytes.NewBuffer(payloadBytes)
+
 	}
 	req, err := http.NewRequest(verb, url, body)
 	if err != nil {
@@ -42,6 +49,7 @@ func lxdCall(verb string, path string, bodyParts ...interface{}) (*http.Response
 	}
 	if body != nil {
 		req.Header.Set("Content-Type", mime)
+		log.Printf("lxdCall body %s", body)
 	}
 	httpResult, err := Client().Do(req)
 	log.Printf("lxdCall http result %d", httpResult.StatusCode)
@@ -156,9 +164,17 @@ func Delete(containerId string) *q.OperationResponse {
 	return op
 }
 
+type HttpFile struct {
+	Name     string
+	Contents string
+}
+
 func FilePut(containerId, filePath string, contents string) {
-	_, err := lxdCall("POST", "/1.0/containers/"+containerId+"/files?path="+filePath, contents)
+	result, err := lxdCall("POST", "/1.0/containers/"+containerId+"/files?path="+filePath,
+		HttpFile{Name: "start", Contents: contents})
 	if err != nil {
 		log.Printf("lxd FilePut err %v", err)
 	}
+	bodyz, _ := ioutil.ReadAll(result.Body)
+	log.Printf("fileput http result body %s", bodyz)
 }
