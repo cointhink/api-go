@@ -6,6 +6,7 @@ import "errors"
 import "cointhink/lxd"
 import "cointhink/model/algorun"
 import "cointhink/proto"
+import "cointhink/q"
 
 func Start(account proto.Account, schedule proto.Schedule) error {
 	runs, err := algorun.FindReady(account.Id, schedule.Id)
@@ -22,7 +23,7 @@ func Start(account proto.Account, schedule proto.Schedule) error {
 			algorun.Insert(&_algorun)
 			op := lxd.Launch(lxd.Lxc{Name: _algorun.Id,
 				Source: lxd.LxcSource{Type: "image", Fingerprint: "6978077ac9f8"}})
-			lxd.LXDOPq <- lxd.AccountOperation{Algorun: &_algorun, Operation: op}
+			q.LXDOPq <- q.AccountOperation{Algorun: &_algorun, Operation: op}
 			//op = lxd.Start(_algorun.Id)
 			//op = lxd.Exec(_algorun.Id, "/bin/ls")
 		} else {

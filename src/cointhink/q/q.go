@@ -21,3 +21,5 @@ type RpcOut struct {
 	AccountId string
 	Response  *RpcResponse
 }
+
+var LXDOPq chan AccountOperation

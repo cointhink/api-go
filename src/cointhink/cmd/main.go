@@ -46,12 +46,13 @@ func main() {
 	// rpc
 	common.RPCq = make(chan q.RpcMsg)
 	q.OUTq = make(chan q.RpcOut)
-	lxd.LXDOPq = make(chan lxd.AccountOperation)
+	q.LXDOPq = make(chan q.AccountOperation)
 
 	// net
 	listen_address := config.C.QueryString("http.listen_address")
 	go common.Httploop(listen_address)
 
+	// rpc calls from httploop
 	go func() {
 		for {
 			msg := <-common.RPCq
@@ -59,7 +60,7 @@ func main() {
 		}
 	}()
 
-	// client out msgs queued in one thread
+	// client out msgs
 	go func() {
 		for {
 			out := <-q.OUTq
@@ -70,7 +71,7 @@ func main() {
 	// watch LXD operations
 	go func() {
 		for {
-			op := <-lxd.LXDOPq
+			op := <-q.LXDOPq
 			lxd.AddOp(&op)
 		}
 	}()

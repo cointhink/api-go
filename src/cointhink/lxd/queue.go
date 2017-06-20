@@ -11,18 +11,16 @@ import "log"
 
 import "github.com/google/uuid"
 
-var LXDOPq chan AccountOperation
+var op_q []*q.AccountOperation
 
-var op_q []*AccountOperation
-
-func AddOp(msg *AccountOperation) {
+func AddOp(msg *q.AccountOperation) {
 	log.Printf("lxd ADD Type %v Status %v Operation %v",
 		msg.Operation.Type, msg.Operation.Status, msg.Operation.Operation)
 	op_q = append(op_q, msg)
 	WatchOp(msg)
 }
 
-func WatchOp(msg *AccountOperation) {
+func WatchOp(msg *q.AccountOperation) {
 	op, err := lxdCallOperation("GET", msg.Operation.Operation+"/wait")
 	if err != nil {
 		log.Printf("lxd.WatchOp err: %v", err)

@@ -1,4 +1,4 @@
-package lxd
+package q
 
 import "cointhink/proto"
 

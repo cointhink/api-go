@@ -3,6 +3,7 @@ package container
 import "log"
 
 import "cointhink/lxd"
+import "cointhink/q"
 import "cointhink/proto"
 
 func Stop(algorun *proto.Algorun) error {
@@ -10,7 +11,7 @@ func Stop(algorun *proto.Algorun) error {
 	//op := lxd.Stop(algorun.Id) // delete uses force
 	op := lxd.Delete(algorun.Id)
 	if op.Type != "error" {
-		lxd.LXDOPq <- lxd.AccountOperation{Algorun: algorun, Operation: op}
+		q.LXDOPq <- q.AccountOperation{Algorun: algorun, Operation: op}
 	}
 	return nil
 }

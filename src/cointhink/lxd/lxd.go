@@ -8,6 +8,7 @@ import "io"
 import "io/ioutil"
 
 import "cointhink/config"
+import "cointhink/q"
 
 func lxdPath(path string) string {
 	return config.C.QueryString("lxd.api_url") + path
@@ -38,9 +39,9 @@ func lxdCall(verb string, path string, bodyParts ...interface{}) (*http.Response
 	return httpResult, err
 }
 
-func lxdCallOperation(verb string, path string, bodyParts ...interface{}) (*OperationResponse, error) {
+func lxdCallOperation(verb string, path string, bodyParts ...interface{}) (*q.OperationResponse, error) {
 	resp, err := lxdCall(verb, path, bodyParts)
-	op := OperationResponse{}
+	op := q.OperationResponse{}
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +86,7 @@ type LxcSource struct {
 	Fingerprint string `json:"fingerprint"`
 }
 
-func Launch(lxc Lxc) *OperationResponse {
+func Launch(lxc Lxc) *q.OperationResponse {
 	op, err := lxdCallOperation("POST", "/1.0/containers", lxc)
 	if err != nil {
 		log.Printf("lxd Launc err %v", err)
@@ -100,7 +101,7 @@ type Starter struct {
 	Stateful bool   `json:"stateful"`
 }
 
-func Start(containerId string) *OperationResponse {
+func Start(containerId string) *q.OperationResponse {
 	starter := Starter{Action: "start"}
 	op, err := lxdCallOperation("PUT", "/1.0/containers/"+containerId+"/state", starter)
 	if err != nil {
@@ -109,7 +110,7 @@ func Start(containerId string) *OperationResponse {
 	return op
 }
 
-func Stop(containerId string) *OperationResponse {
+func Stop(containerId string) *q.OperationResponse {
 	starter := Starter{Action: "stop", Force: true}
 	op, err := lxdCallOperation("PUT", "/1.0/containers/"+containerId+"/state", starter)
 	if err != nil {
@@ -129,7 +130,7 @@ type Runner struct {
 	Height           int  `json:"height"`
 }
 
-func Exec(containerId string, command string) *OperationResponse {
+func Exec(containerId string, command string) *q.OperationResponse {
 	runner := Runner{Command: []string{command}}
 	op, err := lxdCallOperation("POST", "/1.0/containers/"+containerId+"/exec", runner)
 	if err != nil {
@@ -138,7 +139,7 @@ func Exec(containerId string, command string) *OperationResponse {
 	return op
 }
 
-func Delete(containerId string) *OperationResponse {
+func Delete(containerId string) *q.OperationResponse {
 	op, err := lxdCallOperation("DELETE", "/1.0/containers/"+containerId)
 	if err != nil {
 		log.Printf("lxd Delete err %v", err)
