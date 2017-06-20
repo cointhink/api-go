@@ -51,6 +51,9 @@ func WatchOp(msg *AccountOperation) {
 		// alert client
 		s, _ := schedule.Find(msg.Algorun.ScheduleId)
 		sr := proto.ScheduleRun{Schedule: &s, Run: algoRun}
+		if algoRun.Status == proto.Algorun_States_name[int32(proto.Algorun_deleted)] {
+			sr.Run = nil
+		}
 		g := proto.ScheduleListPartial{ScheduleRun: &sr}
 
 		socket := httpclients.AccountIdToSocket(msg.Algorun.AccountId)
