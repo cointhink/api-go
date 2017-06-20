@@ -2,11 +2,6 @@ package q
 
 import "cointhink/proto"
 
-type AccountOperation struct {
-	Algorun   *proto.Algorun
-	Operation *OperationResponse
-}
-
 type OperationResponse struct {
 	Type       string `json:"type"`
 	Status     string `json:"status"`
