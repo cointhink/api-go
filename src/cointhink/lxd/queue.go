@@ -50,9 +50,7 @@ func WatchOp(msg *q.AccountOperation) {
 				algorun_state = proto.Algorun_starting
 				algorun.UpdateStatus(algoRun, algorun_state)
 				op := Start(algoRun.Id)
-				log.Printf("watchop adding lxdQ")
 				q.LXDOPq <- q.AccountOperation{Algorun: algoRun, Operation: op}
-				log.Printf("watchop added lxdQ")
 			}
 			if algoRun.Status == proto.Algorun_States_name[int32(proto.Algorun_destroying)] &&
 				lxdStatus.Metadata.Status == "Stopped" {
@@ -64,6 +62,8 @@ func WatchOp(msg *q.AccountOperation) {
 				lxdStatus.Metadata.Status == "Running" {
 				algorun_state = proto.Algorun_running
 				algorun.UpdateStatus(algoRun, algorun_state)
+				op := Exec(algoRun.Id, "/home/cointhink/start")
+				q.LXDOPq <- q.AccountOperation{Algorun: algoRun, Operation: op}
 			}
 		}
 
