@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"time"
 
 	"cointhink/common"
 	"cointhink/config"
@@ -70,6 +71,16 @@ func main() {
 		for {
 			op := <-q.LXDOPq
 			lxd.AddOp(&op)
+		}
+	}()
+
+	go func() {
+		for {
+			rpcSize, outSize, lxdSize := len(common.RPCq), len(q.OUTq), len(q.LXDOPq)
+			if rpcSize > 0 || outSize > 0 || lxdSize > 0 {
+				log.Printf("Q sizes RPCq:%d OUTq:%d LXDOPq:%d", rpcSize, outSize, lxdSize)
+			}
+			time.Sleep(5 * time.Second)
 		}
 	}()
 
