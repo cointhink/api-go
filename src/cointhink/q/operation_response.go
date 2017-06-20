@@ -1,7 +1,5 @@
 package q
 
-import "cointhink/proto"
-
 type OperationResponse struct {
 	Type       string `json:"type"`
 	Status     string `json:"status"`
