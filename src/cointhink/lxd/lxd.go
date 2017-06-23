@@ -7,6 +7,7 @@ import "bytes"
 import "io/ioutil"
 import "reflect"
 import "mime/multipart"
+import "net/url"
 
 import "cointhink/config"
 import "cointhink/q"
@@ -28,7 +29,6 @@ func lxdCall(verb string, path string, bodyParts ...interface{}) (*http.Response
 			body.Write(payloadBytes)
 		} else if reflect.TypeOf(bodyParts[0]).Name() == "HttpFile" {
 			httpFile := bodyParts[0].(HttpFile)
-			log.Printf("lxdCall extra type %s", reflect.TypeOf(bodyParts[0]))
 			writer := multipart.NewWriter(body)
 			part, _ := writer.CreateFormFile("start", httpFile.Name)
 			part.Write([]byte(httpFile.Contents))
@@ -41,18 +41,22 @@ func lxdCall(verb string, path string, bodyParts ...interface{}) (*http.Response
 				body.Write(payloadBytes)
 			}
 		}
-
 	}
 	req, err := http.NewRequest(verb, url, body)
 	if err != nil {
 		log.Printf("lxdCall error: %v", err)
 	}
-	if body != nil {
+	if body.Len() > 0 {
 		req.Header.Set("Content-Type", mime)
-		log.Printf("lxdCall body %s", body)
+		log.Printf("lxdCall headers %+v", req.Header)
+		//		log.Printf("lxdCall body %s", bytes.NewBuffer(body.Bytes()).String())
 	}
 	httpResult, err := Client().Do(req)
-	log.Printf("lxdCall http result %d", httpResult.StatusCode)
+	if err != nil {
+		log.Printf("lxdCall http err %+v", err)
+	} else {
+		log.Printf("lxdCall http result %d", httpResult.StatusCode)
+	}
 	return httpResult, err
 }
 
@@ -170,8 +174,9 @@ type HttpFile struct {
 }
 
 func FilePut(containerId, filePath string, contents string) {
-	result, err := lxdCall("POST", "/1.0/containers/"+containerId+"/files?path="+filePath,
-		HttpFile{Name: "start", Contents: contents})
+	query := url.Values{"path": []string{filePath}}
+	result, err := lxdCall("POST", "/1.0/containers/"+containerId+"/files?"+query.Encode(),
+		contents)
 	if err != nil {
 		log.Printf("lxd FilePut err %v", err)
 	}

@@ -64,7 +64,7 @@ func WatchOp(msg *q.AccountOperation) {
 				algorun_state = proto.Algorun_running
 				algorun.UpdateStatus(algoRun, algorun_state)
 				scriptPath := config.C.QueryString("scripting.start_path")
-				FilePut(algoRun.Id, scriptPath, "I am woo")
+				FilePut(algoRun.Id, scriptPath, "echo I am start")
 				op := Exec(algoRun.Id, scriptPath)
 				q.LXDOPq <- q.AccountOperation{Algorun: algoRun, Operation: op}
 			}
