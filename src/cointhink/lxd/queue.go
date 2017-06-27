@@ -54,7 +54,7 @@ func WatchOp(msg *q.AccountOperation) {
 				algorun.UpdateStatus(algoRun, algorun_state)
 
 				FilePut(algoRun.Id, "/cointhink/script.py", "print('user script')")
-				FilePut(algoRun.Id, "/cointhink/auth.json", "{token:\""+token+"\"")
+				FilePut(algoRun.Id, "/cointhink/auth.json", "{\"token\":\""+token+"\"}\n")
 				FilePut(algoRun.Id, "/cointhink/settings.json", schedule.InitialState)
 				op := Start(algoRun.Id)
 				q.LXDOPq <- q.AccountOperation{Algorun: algoRun, Operation: op}
