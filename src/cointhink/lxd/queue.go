@@ -50,6 +50,9 @@ func WatchOp(msg *q.AccountOperation) {
 				lxdStatus.Metadata.Status == "Stopped" {
 				algorun_state = proto.Algorun_starting
 				algorun.UpdateStatus(algoRun, algorun_state)
+
+				FilePut(algoRun.Id, "/cointhink/script.py", "print('user script')")
+				FilePut(algoRun.Id, "/cointhink/settings.json", schedule.InitialState)
 				op := Start(algoRun.Id)
 				q.LXDOPq <- q.AccountOperation{Algorun: algoRun, Operation: op}
 			}
@@ -63,10 +66,6 @@ func WatchOp(msg *q.AccountOperation) {
 				lxdStatus.Metadata.Status == "Running" {
 				algorun_state = proto.Algorun_running
 				algorun.UpdateStatus(algoRun, algorun_state)
-				//scriptPath := config.C.QueryString("scripting.start_path")
-				//FilePut(algoRun.Id, scriptPath, "echo I am start")
-				//op := Exec(algoRun.Id, scriptPath)
-				//q.LXDOPq <- q.AccountOperation{Algorun: algoRun, Operation: op}
 			}
 		}
 
