@@ -16,34 +16,41 @@ import "github.com/gorilla/websocket"
 // rpc
 var RPCq chan q.RpcMsg
 
-func Rpc(msg *q.RpcMsg) {
-	var dat map[string]interface{}
-	json.Unmarshal(msg.Payload, &dat)
-	method := dat["method"].(string)
-	objectBytes, _ := json.Marshal(dat["object"])
-	objectJson := string(objectBytes)
+type call struct {
+	Id     string      `json:"id"`
+	Method string      `json:"method"`
+	Object interface{} `json:"object"`
+	Token  string      `json:"token"`
+}
 
+func Rpc(msg *q.RpcMsg) {
+	dat := call{}
 	var responses []gproto.Message
-	responses = DispatchPublic(method, objectJson)
-	if responses == nil {
-		if dat["token"] != nil {
-			token := dat["token"].(string)
-			accountId, err := model.TokenFindAccountId(token)
+
+	err := json.Unmarshal(msg.Payload, &dat)
+	if err != nil {
+		log.Printf("ws rpc parse err:%+v", err)
+	} else {
+		objectBytes, _ := json.Marshal(dat.Object)
+		objectJson := string(objectBytes)
+
+		responses = DispatchPublic(dat.Method, objectJson)
+		if responses == nil {
+			accountId, err := model.TokenFindAccountId(dat.Token)
 			if err != nil {
-				log.Printf("msg token %s BAD", token)
+				log.Printf("msg token %s BAD", dat.Token)
 				return
 			}
 			httpclient := httpclients.Clients[msg.Socket]
 			httpclient.AccountId = accountId
 			httpclients.Clients[msg.Socket] = httpclient
-			responses = DispatchAuth(method, objectJson, accountId)
+			responses = DispatchAuth(dat.Method, objectJson, accountId)
 		}
 	}
-
 	log.Printf("rpc response: %p/%s %d msg", msg.Socket, msg.AccountId, len(responses))
 	for _, response := range responses {
 		q.OUTq <- q.RpcOut{Socket: msg.Socket,
-			Response: &q.RpcResponse{Msg: response, Id: dat["id"].(string)}}
+			Response: &q.RpcResponse{Msg: response, Id: dat.Id}}
 	}
 }
 
