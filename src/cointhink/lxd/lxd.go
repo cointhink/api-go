@@ -44,16 +44,16 @@ func lxdCall(verb string, path string, bodyParts ...interface{}) (*http.Response
 	}
 	req, err := http.NewRequest(verb, url, body)
 	if err != nil {
-		log.Printf("lxdCall error: %v", err)
+		log.Printf("!lxdCall build err: %v", err)
 	}
 	if body.Len() > 0 {
 		req.Header.Set("Content-Type", mime)
 		log.Printf("lxdCall headers %+v", req.Header)
-		//		log.Printf("lxdCall body %s", bytes.NewBuffer(body.Bytes()).String())
+		log.Printf("lxdCall body %s", bytes.NewBuffer(body.Bytes()).String())
 	}
 	httpResult, err := Client().Do(req)
 	if err != nil {
-		log.Printf("lxdCall http err %+v", err)
+		log.Printf("!lxdCall http error %+v", err)
 	} else {
 		log.Printf("lxdCall http result %d", httpResult.StatusCode)
 	}
@@ -105,6 +105,7 @@ type Lxc struct {
 type LxcSource struct {
 	Type        string `json:"type"`
 	Fingerprint string `json:"fingerprint"`
+	Source      string `json:"source"`
 }
 
 func Launch(lxc Lxc) *q.OperationResponse {

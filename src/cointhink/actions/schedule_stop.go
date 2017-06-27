@@ -40,7 +40,7 @@ func DoScheduleStop(scheduleStop *proto.ScheduleStop, accountId string) []gproto
 					log.Print("LxdStatus: ", err)
 					responses = append(responses, &proto.ScheduleStartResponse{Ok: false, Message: "unknown status"})
 				}
-				log.Printf("LxdStatus %d %v", stat.ErrorCode, stat.Metadata.Status)
+				log.Printf("ScheduleStop LxdStatus errCode:%d status:%v", stat.ErrorCode, stat.Metadata.Status)
 				algorun.UpdateStatus(box, proto.Algorun_deleted)
 				if stat.ErrorCode != 404 {
 					container.Stop(box)

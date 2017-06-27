@@ -20,7 +20,6 @@ func Insert(algorunInstance *proto.Algorun) error {
 func UpdateStatus(algorunInstance *proto.Algorun, newStatus proto.Algorun_States) error {
 	stateName := algorunInstance.Status
 	newStateName := proto.Algorun_States_name[int32(newStatus)]
-	log.Printf("algorun %s update to %s", algorunInstance.Id, newStateName)
 
 	if stateName == newStateName {
 		return nil

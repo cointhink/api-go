@@ -5,7 +5,6 @@ import "cointhink/q"
 import "cointhink/httpclients"
 import "cointhink/model/schedule"
 import "cointhink/model/algorun"
-import "cointhink/config"
 
 import "log"
 
@@ -14,7 +13,7 @@ import "github.com/google/uuid"
 var op_q []*q.AccountOperation
 
 func AddOp(msg *q.AccountOperation) {
-	log.Printf("lxd ADD Type %v Status %v Operation %v",
+	log.Printf("lxd add op Type:%v Status:%v Operation:%v",
 		msg.Operation.Type, msg.Operation.Status, msg.Operation.Operation)
 	op_q = append(op_q, msg)
 	WatchOp(msg)
@@ -24,6 +23,7 @@ func WatchOp(msg *q.AccountOperation) {
 	op, err := lxdCallOperation("GET", msg.Operation.Operation+"/wait")
 	if err != nil {
 		log.Printf("lxd.WatchOp err: %v", err)
+		return
 	}
 	log.Printf("lxd.WatchOp finished %s %s", msg.Algorun.Id, op.Status)
 
@@ -63,10 +63,10 @@ func WatchOp(msg *q.AccountOperation) {
 				lxdStatus.Metadata.Status == "Running" {
 				algorun_state = proto.Algorun_running
 				algorun.UpdateStatus(algoRun, algorun_state)
-				scriptPath := config.C.QueryString("scripting.start_path")
-				FilePut(algoRun.Id, scriptPath, "echo I am start")
-				op := Exec(algoRun.Id, scriptPath)
-				q.LXDOPq <- q.AccountOperation{Algorun: algoRun, Operation: op}
+				//scriptPath := config.C.QueryString("scripting.start_path")
+				//FilePut(algoRun.Id, scriptPath, "echo I am start")
+				//op := Exec(algoRun.Id, scriptPath)
+				//q.LXDOPq <- q.AccountOperation{Algorun: algoRun, Operation: op}
 			}
 		}
 
