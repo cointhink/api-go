@@ -34,6 +34,10 @@ func DispatchAuth(class string, json string, accountId string) []gproto.Message 
 		it := proto.ScheduleDelete{}
 		jsonpb.UnmarshalString(json, &it)
 		resp = actions.DoScheduleDelete(&it, accountId)
+	case "Algolog":
+		it := proto.Algolog{}
+		jsonpb.UnmarshalString(json, &it)
+		resp = actions.DoAlgolog(&it, accountId)
 	default:
 		log.Printf("unknown private method: %s", class)
 	}

@@ -16,8 +16,10 @@ It is generated from these files:
 	proto/schedule_list.proto
 	proto/schedule_list_response.proto
 	proto/schedule_create.proto
+	proto/algolog.proto
 	proto/schedule_stop.proto
 	proto/algorun.proto
+	proto/rpc.proto
 	proto/schedule.proto
 	proto/session_create_response.proto
 	proto/account.proto
@@ -40,8 +42,10 @@ It has these top-level messages:
 	ScheduleList
 	ScheduleListResponse
 	ScheduleCreate
+	Algolog
 	ScheduleStop
 	Algorun
+	Rpc
 	Schedule
 	SessionCreateResponse
 	Account
