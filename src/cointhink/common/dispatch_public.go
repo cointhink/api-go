@@ -12,7 +12,7 @@ import (
 )
 
 func DispatchPublic(class string, object *any.Any) []gproto.Message {
-	log.Printf("*- dispatch-public %#v %#v", class, object)
+	log.Printf("*- dispatch-public %#v %#v", class, object.TypeUrl)
 	var resp []gproto.Message
 	switch class {
 	case "SignupForm":
