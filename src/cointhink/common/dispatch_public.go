@@ -6,25 +6,26 @@ import (
 	"cointhink/actions"
 	"cointhink/proto"
 
-	"github.com/golang/protobuf/jsonpb"
 	gproto "github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/ptypes"
+	"github.com/golang/protobuf/ptypes/any"
 )
 
-func DispatchPublic(class string, json string) []gproto.Message {
-	log.Printf("*- dispatch-public %#v %#v", class, json)
+func DispatchPublic(class string, object *any.Any) []gproto.Message {
+	log.Printf("*- dispatch-public %#v %#v", class, object)
 	var resp []gproto.Message
 	switch class {
 	case "SignupForm":
 		it := proto.SignupForm{}
-		jsonpb.UnmarshalString(json, &it)
+		ptypes.UnmarshalAny(object, &it)
 		resp = actions.DoSignupform(&it)
 	case "SessionCreate":
 		it := proto.SessionCreate{}
-		jsonpb.UnmarshalString(json, &it)
+		ptypes.UnmarshalAny(object, &it)
 		resp = actions.DoSessionCreate(&it)
 	case "SigninEmail":
 		it := proto.SigninEmail{}
-		jsonpb.UnmarshalString(json, &it)
+		ptypes.UnmarshalAny(object, &it)
 		resp = actions.DoSigninEmail(&it)
 	default:
 		log.Printf("unknown public method: %s", class)

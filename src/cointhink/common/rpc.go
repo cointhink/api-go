@@ -8,6 +8,7 @@ import "log"
 import "cointhink/model"
 import "cointhink/q"
 import "cointhink/httpclients"
+import "cointhink/proto"
 
 import "github.com/golang/protobuf/jsonpb"
 import gproto "github.com/golang/protobuf/proto"
@@ -24,33 +25,30 @@ type call struct {
 }
 
 func Rpc(msg *q.RpcMsg) {
-	dat := call{}
 	var responses []gproto.Message
 
-	err := json.Unmarshal(msg.Payload, &dat)
+	call := proto.Rpc{}
+	err := jsonpb.UnmarshalString(string(msg.Payload), &call)
 	if err != nil {
 		log.Printf("ws rpc parse err:%+v", err)
 	} else {
-		objectBytes, _ := json.Marshal(dat.Object)
-		objectJson := string(objectBytes)
-
-		responses = DispatchPublic(dat.Method, objectJson)
+		responses = DispatchPublic(call.Method, call.Object)
 		if responses == nil {
-			accountId, err := model.TokenFindAccountId(dat.Token)
+			accountId, err := model.TokenFindAccountId(call.Token)
 			if err != nil {
-				log.Printf("msg token %s BAD", dat.Token)
+				log.Printf("msg token %s BAD", call.Token)
 				return
 			}
 			httpclient := httpclients.Clients[msg.Socket]
 			httpclient.AccountId = accountId
 			httpclients.Clients[msg.Socket] = httpclient
-			responses = DispatchAuth(dat.Method, objectJson, accountId)
+			responses = DispatchAuth(call.Method, call.Object, accountId)
 		}
 	}
 	log.Printf("rpc response: %p/%s %d msg", msg.Socket, msg.AccountId, len(responses))
 	for _, response := range responses {
 		q.OUTq <- q.RpcOut{Socket: msg.Socket,
-			Response: &q.RpcResponse{Msg: response, Id: dat.Id}}
+			Response: &q.RpcResponse{Msg: response, Id: call.Id}}
 	}
 }
 
