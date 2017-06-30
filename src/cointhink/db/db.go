@@ -19,13 +19,7 @@ func init() {
 func (db *Db) Open(db_url string) error {
 	var err error
 	db.Handle, err = sqlx.Open("postgres", db_url)
-	db.Handle.MapperFunc(camelCase) // leave fields as-is
-	return err
-}
-
-func (db *Db) upsert(thing interface{}) error {
-	var err error
-	_, err = db.Handle.Query("select * from accounts")
+	db.Handle.MapperFunc(camelCase) // StructField becomes struct_field in database
 	return err
 }
 
