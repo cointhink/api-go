@@ -53,7 +53,7 @@ func WatchOp(msg *q.AccountOperation) {
 				algorun_state = proto.Algorun_starting
 				algorun.UpdateStatus(algoRun, algorun_state)
 
-				FilePut(algoRun.Id, "/cointhink/script.py", "print('user script')")
+				FilePut(algoRun.Id, "/cointhink/script.py", algoRun.Code)
 				FilePut(algoRun.Id, "/cointhink/auth.json", "{\"Token\":\""+token+"\", \"AlgorunId\":\""+algoRun.Id+"\"}\n")
 				FilePut(algoRun.Id, "/cointhink/settings.json", schedule.InitialState)
 				op := Start(algoRun.Id)

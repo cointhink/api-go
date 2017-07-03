@@ -4,12 +4,12 @@ import "cointhink/proto"
 import "cointhink/db"
 import "log"
 
-var Columns = "id, algorithm_id, account_id, schedule_id, status"
+var Columns = "id, algorithm_id, account_id, schedule_id, status, code"
 
 func Insert(algorunInstance *proto.Algorun) error {
 	algorunInstance.Id = db.NewId("algoruns")
 	_, err := db.D.Handle.NamedExec("insert into algoruns ("+Columns+") "+
-		"values (:id, :algorithm_id, :account_id, :schedule_id, :status)", algorunInstance)
+		"values (:id, :algorithm_id, :account_id, :schedule_id, :status, :code)", algorunInstance)
 	if err != nil {
 		log.Printf("algorun Create err: %v", err)
 		return err
