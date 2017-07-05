@@ -3,6 +3,8 @@ package actions
 import "log"
 
 import "cointhink/proto"
+import "cointhink/q"
+import "cointhink/httpclients"
 import "cointhink/model/algolog"
 import "cointhink/model/algorun"
 
@@ -14,6 +16,11 @@ func DoAlgolog(_algolog *proto.Algolog, accountId string) []gproto.Message {
 	if algorun.Owns(_algolog.AlgorunId, accountId) {
 		algolog.Insert(_algolog)
 		log.Printf("log inserted %s", _algolog.Id)
+		socket := httpclients.AccountIdToSocket(accountId)
+		if socket != nil {
+			q.OUTq <- q.RpcOut{Socket: socket,
+				Response: &q.RpcResponse{Msg: _algolog, Id: q.RpcId()}}
+		}
 	} else {
 		log.Printf("algolog ownership failed for %s %s", _algolog.AlgorunId, accountId)
 	}

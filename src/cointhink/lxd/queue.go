@@ -9,8 +9,6 @@ import "cointhink/model/algorun"
 
 import "log"
 
-import "github.com/google/uuid"
-
 var op_q []*q.AccountOperation
 
 func AddOp(msg *q.AccountOperation) {
@@ -84,14 +82,8 @@ func WatchOp(msg *q.AccountOperation) {
 			log.Printf("Watchop client socket lookup fail %s", msg.Algorun.AccountId)
 		} else {
 			q.OUTq <- q.RpcOut{Socket: socket,
-				Response: &q.RpcResponse{Msg: &g, Id: RpcId()}}
+				Response: &q.RpcResponse{Msg: &g, Id: q.RpcId()}}
 		}
 
 	}
-}
-
-func RpcId() string {
-	uuid, _ := uuid.NewRandom()
-	uuidStr := uuid.String()
-	return uuidStr[19:35]
 }
