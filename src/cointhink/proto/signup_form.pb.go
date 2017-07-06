@@ -19,6 +19,7 @@ It is generated from these files:
 	proto/algolog.proto
 	proto/schedule_stop.proto
 	proto/algorun.proto
+	proto/algolog_list.proto
 	proto/rpc.proto
 	proto/schedule.proto
 	proto/session_create_response.proto
@@ -45,6 +46,7 @@ It has these top-level messages:
 	Algolog
 	ScheduleStop
 	Algorun
+	AlgologList
 	Rpc
 	Schedule
 	SessionCreateResponse
