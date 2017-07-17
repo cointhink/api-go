@@ -15,6 +15,7 @@ install:
 	GOPATH=`pwd` go get github.com/satori/go.uuid
 	GOPATH=`pwd` go get github.com/google/uuid
 	GOPATH=`pwd` go get gopkg.in/gomail.v2
+	GOPATH=`pwd` go get github.com/gorilla/websocket
 
 protoc3:
 	wget https://github.com/google/protobuf/releases/download/v3.3.0/protoc-3.3.0-linux-x86_64.zip
