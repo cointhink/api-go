@@ -18,6 +18,7 @@ func DoScheduleCreate(scheduleCreate *proto.ScheduleCreate, accountId string) []
 	if err != nil {
 	}
 
+	log.Printf("creating schedule for algorithm %s", scheduleCreate.Schedule.AlgorithmId)
 	if algorithm.Owns(scheduleCreate.Schedule.AlgorithmId, accountId) {
 		_schedule := proto.Schedule{AccountId: accountId,
 			AlgorithmId:  scheduleCreate.Schedule.AlgorithmId,
@@ -30,7 +31,7 @@ func DoScheduleCreate(scheduleCreate *proto.ScheduleCreate, accountId string) []
 			return responses
 		}
 	} else {
-		responses = append(responses, &proto.ScheduleStopResponse{Ok: false, Message: "not owner"})
+		responses = append(responses, &proto.ScheduleStopResponse{Ok: false, Message: "denied: not owner of algorithm"})
 	}
 
 	responses = append(responses, &proto.ScheduleCreateResponse{Ok: true})
