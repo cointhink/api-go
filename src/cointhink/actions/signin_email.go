@@ -22,8 +22,12 @@ func DoSigninEmail(msg *proto.SigninEmail) []gproto.Message {
 		return errResp
 	}
 
-	token, err := token.Find(account_id)
+	token_str, err := token.Find(account_id)
+	if err != nil {
+		log.Printf("account has no token. generating one.")
+		token_str = token.InsertToken(account_id)
+	}
 
-	mailer.MailToken(msg.Email, token)
+	mailer.MailToken(msg.Email, token_str)
 	return resp
 }

@@ -26,8 +26,6 @@ func Find(account_id string) (string, error) {
 		rows.Scan(&token)
 		return token, nil
 	} else {
-		return "", errors.New("account id not found")
+		return "", errors.New("token for account id not found")
 	}
-
-	return "", nil
 }
