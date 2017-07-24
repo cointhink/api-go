@@ -18,15 +18,19 @@ func AccountFind(id string) (string, error) {
 }
 
 func AccountFindByEmail(email string) (string, error) {
-	rows, _ := db.D.Handle.Query(
+	rows, err := db.D.Handle.Query(
 		"select id from accounts where email = $1",
 		email)
-	if rows.Next() {
-		var id string
-		rows.Scan(&id)
-		return id, nil
+	if err != nil {
+		if rows.Next() {
+			var id string
+			rows.Scan(&id)
+			return id, nil
+		} else {
+			return "", errors.New("account email not found")
+		}
 	} else {
-		return "", errors.New("account email not found")
+			return "", err
 	}
 }
 
