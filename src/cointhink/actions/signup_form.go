@@ -6,6 +6,7 @@ import (
 
 	"cointhink/db"
 	"cointhink/mailer"
+	"cointhink/model/account"
 	"cointhink/proto"
 	"cointhink/token"
 	"cointhink/validate"
@@ -52,26 +53,13 @@ func DoSignupform(form *proto.SignupForm) []gproto.Message {
 		}
 	}
 
-	stmt, err := db.D.Handle.Prepare("insert into accounts (id, fullname, email) values ($1, $2, $3)")
+	err := account.Insert(form.Account)
 	if err != nil {
-		log.Printf("prepare %+v", err)
+		log.Printf("insert %+v", err)
 		return []gproto.Message{&proto.SignupFormResponse{Ok: false}}
+	} else {
+		token := token.InsertToken(form.Account.Id)
+		mailer.MailToken(token, form.Account.Email)
+		return []gproto.Message{&proto.SignupFormResponse{Ok: true, Token: token}}
 	}
-
-	id := db.NewId("accounts")
-	sql_result, err := stmt.Exec(
-		id,
-		form.Account.Fullname,
-		form.Account.Email)
-	if err != nil {
-		log.Printf("upsert %+v", err)
-		return []gproto.Message{&proto.SignupFormResponse{Ok: false}}
-	}
-	new_id, err := sql_result.LastInsertId()
-	log.Printf("Account new id %s", new_id)
-
-	token := token.MakeToken(id)
-	mailer.MailToken(token, form.Account.Email)
-	resp := []gproto.Message{&proto.SignupFormResponse{Ok: true, Token: token}}
-	return resp
 }

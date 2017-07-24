@@ -22,7 +22,7 @@ func AccountFindByEmail(email string) (string, error) {
 		"select id from accounts where email = $1",
 		email)
 	if err != nil {
-			return "", err
+		return "", err
 	} else {
 		if rows.Next() {
 			var id string

@@ -4,8 +4,6 @@ import "cointhink/db"
 import "cointhink/proto"
 import "log"
 
-var Columns = "id, email, fullname"
-
 func Find(accountId string) (proto.Account, error) {
 	account := proto.Account{}
 	err := db.D.Handle.Get(&account,
