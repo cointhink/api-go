@@ -22,6 +22,8 @@ func AccountFindByEmail(email string) (string, error) {
 		"select id from accounts where email = $1",
 		email)
 	if err != nil {
+			return "", err
+	} else {
 		if rows.Next() {
 			var id string
 			rows.Scan(&id)
@@ -29,8 +31,6 @@ func AccountFindByEmail(email string) (string, error) {
 		} else {
 			return "", errors.New("account email not found")
 		}
-	} else {
-			return "", err
 	}
 }
 
