@@ -16,11 +16,13 @@ It is generated from these files:
 	proto/schedule_list.proto
 	proto/schedule_list_response.proto
 	proto/schedule_create.proto
+	proto/algorithm_list.proto
 	proto/algolog.proto
 	proto/schedule_stop.proto
 	proto/algorun.proto
 	proto/algolog_list.proto
 	proto/rpc.proto
+	proto/algorithm_list_response.proto
 	proto/schedule.proto
 	proto/session_create_response.proto
 	proto/account.proto
@@ -43,11 +45,13 @@ It has these top-level messages:
 	ScheduleList
 	ScheduleListResponse
 	ScheduleCreate
+	AlgorithmList
 	Algolog
 	ScheduleStop
 	Algorun
 	AlgologList
 	Rpc
+	AlgorithmListResponse
 	Schedule
 	SessionCreateResponse
 	Account

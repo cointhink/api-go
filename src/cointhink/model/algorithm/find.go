@@ -13,3 +13,14 @@ func Find(id string) (*proto.Algorithm, error) {
 		return run, nil
 	}
 }
+
+func FindAll(accountId string) ([]*proto.Algorithm, error) {
+	rows := []*proto.Algorithm{}
+	err := db.D.Handle.Select(&rows,
+		"select "+Columns+" from "+Table+" where account_id = $1 or true", accountId)
+	if err != nil {
+		return rows, err
+	} else {
+		return rows, nil
+	}
+}
