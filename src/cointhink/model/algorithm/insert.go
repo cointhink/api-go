@@ -4,8 +4,8 @@ import "cointhink/proto"
 import "cointhink/db"
 import "log"
 
-var Columns = "id, account_id, code, status"
-var Fields = ":id, :account_id, :code, :status"
+var Columns = "id, account_id, code, status, description"
+var Fields = ":id, :account_id, :code, :status, :description"
 var Table = "algorithms"
 
 func Insert(item *proto.Algorithm) error {
