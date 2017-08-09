@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"cointhink/model"
-	"cointhink/model/algorithm"
+//	"cointhink/model/algorithm"
 	"cointhink/model/schedule"
 	"cointhink/proto"
 
@@ -19,7 +19,7 @@ func DoScheduleCreate(scheduleCreate *proto.ScheduleCreate, accountId string) []
 	}
 
 	log.Printf("creating schedule for algorithm %s", scheduleCreate.Schedule.AlgorithmId)
-	if algorithm.Owns(scheduleCreate.Schedule.AlgorithmId, accountId) {
+//	if algorithm.Owns(scheduleCreate.Schedule.AlgorithmId, accountId) {
 		_schedule := proto.Schedule{AccountId: accountId,
 			AlgorithmId:  scheduleCreate.Schedule.AlgorithmId,
 			Status:       proto.Schedule_disabled,
@@ -30,9 +30,9 @@ func DoScheduleCreate(scheduleCreate *proto.ScheduleCreate, accountId string) []
 			responses = append(responses, &proto.ScheduleCreateResponse{Ok: false, Message: err.Error()})
 			return responses
 		}
-	} else {
-		responses = append(responses, &proto.ScheduleStopResponse{Ok: false, Message: "denied: not owner of algorithm"})
-	}
+//	} else {
+//		responses = append(responses, &proto.ScheduleStopResponse{Ok: false, Message: "denied: not owner of algorithm"})
+//	}
 
 	responses = append(responses, &proto.ScheduleCreateResponse{Ok: true})
 	return responses
