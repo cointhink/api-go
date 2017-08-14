@@ -16,10 +16,14 @@ func DoAlgolog(_algolog *proto.Algolog, accountId string) []gproto.Message {
 	if algorun.Owns(_algolog.AlgorunId, accountId) {
 		algolog.Insert(_algolog)
 		log.Printf("log inserted %s", _algolog.Id)
-		socket := httpclients.AccountIdToSocket(accountId)
-		if socket != nil {
-			q.OUTq <- q.RpcOut{Socket: socket,
-				Response: &q.RpcResponse{Msg: _algolog, Id: q.RpcId()}}
+		// load back the same row, for create date
+		log, err := algolog.Find(_algolog.Id)
+		if(err != nil) {
+			socket := httpclients.AccountIdToSocket(accountId)
+			if socket != nil {
+				q.OUTq <- q.RpcOut{Socket: socket,
+					Response: &q.RpcResponse{Msg: log, Id: q.RpcId()}}
+			}
 		}
 	} else {
 		log.Printf("algolog ownership failed for %s %s", _algolog.AlgorunId, accountId)
