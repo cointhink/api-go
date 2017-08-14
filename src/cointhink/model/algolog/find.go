@@ -6,7 +6,7 @@ import "cointhink/proto"
 func Find(id string) (*proto.Algolog, error) {
 	run := &proto.Algolog{}
 	err := db.D.Handle.Get(run,
-		"select "+Columns+" from algologs where id = $1", id)
+		"select "+Columns+", created_at from algologs where id = $1", id)
 	if err != nil {
 		return run, err
 	} else {
