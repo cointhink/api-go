@@ -18,7 +18,7 @@ func DoAlgolog(_algolog *proto.Algolog, accountId string) []gproto.Message {
 		log.Printf("log inserted %s", _algolog.Id)
 		// load back the same row, for create date
 		log_readback, err := algolog.Find(_algolog.Id)
-		if(err != nil) {
+		if err != nil {
 			log.Printf("algolog readback err %+v", err)
 		} else {
 			socket := httpclients.AccountIdToSocket(accountId)
