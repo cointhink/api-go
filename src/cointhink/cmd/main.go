@@ -74,6 +74,7 @@ func main() {
 		}
 	}()
 
+	// monitor queue sizes
 	go func() {
 		for {
 			rpcSize, outSize, lxdSize := len(common.RPCq), len(q.OUTq), len(q.LXDOPq)
@@ -82,6 +83,12 @@ func main() {
 			}
 			time.Sleep(5 * time.Second)
 		}
+	}()
+
+	// cron
+	go func() {
+		common.CronSetup()
+		common.DoEvery(1*time.Minute, common.CronMinute)
 	}()
 
 	container.SyncAll()
