@@ -26,9 +26,8 @@ func CronMinute(time time.Time) {
 		day = time
 		CronDay(time)
 	}
-	//log.Printf("chime %+v", time)
 }
 
 func CronDay(time time.Time) {
-	common.RespondAll(&proto.TickTock{Time: time.String()})
+	common.RespondAll(&proto.TickTock{Time: time.UTC().Format("2006-01-02T15:04:05Z07:00")})
 }
