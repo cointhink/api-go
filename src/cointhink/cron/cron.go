@@ -1,13 +1,16 @@
-package common
+package cron
 
 import "time"
 import "log"
+
+import "cointhink/proto"
+import "cointhink/common"
 
 var (
 	day time.Time
 )
 
-func CronSetup() {
+func Setup() {
 	day = time.Now()
 	log.Printf("Current year-day is %d", day.YearDay())
 }
@@ -27,4 +30,5 @@ func CronMinute(time time.Time) {
 }
 
 func CronDay(time time.Time) {
+	common.RespondAll(&proto.TickTock{Time: time.String()})
 }

@@ -52,6 +52,14 @@ func Rpc(msg *q.RpcMsg) {
 	}
 }
 
+func RespondAll(msg gproto.Message) {
+	id := "rall"
+	for _, client := range httpclients.Clients {
+		q.OUTq <- q.RpcOut{Socket: client.Socket,
+			Response: &q.RpcResponse{Msg: msg, Id: id}}
+	}
+}
+
 func Respond(out *q.RpcOut) {
 	response_class := reflect.TypeOf(out.Response.Msg).String()
 	method := strings.Split(response_class, ".")[1]

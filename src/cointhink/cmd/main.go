@@ -11,6 +11,7 @@ import (
 	"cointhink/common"
 	"cointhink/config"
 	"cointhink/container"
+	"cointhink/cron"
 	"cointhink/db"
 	"cointhink/lxd"
 	"cointhink/q"
@@ -87,8 +88,8 @@ func main() {
 
 	// cron
 	go func() {
-		common.CronSetup()
-		common.DoEvery(1*time.Minute, common.CronMinute)
+		cron.Setup()
+		cron.DoEvery(1*time.Minute, cron.CronMinute)
 	}()
 
 	container.SyncAll()
