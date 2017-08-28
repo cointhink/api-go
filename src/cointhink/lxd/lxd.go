@@ -91,7 +91,7 @@ func Status(name string) (*LxcStatus, error) {
 		return nil, err
 	}
 	resp.Body.Close()
-	log.Printf("lxd.Status for %s %s", name, op.Metadata.Status)
+	//log.Printf("lxd.Status for %s %s", name, op.Metadata.Status)
 	return &op, nil
 }
 

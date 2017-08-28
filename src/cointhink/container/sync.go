@@ -37,5 +37,4 @@ func Sync(run *proto.Algorun) {
 			}
 		}
 	}
-	log.Printf("container.Sync done")
 }
