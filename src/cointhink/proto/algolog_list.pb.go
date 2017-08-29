@@ -20,7 +20,7 @@ type AlgologList struct {
 func (m *AlgologList) Reset()                    { *m = AlgologList{} }
 func (m *AlgologList) String() string            { return proto1.CompactTextString(m) }
 func (*AlgologList) ProtoMessage()               {}
-func (*AlgologList) Descriptor() ([]byte, []int) { return fileDescriptor15, []int{0} }
+func (*AlgologList) Descriptor() ([]byte, []int) { return fileDescriptor16, []int{0} }
 
 func (m *AlgologList) GetAlgorunId() string {
 	if m != nil {
@@ -33,9 +33,9 @@ func init() {
 	proto1.RegisterType((*AlgologList)(nil), "proto.AlgologList")
 }
 
-func init() { proto1.RegisterFile("proto/algolog_list.proto", fileDescriptor15) }
+func init() { proto1.RegisterFile("proto/algolog_list.proto", fileDescriptor16) }
 
-var fileDescriptor15 = []byte{
+var fileDescriptor16 = []byte{
 	// 86 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x28, 0x28, 0xca, 0x2f,
 	0xc9, 0xd7, 0x4f, 0xcc, 0x49, 0xcf, 0xcf, 0xc9, 0x4f, 0x8f, 0xcf, 0xc9, 0x2c, 0x2e, 0xd1, 0x03,
