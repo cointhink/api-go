@@ -12,6 +12,7 @@ It is generated from these files:
 	proto/schedule_delete.proto
 	proto/schedule_stop_response.proto
 	proto/schedule_run.proto
+	proto/notify.proto
 	proto/schedule_start.proto
 	proto/trade_signal.proto
 	proto/schedule_list_partial.proto
@@ -29,6 +30,7 @@ It is generated from these files:
 	proto/session_create_response.proto
 	proto/account.proto
 	proto/signup_form_response.proto
+	proto/notify_response.proto
 	proto/schedule_delete_response.proto
 	proto/algorithm.proto
 	proto/signin_email_response.proto
@@ -44,6 +46,7 @@ It has these top-level messages:
 	ScheduleDelete
 	ScheduleStopResponse
 	ScheduleRun
+	Notify
 	ScheduleStart
 	TradeSignal
 	ScheduleListPartial
@@ -61,6 +64,7 @@ It has these top-level messages:
 	SessionCreateResponse
 	Account
 	SignupFormResponse
+	NotifyResponse
 	ScheduleDeleteResponse
 	Algorithm
 	SigninEmailResponse

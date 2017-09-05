@@ -32,7 +32,7 @@ var TradeSignal_OrderType_value = map[string]int32{
 func (x TradeSignal_OrderType) String() string {
 	return proto1.EnumName(TradeSignal_OrderType_name, int32(x))
 }
-func (TradeSignal_OrderType) EnumDescriptor() ([]byte, []int) { return fileDescriptor7, []int{0, 0} }
+func (TradeSignal_OrderType) EnumDescriptor() ([]byte, []int) { return fileDescriptor8, []int{0, 0} }
 
 type TradeSignal struct {
 	Market   string                `protobuf:"bytes,1,opt,name=Market" json:"Market,omitempty"`
@@ -44,7 +44,7 @@ type TradeSignal struct {
 func (m *TradeSignal) Reset()                    { *m = TradeSignal{} }
 func (m *TradeSignal) String() string            { return proto1.CompactTextString(m) }
 func (*TradeSignal) ProtoMessage()               {}
-func (*TradeSignal) Descriptor() ([]byte, []int) { return fileDescriptor7, []int{0} }
+func (*TradeSignal) Descriptor() ([]byte, []int) { return fileDescriptor8, []int{0} }
 
 func (m *TradeSignal) GetMarket() string {
 	if m != nil {
@@ -79,9 +79,9 @@ func init() {
 	proto1.RegisterEnum("proto.TradeSignal_OrderType", TradeSignal_OrderType_name, TradeSignal_OrderType_value)
 }
 
-func init() { proto1.RegisterFile("proto/trade_signal.proto", fileDescriptor7) }
+func init() { proto1.RegisterFile("proto/trade_signal.proto", fileDescriptor8) }
 
-var fileDescriptor7 = []byte{
+var fileDescriptor8 = []byte{
 	// 175 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x28, 0x28, 0xca, 0x2f,
 	0xc9, 0xd7, 0x2f, 0x29, 0x4a, 0x4c, 0x49, 0x8d, 0x2f, 0xce, 0x4c, 0xcf, 0x4b, 0xcc, 0xd1, 0x03,

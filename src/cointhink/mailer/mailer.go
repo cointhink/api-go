@@ -19,11 +19,11 @@ func MailToken(to string, token string) {
 	deliver(m)
 }
 
-func MailTrade(to string, tradeSignal *proto.TradeSignal) {
+func MailNotify(notify *proto.Notify) {
 	m := gomail.NewMessage()
-	m.SetHeader("To", to)
-	m.SetHeader("Subject", "Trade Signal")
-	m.SetBody("text/plain", "Trade Signal!")
+	m.SetHeader("To", notify.Recipient)
+	m.SetHeader("Subject", notify.Summary)
+	m.SetBody("text/plain", notify.Detail)
 
 	deliver(m)
 }

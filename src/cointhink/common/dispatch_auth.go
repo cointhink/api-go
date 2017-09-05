@@ -51,6 +51,10 @@ func DispatchAuth(class string, object *any.Any, accountId string) []gproto.Mess
 		it := proto.AlgorithmList{}
 		ptypes.UnmarshalAny(object, &it)
 		resp = actions.DoAlgorithmList(&it, accountId)
+	case "Notify":
+		it := proto.Notify{}
+		ptypes.UnmarshalAny(object, &it)
+		resp = actions.DoNotify(&it, accountId)
 	default:
 		log.Printf("unknown private method: %s", class)
 	}
