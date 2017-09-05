@@ -83,10 +83,14 @@ func Respond(out *q.RpcOut) {
 		log.Println("tojson:", err)
 		return
 	}
-	log.Printf("ws_send: %p %s", out.Socket, json)
-	err = out.Socket.WriteMessage(websocket.TextMessage, json)
-	if err != nil {
-		log.Println("ws_send err:", err)
-		return
+	if out.Socket == nil {
+		log.Println("ws_send err, socket is nil. aborted.")
+	} else {
+		log.Printf("ws_send: %p %s", out.Socket, json)
+		err = out.Socket.WriteMessage(websocket.TextMessage, json)
+		if err != nil {
+			log.Println("ws_send err:", err)
+			return
+		}
 	}
 }

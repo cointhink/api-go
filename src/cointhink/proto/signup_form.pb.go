@@ -22,6 +22,7 @@ It is generated from these files:
 	proto/algorithm_list.proto
 	proto/algolog.proto
 	proto/schedule_stop.proto
+	proto/market_prices.proto
 	proto/algorun.proto
 	proto/algolog_list.proto
 	proto/rpc.proto
@@ -56,6 +57,7 @@ It has these top-level messages:
 	AlgorithmList
 	Algolog
 	ScheduleStop
+	MarketPrices
 	Algorun
 	AlgologList
 	Rpc
