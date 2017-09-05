@@ -23,7 +23,9 @@ func DoEvery(d time.Duration, f func(time.Time)) {
 }
 
 func CronMinute(time time.Time) {
-	common.RespondAll(&proto.MarketPrices{ReceivedAt: time.UTC().Format(ISO8601)})
+	price1 := &proto.MarketPrice{Exchange: "simulated", ReceivedAt: time.UTC().Format(ISO8601)}
+	pricePing := &proto.MarketPrices{Prices: []*proto.MarketPrice{price1}}
+	common.RespondAll(pricePing)
 
 	if day.YearDay() != time.YearDay() {
 		day = time

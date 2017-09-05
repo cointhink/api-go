@@ -32,6 +32,7 @@ It is generated from these files:
 	proto/account.proto
 	proto/signup_form_response.proto
 	proto/notify_response.proto
+	proto/market_price.proto
 	proto/schedule_delete_response.proto
 	proto/algorithm.proto
 	proto/signin_email_response.proto
@@ -67,6 +68,7 @@ It has these top-level messages:
 	Account
 	SignupFormResponse
 	NotifyResponse
+	MarketPrice
 	ScheduleDeleteResponse
 	Algorithm
 	SigninEmailResponse
