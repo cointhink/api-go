@@ -24,3 +24,14 @@ func FindAll(accountId string) ([]*proto.Algorithm, error) {
 		return rows, nil
 	}
 }
+
+func FindReady() ([]*proto.Algorithm, error) {
+	rows := []*proto.Algorithm{}
+	err := db.D.Handle.Select(&rows,
+		"select "+Columns+" from "+Table+" where status = 'ready'")
+	if err != nil {
+		return rows, err
+	} else {
+		return rows, nil
+	}
+}

@@ -8,7 +8,7 @@ import "cointhink/model/algorithm"
 func DoAlgorithmList(_algorithmList *proto.AlgorithmList, accountId string) []gproto.Message {
 	var responses []gproto.Message
 
-	rows, err := algorithm.FindAll(accountId)
+	rows, err := algorithm.FindReady()
 	if err != nil {
 		log.Printf("algo err %+v", err)
 		responses = append(responses, &proto.AlgorithmListResponse{Ok: false,
