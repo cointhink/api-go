@@ -4,6 +4,7 @@ import (
 	"cointhink/httpclients"
 	"cointhink/q"
 
+	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -41,4 +42,15 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
 	log.Printf("wsocket closing %p", wsocket)
 	wsocket.Close()
 	delete(httpclients.Clients, wsocket)
+}
+
+func Httpget(url string) (string, error) {
+	response, err := http.Get(url)
+	if err != nil {
+		return "", err
+	} else {
+		defer response.Body.Close()
+		body, _ := ioutil.ReadAll(response.Body)
+		return string(body), nil
+	}
 }
