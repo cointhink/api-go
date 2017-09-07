@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -45,7 +46,9 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
 }
 
 func Httpget(url string) (string, error) {
-	response, err := http.Get(url)
+	timeout := time.Duration(5 * time.Second)
+	client := http.Client{Timeout: timeout}
+	response, err := client.Get(url)
 	if err != nil {
 		return "", err
 	} else {
