@@ -3,8 +3,6 @@ package actions
 import "log"
 
 import "cointhink/proto"
-import "cointhink/q"
-import "cointhink/httpclients"
 import "cointhink/model/algolog"
 import "cointhink/model/algorun"
 
@@ -21,11 +19,13 @@ func DoAlgolog(_algolog *proto.Algolog, accountId string) []gproto.Message {
 		if err != nil {
 			log.Printf("algolog readback err %+v", err)
 		} else {
-			socket := httpclients.AccountIdToSocket(accountId)
-			if socket != nil {
-				q.OUTq <- q.RpcOut{Socket: socket,
-					Response: &q.RpcResponse{Msg: log_readback, Id: q.RpcId()}}
-			}
+			_ = log_readback
+			// FIXME: sent only to web clients
+			// sockets := httpclients.AccountIdToSockets(accountId)
+			// for _, socket := range sockets {
+			// 	q.OUTq <- q.RpcOut{Socket: socket,
+			// 		Response: &q.RpcResponse{Msg: log_readback, Id: q.RpcId()}}
+			// }
 		}
 	} else {
 		log.Printf("algolog ownership failed for %s %s", _algolog.AlgorunId, accountId)

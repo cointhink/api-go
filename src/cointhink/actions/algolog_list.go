@@ -3,9 +3,6 @@ package actions
 import "log"
 import "cointhink/proto"
 
-import "cointhink/q"
-
-import "cointhink/httpclients"
 import "cointhink/model/algolog"
 import "cointhink/model/algorun"
 
@@ -20,12 +17,9 @@ func DoAlgologList(_algologList *proto.AlgologList, accountId string) []gproto.M
 			log.Printf("%+v", err)
 		} else {
 			log.Printf("algorun %s logs count %d", _algologList.AlgorunId, len(logs))
-			socket := httpclients.AccountIdToSocket(accountId)
-			if socket != nil {
-				for _, log := range logs {
-					q.OUTq <- q.RpcOut{Socket: socket,
-						Response: &q.RpcResponse{Msg: log, Id: q.RpcId()}}
-				}
+			// append(responses, logs...) Why, go?
+			for _, log := range logs {
+				responses = append(responses, log)
 			}
 		}
 	} else {

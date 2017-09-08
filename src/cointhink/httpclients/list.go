@@ -11,11 +11,12 @@ type Httpclient struct {
 
 var Clients map[*websocket.Conn]Httpclient
 
-func AccountIdToSocket(accountId string) *websocket.Conn {
+func AccountIdToSockets(accountId string) []*websocket.Conn {
+	var list []*websocket.Conn
 	for _, c := range Clients {
 		if c.AccountId == accountId {
-			return c.Socket
+			list = append(list, c.Socket)
 		}
 	}
-	return nil
+	return list
 }

@@ -77,10 +77,8 @@ func WatchOp(msg *q.AccountOperation) {
 		}
 		g := proto.ScheduleListPartial{ScheduleRun: &sr}
 
-		socket := httpclients.AccountIdToSocket(msg.Algorun.AccountId)
-		if socket == nil {
-			log.Printf("Watchop client socket lookup fail %s", msg.Algorun.AccountId)
-		} else {
+		sockets := httpclients.AccountIdToSockets(msg.Algorun.AccountId)
+		for _, socket := range sockets {
 			q.OUTq <- q.RpcOut{Socket: socket,
 				Response: &q.RpcResponse{Msg: &g, Id: q.RpcId()}}
 		}
