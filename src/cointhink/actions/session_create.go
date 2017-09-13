@@ -3,8 +3,8 @@ package actions
 import (
 	"log"
 
-	"cointhink/db"
 	"cointhink/model"
+	"cointhink/model/account"
 	"cointhink/proto"
 
 	gproto "github.com/golang/protobuf/proto"
@@ -19,23 +19,13 @@ func DoSessionCreate(sessionCreate *proto.SessionCreate) []gproto.Message {
 		responses = append(responses, &proto.SessionCreateResponse{Ok: false})
 	}
 
-	rows, err := db.D.Handle.Query("select fullname, email from accounts where id = $1", accountId)
+	_account, err := account.Find(accountId)
 	if err != nil {
 		log.Print("token sql error: ", err)
 		responses = append(responses, &proto.SessionCreateResponse{Ok: false})
 	} else {
-		if rows.Next() {
-			var fullname string
-			var email string
-			rows.Scan(&fullname, &email)
-			log.Printf("Token good for Account %#v %#v", fullname, email)
-			acct := proto.Account{Fullname: fullname, Email: email}
-			responses = append(responses, &proto.SessionCreateResponse{Ok: true, Account: &acct})
-		} else {
-			log.Printf("Token has no Account %#v", rows)
-			responses = append(responses, &proto.SessionCreateResponse{Ok: false})
-		}
+		log.Printf("Token good for Account %#v %#v", _account.Fullname, _account.Email)
+		responses = append(responses, &proto.SessionCreateResponse{Ok: true, Account: &_account})
 	}
-	rows.Close()
 	return responses
 }
