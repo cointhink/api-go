@@ -39,6 +39,7 @@ It is generated from these files:
 	proto/schedule_start_response.proto
 	proto/trade_signal_response.proto
 	proto/session_create.proto
+	proto/credit_journal.proto
 	proto/signin_email.proto
 
 It has these top-level messages:
@@ -75,6 +76,7 @@ It has these top-level messages:
 	ScheduleStartResponse
 	TradeSignalResponse
 	SessionCreate
+	CreditJournal
 	SigninEmail
 */
 package proto

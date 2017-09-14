@@ -7,6 +7,7 @@ import (
 	"cointhink/db"
 	"cointhink/mailer"
 	"cointhink/model/account"
+	"cointhink/model/credit_journal"
 	"cointhink/proto"
 	"cointhink/token"
 	"cointhink/validate"
@@ -59,8 +60,13 @@ func DoSignupform(form *proto.SignupForm) []gproto.Message {
 			log.Printf("insert %+v", err)
 			return []gproto.Message{&proto.SignupFormResponse{Ok: false}}
 		} else {
+			// Account success
 			token := token.InsertToken(form.Account.Id)
 			mailer.MailToken(token, form.Account.Email)
+			c_err := credit_journal.Credit(form.Account, 2)
+			if c_err != nil {
+				log.Printf("credit_journal.Credit %+v", c_err)
+			}
 			return []gproto.Message{&proto.SignupFormResponse{Ok: true, Token: token}}
 		}
 	} else {
