@@ -25,7 +25,7 @@ func DoEvery(d time.Duration, f func(time.Time)) {
 }
 
 func CronMinute(time time.Time) {
-	if time.Minute()%1 == 0 {
+	if time.Minute()%5 == 0 {
 		go marketPrices(time)
 	}
 
