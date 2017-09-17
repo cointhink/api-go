@@ -14,12 +14,22 @@ import (
 
 func Httploop(listen_address string) {
 	http.HandleFunc("/", Upgrade)
+	http.HandleFunc("/stripe", Stripe)
 	httpclients.Clients = map[*websocket.Conn]httpclients.Httpclient{}
 	http.ListenAndServe(listen_address, nil)
 }
 
 var upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool { return true },
+}
+
+func Stripe(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		log.Print("/stripe form err", err)
+	} else {
+		log.Printf("stripe %+v", r.Form)
+	}
 }
 
 func Upgrade(w http.ResponseWriter, r *http.Request) {
