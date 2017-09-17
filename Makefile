@@ -17,6 +17,7 @@ install:
 	GOPATH=`pwd` go get gopkg.in/gomail.v2
 	GOPATH=`pwd` go get github.com/gorilla/websocket
 	GOPATH=`pwd` go get github.com/lib/pq
+	GOPATH=`pwd` go get github.com/stripe/stripe-go
 
 protoc3:
 	wget https://github.com/google/protobuf/releases/download/v3.3.0/protoc-3.3.0-linux-x86_64.zip
