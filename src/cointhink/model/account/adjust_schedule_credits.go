@@ -12,7 +12,8 @@ func AdjustScheduleCredits(account *proto.Account, adjustment int32) error {
 		log.Printf(Table+" DecrementScheduleCredits err: %v", err)
 		return err
 	} else {
-		log.Printf("AdjustScheduleCredits %s %d good. Remaining: %d", account.Id, adjustment, account.ScheduleCredits)
+		log.Printf("AdjustScheduleCredits %s adj:%d was:%d now:%d", account.Id, adjustment, account.ScheduleCredits, newCredits)
+		account.ScheduleCredits = newCredits
 		return nil
 	}
 }

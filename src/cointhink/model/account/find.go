@@ -16,3 +16,16 @@ func Find(accountId string) (proto.Account, error) {
 		return account, nil
 	}
 }
+
+func FindByEmail(email string) (proto.Account, error) {
+	account := proto.Account{}
+	err := db.D.Handle.Get(&account,
+		"select "+Columns+" from accounts where email = $1",
+		email)
+	if err != nil {
+		log.Printf("account.Find SQL: %v", err)
+		return account, err
+	} else {
+		return account, nil
+	}
+}

@@ -63,7 +63,7 @@ func DoSignupform(form *proto.SignupForm) []gproto.Message {
 			// Account success
 			token := token.InsertToken(form.Account.Id)
 			mailer.MailToken(token, form.Account.Email)
-			c_err := credit_journal.Credit(form.Account, 2)
+			c_err := credit_journal.Credit(form.Account, "signup", 2, 0)
 			if c_err != nil {
 				log.Printf("credit_journal.Credit %+v", c_err)
 			}

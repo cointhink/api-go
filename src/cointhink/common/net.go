@@ -35,7 +35,7 @@ func Stripe(w http.ResponseWriter, r *http.Request) {
 	billing.StripePay(r.Form["stripeToken"][0],
 		r.Form["stripeEmail"][0],
 		r.Form["stripeTokenType"][0])
-	http.Redirect(w, r, "/account", 303)
+	http.Redirect(w, r, "/", 303)
 }
 
 func Upgrade(w http.ResponseWriter, r *http.Request) {
