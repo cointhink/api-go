@@ -12,22 +12,23 @@ import (
 )
 
 func DoSigninEmail(msg *proto.SigninEmail) []gproto.Message {
-	resp := []gproto.Message{}
+	responses := []gproto.Message{}
 
 	log.Printf("account lookup %s", msg.Email)
 	account_id, err := model.AccountFindByEmail(msg.Email)
 	if err != nil {
 		log.Printf("account lookup err %#v", err)
-		errResp := []gproto.Message{&proto.SigninEmailResponse{Ok: false, Message: "email not found"}}
-		return errResp
-	}
+		responses = append(responses, &proto.SigninEmailResponse{Ok: false, Message: "email not found"})
+	} else {
 
-	token_str, err := token.Find(account_id)
-	if err != nil {
-		log.Printf("account has no token. generating one.")
-		token_str = token.InsertToken(account_id)
-	}
+		token_str, err := token.Find(account_id)
+		if err != nil {
+			log.Printf("account has no token. generating one.")
+			token_str = token.InsertToken(account_id)
+		}
 
-	mailer.MailToken(msg.Email, token_str)
-	return resp
+		mailer.MailToken(msg.Email, token_str)
+		responses = append(responses, &proto.SigninEmailResponse{Ok: true, Message: "email sent."})
+	}
+	return responses
 }
