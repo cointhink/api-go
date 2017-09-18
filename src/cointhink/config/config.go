@@ -37,7 +37,7 @@ func (c *Config) Read(filename string) error {
 func (c *Config) QueryString(query string) string {
 	response, err := c.Parser.Query(query)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("!!config query \"", query, "\" err: ", err)
 	}
 	return response.(string)
 }

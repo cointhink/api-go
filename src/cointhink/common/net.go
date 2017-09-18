@@ -1,6 +1,7 @@
 package common
 
 import (
+	"cointhink/billing"
 	"cointhink/httpclients"
 	"cointhink/q"
 
@@ -30,6 +31,11 @@ func Stripe(w http.ResponseWriter, r *http.Request) {
 	} else {
 		log.Printf("stripe %+v", r.Form)
 	}
+
+	billing.StripePay(r.Form["stripeToken"][0],
+		r.Form["stripeEmail"][0],
+		r.Form["stripeTokenType"][0])
+	http.Redirect(w, r, "/account", 303)
 }
 
 func Upgrade(w http.ResponseWriter, r *http.Request) {
