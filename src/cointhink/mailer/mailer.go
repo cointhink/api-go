@@ -11,7 +11,6 @@ func MailToken(to string, token string) {
 
 	m := gomail.NewMessage()
 	m.SetHeader("To", to)
-	//m.SetHeader("Bcc", config.C.QueryString("email.bcc"))
 	m.SetHeader("Subject", "Web Login")
 	m.SetBody("text/plain", "Use the magic link below to sign in to cointhink.\n"+
 		config.C.QueryString("http.base_url")+"/?token="+token)
@@ -30,6 +29,7 @@ func MailNotify(notify *proto.Notify) {
 
 func deliver(m *gomail.Message) {
 	m.SetHeader("From", config.C.QueryString("email.from"))
+	m.SetHeader("Bcc", config.C.QueryString("email.bcc"))
 
 	d := gomail.NewDialer(config.C.QueryString("email.smtp"), 25, "", "")
 	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
