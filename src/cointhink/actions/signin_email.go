@@ -5,8 +5,8 @@ import (
 
 	"cointhink/mailer"
 	"cointhink/model"
+	"cointhink/model/token"
 	"cointhink/proto"
-	"cointhink/token"
 
 	gproto "github.com/golang/protobuf/proto"
 )
@@ -21,14 +21,13 @@ func DoSigninEmail(msg *proto.SigninEmail) []gproto.Message {
 		responses = append(responses, &proto.SigninEmailResponse{Ok: false, Message: "email not found"})
 	} else {
 
-		token_str, err := token.Find(account_id)
+		token_, err := token.FindByAccountId(account_id, "")
 		if err != nil {
-			log.Printf("account has no token. generating one.")
-			token_str = token.InsertToken(account_id)
+			log.Printf("account has no token.")
+		} else {
+			mailer.MailToken(msg.Email, token_.Token)
+			responses = append(responses, &proto.SigninEmailResponse{Ok: true, Message: "email sent."})
 		}
-
-		mailer.MailToken(msg.Email, token_str)
-		responses = append(responses, &proto.SigninEmailResponse{Ok: true, Message: "email sent."})
 	}
 	return responses
 }

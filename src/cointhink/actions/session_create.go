@@ -3,8 +3,8 @@ package actions
 import (
 	"log"
 
-	"cointhink/model"
 	"cointhink/model/account"
+	"cointhink/model/token"
 	"cointhink/proto"
 
 	gproto "github.com/golang/protobuf/proto"
@@ -13,13 +13,13 @@ import (
 func DoSessionCreate(sessionCreate *proto.SessionCreate) []gproto.Message {
 	var responses []gproto.Message
 
-	accountId, err := model.TokenFindAccountId(sessionCreate.Token)
+	token_, err := token.FindByToken(sessionCreate.Token)
 	if err != nil {
 		log.Printf("Bad token %#v %v", sessionCreate.Token, err)
 		responses = append(responses, &proto.SessionCreateResponse{Ok: false})
 	}
 
-	_account, err := account.Find(accountId)
+	_account, err := account.Find(token_.AccountId)
 	if err != nil {
 		log.Print("token sql error: ", err)
 		responses = append(responses, &proto.SessionCreateResponse{Ok: false})

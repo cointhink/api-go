@@ -3,7 +3,7 @@ package lxd
 import "cointhink/proto"
 import "cointhink/q"
 import "cointhink/httpclients"
-import "cointhink/model"
+import "cointhink/model/token"
 import "cointhink/model/schedule"
 import "cointhink/model/algorun"
 
@@ -31,7 +31,7 @@ func WatchOp(msg *q.AccountOperation) {
 	} else {
 		algoRun, _ := algorun.Find(msg.Algorun.Id)
 		schedule, _ := schedule.Find(msg.Algorun.ScheduleId)
-		token, _ := model.TokenForAccountId(msg.Algorun.AccountId)
+		token, _ := token.FindByAccountId(msg.Algorun.AccountId, "")
 		lxdStatus, err := Status(msg.Algorun.Id)
 		log.Printf("lxd.WatchOp lxd status: id:%s status:%v err:%v", msg.Algorun.Id,
 			lxdStatus.Metadata.Status, err)
@@ -52,7 +52,7 @@ func WatchOp(msg *q.AccountOperation) {
 				algorun.UpdateStatus(algoRun, algorun_state)
 
 				FilePut(algoRun.Id, "/cointhink/script.py", algoRun.Code)
-				FilePut(algoRun.Id, "/cointhink/auth.json", "{\"Token\":\""+token+"\", \"AlgorunId\":\""+algoRun.Id+"\"}\n")
+				FilePut(algoRun.Id, "/cointhink/auth.json", "{\"Token\":\""+token.Token+"\", \"AlgorunId\":\""+algoRun.Id+"\"}\n")
 				FilePut(algoRun.Id, "/cointhink/settings.json", schedule.InitialState)
 				op := Start(algoRun.Id)
 				q.LXDOPq <- q.AccountOperation{Algorun: algoRun, Operation: op}

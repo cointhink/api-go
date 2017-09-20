@@ -29,11 +29,12 @@ It is generated from these files:
 	proto/algorithm_list_response.proto
 	proto/schedule.proto
 	proto/session_create_response.proto
-	proto/account.proto
+	proto/token.proto
 	proto/signup_form_response.proto
 	proto/notify_response.proto
 	proto/market_price.proto
 	proto/schedule_delete_response.proto
+	proto/account.proto
 	proto/algorithm.proto
 	proto/signin_email_response.proto
 	proto/schedule_start_response.proto
@@ -66,11 +67,12 @@ It has these top-level messages:
 	AlgorithmListResponse
 	Schedule
 	SessionCreateResponse
-	Account
+	Token
 	SignupFormResponse
 	NotifyResponse
 	MarketPrice
 	ScheduleDeleteResponse
+	Account
 	Algorithm
 	SigninEmailResponse
 	ScheduleStartResponse

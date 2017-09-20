@@ -8,8 +8,8 @@ import (
 	"cointhink/mailer"
 	"cointhink/model/account"
 	"cointhink/model/credit_journal"
+	"cointhink/model/token"
 	"cointhink/proto"
-	"cointhink/token"
 	"cointhink/validate"
 
 	gproto "github.com/golang/protobuf/proto"
@@ -61,13 +61,19 @@ func DoSignupform(form *proto.SignupForm) []gproto.Message {
 			return []gproto.Message{&proto.SignupFormResponse{Ok: false}}
 		} else {
 			// Account success
-			token := token.InsertToken(form.Account.Id)
-			mailer.MailToken(token, form.Account.Email)
-			c_err := credit_journal.Credit(form.Account, "signup", 2, 0)
-			if c_err != nil {
-				log.Printf("credit_journal.Credit %+v", c_err)
+			token_ := proto.Token{AccountId: form.Account.Id, AlgorunId: ""}
+			err := token.Insert(&token_)
+			if err != nil {
+				log.Printf("token insert err %+v", err)
+				return []gproto.Message{&proto.SignupFormResponse{Ok: false}}
+			} else {
+				mailer.MailToken(token_.Token, form.Account.Email)
+				c_err := credit_journal.Credit(form.Account, "signup", 2, 0)
+				if c_err != nil {
+					log.Printf("credit_journal.Credit %+v", c_err)
+				}
+				return []gproto.Message{&proto.SignupFormResponse{Ok: true, Token: token_.Token}}
 			}
-			return []gproto.Message{&proto.SignupFormResponse{Ok: true, Token: token}}
 		}
 	} else {
 		return []gproto.Message{&proto.SignupFormResponse{Ok: false,

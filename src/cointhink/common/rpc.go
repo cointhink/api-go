@@ -5,7 +5,7 @@ import "strings"
 import "reflect"
 import "log"
 
-import "cointhink/model"
+import "cointhink/model/token"
 import "cointhink/q"
 import "cointhink/httpclients"
 import "cointhink/proto"
@@ -34,15 +34,15 @@ func Rpc(msg *q.RpcMsg) {
 	} else {
 		responses = DispatchPublic(call.Method, call.Object)
 		if responses == nil {
-			accountId, err := model.TokenFindAccountId(call.Token)
+			token_, err := token.FindByToken(call.Token)
 			if err != nil {
-				log.Printf("msg token %s BAD", call.Token)
+				log.Printf("common.Rpc token %s BAD %+v", call.Token, err)
 				return
 			}
 			httpclient := httpclients.Clients[msg.Socket]
-			httpclient.AccountId = accountId
+			httpclient.AccountId = token_.AccountId
 			httpclients.Clients[msg.Socket] = httpclient
-			responses = DispatchAuth(call.Method, call.Object, accountId)
+			responses = DispatchAuth(call.Method, call.Object, token_.AccountId)
 		}
 	}
 	log.Printf("rpc response: %p/%s %d msg", msg.Socket, msg.AccountId, len(responses))
