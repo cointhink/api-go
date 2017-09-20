@@ -31,7 +31,7 @@ func WatchOp(msg *q.AccountOperation) {
 	} else {
 		algoRun, _ := algorun.Find(msg.Algorun.Id)
 		schedule, _ := schedule.Find(msg.Algorun.ScheduleId)
-		token, _ := token.FindByAccountId(msg.Algorun.AccountId, "")
+		token, _ := token.FindByAccountId(msg.Algorun.AccountId, algoRun.Id)
 		lxdStatus, err := Status(msg.Algorun.Id)
 		log.Printf("lxd.WatchOp lxd status: id:%s status:%v err:%v", msg.Algorun.Id,
 			lxdStatus.Metadata.Status, err)

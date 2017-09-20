@@ -6,6 +6,7 @@ import "errors"
 import "cointhink/lxd"
 import "cointhink/model/algorun"
 import "cointhink/model/algorithm"
+import "cointhink/model/token"
 import "cointhink/proto"
 import "cointhink/q"
 import "cointhink/config"
@@ -23,14 +24,18 @@ func Start(account proto.Account, schedule proto.Schedule) error {
 				return err
 			} else {
 				log.Printf("Start: algo ready. launching")
+				image := config.C.QueryString("lxd.container")
 				_algorun := proto.Algorun{AccountId: account.Id,
 					AlgorithmId: schedule.AlgorithmId,
 					ScheduleId:  schedule.Id,
 					Status:      proto.Algorun_States_name[int32(proto.Algorun_building)],
-					Code:        _algorithm.Code}
+					Code:        _algorithm.Code,
+					Image:       image}
 				algorun.Insert(&_algorun)
+				token_ := proto.Token{AccountId: account.Id, AlgorunId: _algorun.Id}
+				token.Insert(&token_)
 				op := lxd.Launch(lxd.Lxc{Name: _algorun.Id,
-					Source: lxd.LxcSource{Type: "copy", Source: config.C.QueryString("lxd.container")}})
+					Source: lxd.LxcSource{Type: "copy", Source: image}})
 				q.LXDOPq <- q.AccountOperation{Algorun: &_algorun, Operation: op}
 			}
 		} else {

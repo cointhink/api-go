@@ -4,12 +4,13 @@ import "cointhink/proto"
 import "cointhink/db"
 import "log"
 
-var Columns = "id, algorithm_id, account_id, schedule_id, status, code"
+var Columns = "id, algorithm_id, account_id, schedule_id, status, code, image"
+var Fields = ":id, :algorithm_id, :account_id, :schedule_id, :status, :code, :image"
+var Table = "algoruns"
 
-func Insert(algorunInstance *proto.Algorun) error {
-	algorunInstance.Id = db.NewId("algoruns")
-	_, err := db.D.Handle.NamedExec("insert into algoruns ("+Columns+") "+
-		"values (:id, :algorithm_id, :account_id, :schedule_id, :status, :code)", algorunInstance)
+func Insert(item *proto.Algorun) error {
+	item.Id = db.NewId(Table)
+	_, err := db.D.Handle.NamedExec("insert into "+Table+" ("+Columns+") "+"values ("+Fields+")", item)
 	if err != nil {
 		log.Printf("algorun Create err: %v", err)
 		return err
@@ -62,7 +63,7 @@ func UpdateStatus(algorunInstance *proto.Algorun, newStatus proto.Algorun_States
 	}
 
 	if updateState != nil {
-		_, err := db.D.Handle.Exec("update algoruns set status = $1 where id = $2",
+		_, err := db.D.Handle.Exec("update "+Table+" set status = $1 where id = $2",
 			*updateState, algorunInstance.Id)
 		if err != nil {
 			log.Printf("%v", err)
