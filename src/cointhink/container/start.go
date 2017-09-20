@@ -23,8 +23,8 @@ func Start(account proto.Account, schedule proto.Schedule) error {
 				log.Printf("Start err: %v", err)
 				return err
 			} else {
-				log.Printf("Start: algo ready. launching")
 				image := config.C.QueryString("lxd.container")
+				log.Printf("Start: algo ready. launching from %s", image)
 				_algorun := proto.Algorun{AccountId: account.Id,
 					AlgorithmId: schedule.AlgorithmId,
 					ScheduleId:  schedule.Id,
