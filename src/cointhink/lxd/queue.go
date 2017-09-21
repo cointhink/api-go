@@ -70,14 +70,14 @@ func WatchOp(msg *q.AccountOperation) {
 			}
 		}
 
-		// alert client
+		// alert web clients
 		sr := proto.ScheduleRun{Schedule: &schedule, Run: algoRun}
 		if algoRun.Status == proto.Algorun_States_name[int32(proto.Algorun_deleted)] {
 			sr.Run = nil
 		}
 		g := proto.ScheduleListPartial{ScheduleRun: &sr}
 
-		sockets := httpclients.AccountIdToSockets(msg.Algorun.AccountId)
+		sockets := httpclients.AccountIdToWebSockets(msg.Algorun.AccountId)
 		for _, socket := range sockets {
 			q.OUTq <- q.RpcOut{Socket: socket,
 				Response: &q.RpcResponse{Msg: &g, Id: q.RpcId()}}

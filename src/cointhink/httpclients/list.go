@@ -6,15 +6,16 @@ import "cointhink/q"
 type Httpclient struct {
 	Socket    *websocket.Conn
 	AccountId string
+	AlgorunId string
 	Out       []*q.RpcOut
 }
 
 var Clients map[*websocket.Conn]Httpclient
 
-func AccountIdToSockets(accountId string) []*websocket.Conn {
+func AccountIdToWebSockets(accountId string) []*websocket.Conn {
 	var list []*websocket.Conn
 	for _, c := range Clients {
-		if c.AccountId == accountId {
+		if c.AccountId == accountId && c.AlgorunId == "" {
 			list = append(list, c.Socket)
 		}
 	}

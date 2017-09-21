@@ -17,13 +17,6 @@ import "github.com/gorilla/websocket"
 // rpc
 var RPCq chan q.RpcMsg
 
-type call struct {
-	Id     string      `json:"id"`
-	Method string      `json:"method"`
-	Object interface{} `json:"object"`
-	Token  string      `json:"token"`
-}
-
 func Rpc(msg *q.RpcMsg) {
 	var responses []gproto.Message
 
@@ -41,6 +34,7 @@ func Rpc(msg *q.RpcMsg) {
 			}
 			httpclient := httpclients.Clients[msg.Socket]
 			httpclient.AccountId = token_.AccountId
+			httpclient.AlgorunId = token_.AlgorunId
 			httpclients.Clients[msg.Socket] = httpclient
 			responses = DispatchAuth(call.Method, call.Object, token_.AccountId)
 		}
@@ -53,16 +47,20 @@ func Rpc(msg *q.RpcMsg) {
 }
 
 func RespondAll(msg gproto.Message) {
-	id := "rall"
+	id := "respondall"
 	for _, client := range httpclients.Clients {
 		q.OUTq <- q.RpcOut{Socket: client.Socket,
 			Response: &q.RpcResponse{Msg: msg, Id: id}}
 	}
 }
 
+func protoClassName(proto gproto.Message) string {
+	response_class := reflect.TypeOf(proto).String()
+	return strings.Split(response_class, ".")[1]
+}
+
 func Respond(out *q.RpcOut) {
-	response_class := reflect.TypeOf(out.Response.Msg).String()
-	method := strings.Split(response_class, ".")[1]
+	method := protoClassName(out.Response.Msg)
 	marsh := jsonpb.Marshaler{}
 	objJson, err := marsh.MarshalToString(out.Response.Msg)
 	if err != nil {
