@@ -30,13 +30,13 @@ func Credit(_account *proto.Account, stripeTx string, adjustment int32, value fl
 	if c_err != nil {
 		return c_err
 	} else {
-		a_err := account.AdjustScheduleCredits(_account, amount)
+		a_err := account.AdjustScheduleCredits(_account, adjustment)
 		return a_err
 	}
 }
 
 func Debit(_account *proto.Account, schedule *proto.Schedule, adjustment int32) error {
-	amount = amount * -1 // debit
+	adjustment = adjustment * -1 // debit
 	initialCreditJournal := &proto.CreditJournal{
 		AccountId:        _account.Id,
 		CreditAdjustment: adjustment,
@@ -46,7 +46,7 @@ func Debit(_account *proto.Account, schedule *proto.Schedule, adjustment int32) 
 	if c_err != nil {
 		return c_err
 	} else {
-		a_err := account.AdjustScheduleCredits(_account, amount)
+		a_err := account.AdjustScheduleCredits(_account, adjustment)
 		return a_err
 	}
 }
