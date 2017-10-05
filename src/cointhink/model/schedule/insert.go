@@ -4,17 +4,16 @@ import "cointhink/proto"
 import "cointhink/db"
 import "log"
 
-var Columns = "id, account_id, algorithm_id, status, initial_state"
+var Columns = "id, account_id, algorithm_id, status, initial_state, enabled_until"
+var Fields = ":id, :account_id, :algorithm_id, :status, :initial_state, :enabled_until"
+var Table = "schedules"
 
-func Insert(scheduleInstance *proto.Schedule) error {
-	scheduleInstance.Id = db.NewId("schedules")
-	result, err := db.D.Handle.NamedExec("insert into schedules ("+Columns+") "+
-		"values (:id, :account_id, :algorithm_id, :status, :initial_state)", scheduleInstance)
+func Insert(item *proto.Schedule) error {
+	item.Id = db.NewId(Table)
+	_, err := db.D.Handle.NamedExec("insert into "+Table+" ("+Columns+") "+"values ("+Fields+")", item)
 	if err != nil {
-		log.Printf("Schedule Create err: %v", err)
+		log.Printf(Table+" Create err: %v", err)
 		return err
-	} else {
-		log.Printf("Schedule Create result: %+v", result)
 	}
 	return nil
 }
