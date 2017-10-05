@@ -12,7 +12,7 @@ func DoAlgologList(_algologList *proto.AlgologList, accountId string) []gproto.M
 	var responses []gproto.Message
 
 	if algorun.Owns(_algologList.AlgorunId, accountId) {
-		logs, err := algolog.FindAll(_algologList.AlgorunId)
+		logs, err := algolog.FindAll(_algologList.AlgorunId, 60)
 		if err != nil {
 			log.Printf("%+v", err)
 		} else {
