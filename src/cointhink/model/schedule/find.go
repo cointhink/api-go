@@ -2,8 +2,10 @@ package schedule
 
 import "cointhink/db"
 import "cointhink/proto"
+import "cointhink/constants"
 import "log"
 import "strconv"
+import "time"
 
 func Find(scheduleId string) (proto.Schedule, error) {
 	schedule := proto.Schedule{}
@@ -42,5 +44,17 @@ func List(accountId string) ([]*proto.Schedule, error) {
 		return schedules, err
 	} else {
 		return schedules, nil
+	}
+}
+
+func EnabledNow(_schedule *proto.Schedule) bool {
+	enabledUntil, err := time.Parse(constants.ISO8601, _schedule.EnabledUntil)
+	if err != nil {
+		log.Printf("schedule.EnabledNow err: %v", err)
+		return false
+	} else {
+		now := time.Now()
+		log.Printf("schedule.EnabledNow now: %+v enabledUntil: %+v (%+v)", now, enabledUntil, _schedule.Id)
+		return enabledUntil.After(now)
 	}
 }
