@@ -29,7 +29,7 @@ func StripePay(token string, email string, source string) {
 		} else {
 			log.Printf("stripe charge %+v PAID: %+v", ch, ch.Paid)
 			if ch.Paid {
-				c_err := credit_journal.Credit(&account, ch.ID, 2, float32(ch.Amount/100))
+				c_err := credit_journal.Credit(&account, ch.ID, 1, float32(ch.Amount/100))
 				if c_err != nil {
 					log.Printf("credit_journal.Credit %+v", c_err)
 				}

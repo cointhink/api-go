@@ -19,10 +19,10 @@ func Insert(item *proto.CreditJournal) error {
 	return nil
 }
 
-func Credit(_account *proto.Account, stripeTx string, amount int32, value float32) error {
+func Credit(_account *proto.Account, stripeTx string, adjustment int32, value float32) error {
 	initialCreditJournal := &proto.CreditJournal{
 		AccountId:        _account.Id,
-		CreditAdjustment: amount,
+		CreditAdjustment: adjustment,
 		StripeTx:         stripeTx,
 		TotalUsd:         value}
 	log.Printf("creditJournal Credit %+v", initialCreditJournal)
@@ -35,11 +35,11 @@ func Credit(_account *proto.Account, stripeTx string, amount int32, value float3
 	}
 }
 
-func Debit(_account *proto.Account, schedule *proto.Schedule, amount int32) error {
+func Debit(_account *proto.Account, schedule *proto.Schedule, adjustment int32) error {
 	amount = amount * -1 // debit
 	initialCreditJournal := &proto.CreditJournal{
 		AccountId:        _account.Id,
-		CreditAdjustment: amount,
+		CreditAdjustment: adjustment,
 		ScheduleId:       schedule.Id}
 	log.Printf("creditJournal Debit %+v", initialCreditJournal)
 	c_err := Insert(initialCreditJournal)
