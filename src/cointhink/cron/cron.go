@@ -7,11 +7,11 @@ import "fmt"
 
 import "cointhink/proto"
 import "cointhink/common"
+import "cointhink/constants"
 
 var (
 	day time.Time
 )
-var ISO8601 string = "2006-01-02T15:04:05Z07:00"
 
 func Setup() {
 	day = time.Now()
@@ -36,7 +36,7 @@ func CronMinute(time time.Time) {
 }
 
 func CronDay(time time.Time) {
-	common.RespondAll(&proto.TickTock{Time: time.UTC().Format(ISO8601)})
+	common.RespondAll(&proto.TickTock{Time: time.UTC().Format(constants.ISO8601)})
 }
 
 func marketPrices(time time.Time) {
@@ -54,7 +54,7 @@ func marketPrices(time time.Time) {
 				Market:     coin.Symbol + "/USD",
 				Amount:     coin.PriceUsd,
 				Currency:   "USD",
-				ReceivedAt: time.UTC().Format(ISO8601)}
+				ReceivedAt: time.UTC().Format(constants.ISO8601)}
 			pricePing.Prices = append(pricePing.Prices, price)
 		}
 	}
