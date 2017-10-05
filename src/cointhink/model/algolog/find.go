@@ -18,7 +18,7 @@ func FindAll(algorunId string, limit int) ([]*proto.Algolog, error) {
 	rows := []*proto.Algolog{}
 	err := db.D.Handle.Select(&rows,
 		"select "+Columns+", created_at from algologs where "+
-			"algorun_id = $1 limit $2", algorunId, limit)
+			"algorun_id = $1 order by created_at desc limit $2", algorunId, limit)
 	if err != nil {
 		return rows, err
 	} else {
