@@ -2,6 +2,7 @@ package billing
 
 import "log"
 import "cointhink/config"
+import "cointhink/mailer"
 import "cointhink/model/credit_journal"
 import "cointhink/model/account"
 import "github.com/stripe/stripe-go"
@@ -32,6 +33,8 @@ func StripePay(token string, email string, source string) {
 				c_err := credit_journal.Credit(&account, ch.ID, 1, float32(ch.Amount/100))
 				if c_err != nil {
 					log.Printf("credit_journal.Credit %+v", c_err)
+				} else {
+					mailer.MailCreditBuy(account.Email, mailer.MailCreditBuyData{})
 				}
 			}
 		}
