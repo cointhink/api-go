@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"cointhink/constants"
+	"cointhink/mailer"
 	"cointhink/model/account"
 	"cointhink/model/schedule"
 	"cointhink/proto"
@@ -35,6 +36,8 @@ func DoScheduleCreate(scheduleCreate *proto.ScheduleCreate, accountId string) []
 				c_err := schedule.EnableUntilNextMonth(&_schedule, &_account)
 				if c_err != nil {
 					log.Printf("DoScheduleCreate credit_journal Debit err %+v", c_err)
+				} else {
+					mailer.MailCreditDebit(_account.Email, _schedule.AlgorithmId)
 				}
 				responses = append(responses, &proto.ScheduleCreateResponse{Ok: true})
 			}
