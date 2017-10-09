@@ -9,20 +9,29 @@ import "crypto/tls"
 import "gopkg.in/gomail.v2"
 import "text/template"
 
-func MailAlgorunStopped(to string, token string) {
+func MailScheduleStopped(to string, name string) {
 	m := gomail.NewMessage()
 	m.SetHeader("To", to)
-	m.SetHeader("Subject", "Schedule stopped due to credit balance.")
+	m.SetHeader("Subject", "Schedule "+name+" stopped due to credit balance.")
 	m.SetBody("text/plain", "")
 
 	deliver(m)
 }
 
-func MailCreditDebit(to string, token string) {
+func MailCreditDebit(to string, name string) {
 	m := gomail.NewMessage()
 	m.SetHeader("To", to)
-	m.SetHeader("Subject", "Schedule used one cointhink credit")
+	m.SetHeader("Subject", "Schedule "+name+" used one cointhink credit")
 	m.SetBody("text/plain", "")
+
+	deliver(m)
+}
+
+func MailSignup(to string) {
+	m := gomail.NewMessage()
+	m.SetHeader("To", to)
+	m.SetHeader("Subject", "Your Cointhink account is ready.")
+	m.SetBody("text/plain", "Thank you for signing up with Cointhink. Two credits have been added to your account.")
 
 	deliver(m)
 }
@@ -30,11 +39,11 @@ func MailCreditDebit(to string, token string) {
 type MailCreditBuyData struct {
 }
 
-func MailCreditBuy(to string, data MailCreditBuyData) {
+func MailCreditBuy(to string) {
 	m := gomail.NewMessage()
 	m.SetHeader("To", to)
 	m.SetHeader("Subject", "Cointhink Credit Purchase Succesful")
-	m.SetBody("text/plain", templateTron("One credit has been added to your account.", data))
+	m.SetBody("text/plain", templateTron("One credit been added to your account.", MailCreditBuyData{}))
 	deliver(m)
 }
 

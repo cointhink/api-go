@@ -71,6 +71,8 @@ func DoSignupform(form *proto.SignupForm) []gproto.Message {
 				c_err := credit_journal.Credit(form.Account, "signup", 2, 0)
 				if c_err != nil {
 					log.Printf("credit_journal.Credit %+v", c_err)
+				} else {
+					mailer.MailSignup(form.Account.Email)
 				}
 				return []gproto.Message{&proto.SignupFormResponse{Ok: true, Token: token_.Token}}
 			}

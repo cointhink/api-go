@@ -34,7 +34,7 @@ func StripePay(token string, email string, source string) {
 				if c_err != nil {
 					log.Printf("credit_journal.Credit %+v", c_err)
 				} else {
-					mailer.MailCreditBuy(account.Email, mailer.MailCreditBuyData{})
+					mailer.MailCreditBuy(account.Email)
 				}
 			}
 		}

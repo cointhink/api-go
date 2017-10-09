@@ -10,6 +10,7 @@ import "cointhink/proto"
 import "cointhink/common"
 import "cointhink/constants"
 import "cointhink/lxd"
+import "cointhink/mailer"
 import "cointhink/container"
 import "cointhink/model/schedule"
 import "cointhink/model/account"
@@ -115,12 +116,11 @@ func scheduleReaper(time time.Time) {
 		if err != nil {
 		} else {
 			log.Printf("Schedule %s expired. Account %s.", _schedule.Id, _account.Id)
-			schedule.EnableUntilNextMonth(_schedule, &_account)
+			err = schedule.EnableUntilNextMonth(_schedule, &_account)
 			if err != nil {
-				log.Printf("Debiting 1 credit for %s", _schedule.Id)
-			} else {
 				log.Printf("No credits left. Stopping %s", _schedule.Id)
 				schedule.UpdateStatus(_schedule, proto.Schedule_disabled)
+				mailer.MailScheduleStopped(_account.Email, _schedule.AlgorithmId)
 				boxes, _ := algorun.FindReady(_account.Id, _schedule.Id)
 				for _, box := range boxes {
 					algorun.UpdateStatus(box, proto.Algorun_deleted)
@@ -129,6 +129,9 @@ func scheduleReaper(time time.Time) {
 						container.Stop(box)
 					}
 				}
+			} else {
+				log.Printf("Debiting 1 credit for %s", _schedule.Id)
+				mailer.MailCreditDebit(_account.Email, _schedule.AlgorithmId)
 			}
 		}
 	}
