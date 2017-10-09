@@ -20,7 +20,7 @@ func DoScheduleDelete(scheduleDelete *proto.ScheduleDelete, accountId string) []
 		} else {
 			container.Stop(_algorun)
 		}
-		schedule.UpdateStatus(_schedule, proto.Schedule_deleted)
+		schedule.UpdateStatus(&_schedule, proto.Schedule_deleted)
 		_schedule.Status = proto.Schedule_deleted //cheating
 		responses = append(responses, &proto.ScheduleDeleteResponse{Ok: true})
 		responses = append(responses, &proto.ScheduleListPartial{ScheduleRun: &proto.ScheduleRun{Schedule: &_schedule}})

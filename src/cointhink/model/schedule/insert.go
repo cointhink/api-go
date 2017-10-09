@@ -22,7 +22,7 @@ func Insert(item *proto.Schedule) error {
 	return nil
 }
 
-func UpdateStatus(_schedule proto.Schedule, newState proto.Schedule_States) {
+func UpdateStatus(_schedule *proto.Schedule, newState proto.Schedule_States) {
 	log.Printf("schedule.UpdateStatus %s to %v", _schedule.Id, newState)
 	_, err := db.D.Handle.Exec("update schedules set status = $1 where id = $2",
 		newState, _schedule.Id)

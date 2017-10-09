@@ -39,7 +39,7 @@ func DoScheduleStart(scheduleStart *proto.ScheduleStart, accountId string) []gpr
 				}
 
 				if enabled {
-					schedule.UpdateStatus(_schedule, proto.Schedule_enabled)
+					schedule.UpdateStatus(&_schedule, proto.Schedule_enabled)
 					err = container.Start(_account, _schedule)
 					if err != nil {
 						responses = append(responses, &proto.ScheduleStartResponse{Ok: false, Message: err.Error()})
