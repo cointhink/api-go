@@ -42,10 +42,10 @@ func (c *Config) QueryString(query string) string {
 	return response.(string)
 }
 
-func (c *Config) QueryInt(query string) int {
+func (c *Config) QueryNumber(query string) float64 {
 	response, err := c.Parser.Query(query)
 	if err != nil {
 		log.Fatal("!!config query \"", query, "\" err: ", err)
 	}
-	return response.(int)
+	return response.(float64)
 }

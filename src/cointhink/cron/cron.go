@@ -31,11 +31,11 @@ func DoEvery(d time.Duration, f func(time.Time)) {
 }
 
 func CronMinute(time time.Time) {
-	if time.Minute()%config.C.QueryInt("market_prices_minutes") == 0 {
+	if time.Minute()%int(config.C.QueryNumber("cron.market_prices_minutes")) == 0 {
 		go marketPrices(time)
 	}
 
-	if time.Minute()%config.C.QueryInt("cron.schedule_reaper_minutes") == 0 {
+	if time.Minute()%int(config.C.QueryNumber("cron.schedule_reaper_minutes")) == 0 {
 		go scheduleReaper(time)
 	}
 
