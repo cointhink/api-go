@@ -8,6 +8,11 @@ import "fmt"
 import "cointhink/proto"
 import "cointhink/common"
 import "cointhink/constants"
+import "cointhink/lxd"
+import "cointhink/container"
+import "cointhink/model/schedule"
+import "cointhink/model/account"
+import "cointhink/model/algorun"
 
 var (
 	day time.Time
@@ -27,6 +32,10 @@ func DoEvery(d time.Duration, f func(time.Time)) {
 func CronMinute(time time.Time) {
 	if time.Minute()%5 == 0 {
 		go marketPrices(time)
+	}
+
+	if time.Minute()%60 == 0 {
+		go scheduleReaper(time)
 	}
 
 	if day.YearDay() != time.YearDay() {
@@ -95,4 +104,32 @@ type CoinMarketCap struct {
 	PriceEur         string `json:"price_eur"`
 	Two4HVolumeEur   string `json:"24h_volume_eur"`
 	MarketCapEur     string `json:"market_cap_eur"`
+}
+
+func scheduleReaper(time time.Time) {
+	log.Printf("scheduleReaper %+v", time)
+	expiredSchedules := schedule.RunningExpireds(time)
+	log.Printf("scheduleReaper found %d expired schedules.", len(expiredSchedules))
+	for _, _schedule := range expiredSchedules {
+		_account, err := account.Find(_schedule.AccountId)
+		if err != nil {
+		} else {
+			log.Printf("Schedule %s expired. Account %s.", _schedule.Id, _account.Id)
+			schedule.EnableUntilNextMonth(_schedule, &_account)
+			if err != nil {
+				log.Printf("Debiting 1 credit for %s", _schedule.Id)
+			} else {
+				log.Printf("No credits left. Stopping %s", _schedule.Id)
+				schedule.UpdateStatus(_schedule, proto.Schedule_disabled)
+				boxes, _ := algorun.FindReady(_account.Id, _schedule.Id)
+				for _, box := range boxes {
+					algorun.UpdateStatus(box, proto.Algorun_deleted)
+					stat, _ := lxd.Status(box.Id)
+					if stat.ErrorCode != 404 {
+						container.Stop(box)
+					}
+				}
+			}
+		}
+	}
 }
