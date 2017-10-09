@@ -48,7 +48,6 @@ func lxdCall(verb string, path string, bodyParts ...interface{}) (*http.Response
 	}
 	if body.Len() > 0 {
 		req.Header.Set("Content-Type", mime)
-		log.Printf("lxdCall headers %+v", req.Header)
 		log.Printf("lxdCall body %s", bytes.NewBuffer(body.Bytes()).String())
 	}
 	httpResult, err := Client().Do(req)

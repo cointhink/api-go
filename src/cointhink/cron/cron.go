@@ -5,6 +5,7 @@ import "log"
 import "encoding/json"
 import "fmt"
 
+import "cointhink/config"
 import "cointhink/proto"
 import "cointhink/common"
 import "cointhink/constants"
@@ -30,11 +31,11 @@ func DoEvery(d time.Duration, f func(time.Time)) {
 }
 
 func CronMinute(time time.Time) {
-	if time.Minute()%5 == 0 {
+	if time.Minute()%config.C.QueryInt("market_prices_minutes") == 0 {
 		go marketPrices(time)
 	}
 
-	if time.Minute()%60 == 0 {
+	if time.Minute()%config.C.QueryInt("cron.schedule_reaper_minutes") == 0 {
 		go scheduleReaper(time)
 	}
 
@@ -107,9 +108,8 @@ type CoinMarketCap struct {
 }
 
 func scheduleReaper(time time.Time) {
-	log.Printf("scheduleReaper %+v", time)
 	expiredSchedules := schedule.RunningExpireds(time)
-	log.Printf("scheduleReaper found %d expired schedules.", len(expiredSchedules))
+	log.Printf("** cron.scheduleReaper found %d expired schedules.", len(expiredSchedules))
 	for _, _schedule := range expiredSchedules {
 		_account, err := account.Find(_schedule.AccountId)
 		if err != nil {
