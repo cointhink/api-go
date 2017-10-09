@@ -62,7 +62,7 @@ func EnabledNow(_schedule *proto.Schedule) bool {
 func RunningExpireds(time time.Time) []*proto.Schedule {
 	schedules := []*proto.Schedule{}
 	err := db.D.Handle.Select(&schedules,
-		"select "+Columns+" from schedules where status != "+
+		"select "+Columns+" from schedules where status = "+
 			strconv.FormatInt(int64(proto.Schedule_States_value["enabled"]), 10)+" and "+
 			" enabled_until < $1", time)
 	if err != nil {
