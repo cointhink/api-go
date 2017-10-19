@@ -77,6 +77,7 @@ func coinFetch(name string) (CoinMarketCap, error) {
 	coin := CoinMarketCap{}
 	quote_api := "https://api.coinmarketcap.com/v1/ticker/" + name + "/"
 	fmt.Println(quote_api)
+	now := time.Now()
 	bodyJson, err := common.Httpget(quote_api)
 	if err != nil {
 		fmt.Printf("price fetch error %+v", err)
@@ -84,6 +85,8 @@ func coinFetch(name string) (CoinMarketCap, error) {
 	} else {
 		list := []CoinMarketCap{}
 		err = json.Unmarshal([]byte(bodyJson), &list)
+		delay := time.Now().Sub(now).Nanoseconds() * 1000
+		go common.InfluxWrite("marketdata", "exchange", "coinmarketcap", string(delay))
 		return list[0], err
 	}
 }

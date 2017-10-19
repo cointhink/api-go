@@ -2,12 +2,14 @@ package common
 
 import (
 	"cointhink/billing"
+	"cointhink/config"
 	"cointhink/httpclients"
 	"cointhink/q"
 
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -72,4 +74,12 @@ func Httpget(url string) (string, error) {
 		body, _ := ioutil.ReadAll(response.Body)
 		return string(body), nil
 	}
+}
+
+func InfluxWrite(measurement string, tagName string, tagValue string, reading string) {
+	timeout := time.Duration(5 * time.Second)
+	client := http.Client{Timeout: timeout}
+	influx_url := config.C.QueryString("influx.url") + "/write?db=" + config.C.QueryString("influx.database")
+	data := measurement + "," + tagName + "=" + tagValue + " value=" + reading
+	client.Post(influx_url, "", strings.NewReader(data))
 }
