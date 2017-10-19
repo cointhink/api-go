@@ -4,6 +4,7 @@ import "time"
 import "log"
 import "encoding/json"
 import "fmt"
+import "strconv"
 
 import "cointhink/config"
 import "cointhink/proto"
@@ -85,8 +86,8 @@ func coinFetch(name string) (CoinMarketCap, error) {
 	} else {
 		list := []CoinMarketCap{}
 		err = json.Unmarshal([]byte(bodyJson), &list)
-		delay := time.Now().Sub(now).Nanoseconds() * 1000
-		go common.InfluxWrite("marketdata", "exchange", "coinmarketcap", string(delay))
+		delay := time.Now().Sub(now).Nanoseconds() / 1000000 //millisec
+		go common.InfluxWrite("marketdata", "exchange", "coinmarketcap", strconv.FormatInt(delay, 10))
 		return list[0], err
 	}
 }
