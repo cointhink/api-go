@@ -47,10 +47,15 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
 		log.Print("websocket upgrade fail:", err)
 		return
 	}
-	wsocket.SetPingHandler(func(m string) error {
-		log.Printf("Ping! %s\n", m)
+	wsocket.SetPongHandler(func(m string) error {
+		log.Printf("Pong received! %s\n", m)
 		return nil
 	})
+
+	if err := wsocket.WriteMessage(websocket.PingMessage, []byte("cointhink")); err != nil {
+		log.Printf("Ping sent!\n")
+	}
+
 	_client := httpclients.Httpclient{Socket: wsocket, Out: []*q.RpcOut{}}
 	log.Printf("wsocket open %p", wsocket)
 	httpclients.Clients[wsocket] = _client
