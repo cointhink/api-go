@@ -60,35 +60,42 @@ func protoClassName(proto gproto.Message) string {
 }
 
 func Respond(out *q.RpcOut) {
-	method := protoClassName(out.Response.Msg)
-	marsh := jsonpb.Marshaler{}
-	objJson, err := marsh.MarshalToString(out.Response.Msg)
-	if err != nil {
-		log.Println("objJson:", err)
-		return
-	}
-	var jsonified interface{}
-	err = json.Unmarshal([]byte(objJson), &jsonified)
-	if err != nil {
-		log.Printf("unmah: %s", err)
-		return
-	}
-	resp := map[string]interface{}{"id": out.Response.Id,
-		"method": method,
-		"object": jsonified}
-	json, err := json.Marshal(resp)
-	if err != nil {
-		log.Println("tojson:", err)
-		return
-	}
-	if out.Socket == nil {
-		log.Println("ws_send err, socket is nil. aborted.")
+	if out.Response == nil {
+		log.Printf("ws ping go!\n")
+		if err := wsocket.WriteMessage(websocket.PingMessage, []byte("cointhink")); err != nil {
+			log.Printf("Ping send err %+v!\n", err)
+		}
 	} else {
-		log.Printf("ws_send: %p %s", out.Socket, json)
-		err = out.Socket.WriteMessage(websocket.TextMessage, json)
+		method := protoClassName(out.Response.Msg)
+		marsh := jsonpb.Marshaler{}
+		objJson, err := marsh.MarshalToString(out.Response.Msg)
 		if err != nil {
-			log.Println("ws_send err:", err)
+			log.Println("objJson:", err)
 			return
+		}
+		var jsonified interface{}
+		err = json.Unmarshal([]byte(objJson), &jsonified)
+		if err != nil {
+			log.Printf("unmarshal err: %s", err)
+			return
+		}
+		resp := map[string]interface{}{"id": out.Response.Id,
+			"method": method,
+			"object": jsonified}
+		json, err := json.Marshal(resp)
+		if err != nil {
+			log.Println("tojson err:", err)
+			return
+		}
+		if out.Socket == nil {
+			log.Println("ws_send err, socket is nil. aborted.")
+		} else {
+			log.Printf("ws_send: %p %s", out.Socket, json)
+			err = out.Socket.WriteMessage(websocket.TextMessage, json)
+			if err != nil {
+				log.Println("ws_send err:", err)
+				return
+			}
 		}
 	}
 }

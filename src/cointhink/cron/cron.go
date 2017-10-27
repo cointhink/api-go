@@ -10,6 +10,8 @@ import "cointhink/config"
 import "cointhink/proto"
 import "cointhink/common"
 import "cointhink/constants"
+import "cointhink/httpclients"
+import "cointhink/q"
 import "cointhink/lxd"
 import "cointhink/mailer"
 import "cointhink/container"
@@ -33,6 +35,8 @@ func DoEvery(d time.Duration, f func(time.Time)) {
 }
 
 func CronMinute(time time.Time) {
+	go websocketPinger()
+
 	if time.Minute()%int(config.C.QueryNumber("cron.market_prices_minutes")) == 0 {
 		go marketPrices(time)
 	}
@@ -138,5 +142,12 @@ func scheduleReaper(time time.Time) {
 				mailer.MailCreditDebit(_account.Email, _schedule.AlgorithmId)
 			}
 		}
+	}
+}
+
+func websocketPinger() {
+	log.Printf("ws ping for %+v clients.\n", len(httpclients.Clients))
+	for wsocket := range httpclients.Clients {
+		q.OUTq <- q.RpcOut{Socket: wsocket}
 	}
 }

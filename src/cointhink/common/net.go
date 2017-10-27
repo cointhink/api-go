@@ -52,10 +52,6 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
 		return nil
 	})
 
-	if err := wsocket.WriteMessage(websocket.PingMessage, []byte("cointhink")); err != nil {
-		log.Printf("Ping sent!\n")
-	}
-
 	_client := httpclients.Httpclient{Socket: wsocket, Out: []*q.RpcOut{}}
 	log.Printf("wsocket open %p", wsocket)
 	httpclients.Clients[wsocket] = _client

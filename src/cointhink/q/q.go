@@ -19,9 +19,8 @@ type RpcResponse struct {
 }
 
 type RpcOut struct {
-	Socket    *websocket.Conn
-	AccountId string
-	Response  *RpcResponse
+	Socket   *websocket.Conn
+	Response *RpcResponse
 }
 
 func RpcId() string {
