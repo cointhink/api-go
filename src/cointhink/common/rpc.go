@@ -61,7 +61,6 @@ func protoClassName(proto gproto.Message) string {
 
 func Respond(out *q.RpcOut) {
 	if out.Response == nil {
-		log.Printf("ws ping go!\n")
 		if err := out.Socket.WriteMessage(websocket.PingMessage, []byte("cointhink")); err != nil {
 			log.Printf("Ping send err %+v!\n", err)
 		}

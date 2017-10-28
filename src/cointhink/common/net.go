@@ -48,7 +48,6 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	wsocket.SetPongHandler(func(m string) error {
-		log.Printf("Pong received! %s\n", m)
 		return nil
 	})
 
