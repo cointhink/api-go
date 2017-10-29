@@ -90,6 +90,6 @@ func InfluxWrite(measurement string, tagName string, tagValue string, reading st
 	if err != nil {
 		log.Printf("Influx post err %v\n", err)
 	} else {
-		log.Printf("Influx response %s\n", response.Status)
+		log.Printf("Influx response %s %s\n", response.Proto, response.Status)
 	}
 }
