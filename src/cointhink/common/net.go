@@ -86,5 +86,10 @@ func InfluxWrite(measurement string, tagName string, tagValue string, reading st
 	influx_url := config.C.QueryString("influx.url") + "/write?db=" + config.C.QueryString("influx.database")
 	data := measurement + "," + tagName + "=" + tagValue + " value=" + reading
 	log.Printf("InfluxWrite %s %s\n", influx_url, data)
-	client.Post(influx_url, "", strings.NewReader(data))
+	response, err := client.Post(influx_url, "", strings.NewReader(data))
+	if err != nil {
+		log.Printf("Influx post err %v\n", err)
+	} else {
+		log.Printf("Influx response %s\n", response.Status)
+	}
 }
