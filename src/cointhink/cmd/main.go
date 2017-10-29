@@ -24,6 +24,9 @@ func main() {
 	pflag.Parse()
 	config_file := *pflag.String("config", "config.hjson", "config file in (h)json")
 
+	// log
+	log.SetFlags(0)
+
 	// pid
 	pid := os.Getpid()
 	ioutil.WriteFile("pid", []byte(strconv.Itoa(pid)), 0644)
