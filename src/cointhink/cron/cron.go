@@ -66,7 +66,7 @@ func marketPrices(time time.Time) {
 			fmt.Printf("priceFetch error for %s %+v\n", coinName, err)
 		} else {
 			price := &proto.MarketPrice{
-				Exchange:   "simulated",
+				Exchange:   "coinmarketcap",
 				Market:     coin.Symbol + "/USD",
 				Amount:     coin.PriceUsd,
 				Currency:   "USD",
