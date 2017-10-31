@@ -35,7 +35,9 @@ func DoEvery(d time.Duration, f func(time.Time)) {
 }
 
 func CronMinute(time time.Time) {
-	go websocketPinger()
+	if time.Minute()%int(config.C.QueryNumber("cron.websocket_ping_minutes")) == 0 {
+		go websocketPinger()
+	}
 
 	if time.Minute()%int(config.C.QueryNumber("cron.market_prices_minutes")) == 0 {
 		go marketPrices(time)
@@ -146,8 +148,11 @@ func scheduleReaper(time time.Time) {
 }
 
 func websocketPinger() {
-	log.Printf("ws ping for %+v clients.\n", len(httpclients.Clients))
+	log.Printf("ws ping for %+v clients. (%d unresponsive)\n",
+		len(httpclients.Clients), len(httpclients.Pinglist))
+	httpclients.Pinglist = []string{}
 	for wsocket := range httpclients.Clients {
 		q.OUTq <- q.RpcOut{Socket: wsocket}
+		httpclients.Pinglist = append(httpclients.Pinglist, wsocket.RemoteAddr().String())
 	}
 }

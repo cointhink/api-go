@@ -28,7 +28,7 @@ func DispatchPublic(class string, object *any.Any) []gproto.Message {
 		ptypes.UnmarshalAny(object, &it)
 		resp = actions.DoSigninEmail(&it)
 	default:
-		log.Printf("unknown public method: %s", class)
+		//log.Printf("unknown public method: %s", class)
 	}
 	return resp
 }

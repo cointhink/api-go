@@ -48,6 +48,9 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Printf("*- Open websocket for %s from %s", wsocket.RemoteAddr().String(), r.Header.Get("Origin"))
 	wsocket.SetPongHandler(func(m string) error {
+		if len(httpclients.Pinglist) > 0 {
+			httpclients.Pinglist = httpclients.Pinglist[1:]
+		}
 		return nil
 	})
 
@@ -86,7 +89,7 @@ func InfluxWrite(measurement string, tagName string, tagValue string, reading st
 	influx_url := config.C.QueryString("influx.url") + "/write?db=" + db
 	data := measurement + "," + tagName + "=" + tagValue + " value=" + reading
 	log.Printf("InfluxWrite db=%s %s\n", db, data)
-	response, err := client.Post(influx_url, "", strings.NewReader(data))
+	_, err := client.Post(influx_url, "", strings.NewReader(data))
 	if err != nil {
 		log.Printf("Influx post err %v\n", err)
 	} else {

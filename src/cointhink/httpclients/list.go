@@ -3,6 +3,10 @@ package httpclients
 import "github.com/gorilla/websocket"
 import "cointhink/q"
 
+var (
+	Pinglist []string
+)
+
 type Httpclient struct {
 	Socket    *websocket.Conn
 	AccountId string
