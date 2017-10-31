@@ -97,8 +97,9 @@ func Status(name string) (*LxcStatus, error) {
 //{"name": "test01", "architecture": "x86_64", "profiles": ["default"],
 //"source": {"type": "image", "alias": "ubuntuimage"}}
 type Lxc struct {
-	Name   string    `json:"name"`
-	Source LxcSource `json:"source"`
+	Name     string    `json:"name"`
+	Profiles []string  `json:"profiles"`
+	Source   LxcSource `json:"source"`
 }
 
 type LxcSource struct {

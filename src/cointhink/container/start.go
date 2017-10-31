@@ -35,7 +35,8 @@ func Start(account proto.Account, schedule proto.Schedule) error {
 				token_ := proto.Token{AccountId: account.Id, AlgorunId: _algorun.Id}
 				token.Insert(&token_)
 				op := lxd.Launch(lxd.Lxc{Name: _algorun.Id,
-					Source: lxd.LxcSource{Type: "image", Alias: image}})
+					Profiles: []string{"cointhink"},
+					Source:   lxd.LxcSource{Type: "image", Alias: image}})
 				q.LXDOPq <- q.AccountOperation{Algorun: &_algorun, Operation: op}
 			}
 		} else {
