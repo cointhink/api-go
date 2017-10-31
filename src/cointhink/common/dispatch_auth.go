@@ -56,7 +56,7 @@ func DispatchAuth(class string, object *any.Any, accountId string) []gproto.Mess
 		ptypes.UnmarshalAny(object, &it)
 		resp = actions.DoNotify(&it, accountId)
 	default:
-		log.Printf("unknown private method: %s", class)
+		//log.Printf("unknown private method: %s", class)
 	}
 	return resp
 }

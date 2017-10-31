@@ -41,18 +41,17 @@ func Stripe(w http.ResponseWriter, r *http.Request) {
 }
 
 func Upgrade(w http.ResponseWriter, r *http.Request) {
-	log.Printf("%s webstocket started", r.Header.Get("Origin"))
 	wsocket, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Print("websocket upgrade fail:", err)
 		return
 	}
+	log.Printf("*- Open websocket for %s from %s", wsocket.RemoteAddr().String(), r.Header.Get("Origin"))
 	wsocket.SetPongHandler(func(m string) error {
 		return nil
 	})
 
 	_client := httpclients.Httpclient{Socket: wsocket, Out: []*q.RpcOut{}}
-	log.Printf("wsocket open %p", wsocket)
 	httpclients.Clients[wsocket] = _client
 	for {
 		_, payload, err := wsocket.ReadMessage()
@@ -62,7 +61,7 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
 		}
 		RPCq <- q.RpcMsg{Socket: _client.Socket, Payload: payload}
 	}
-	log.Printf("wsocket closing %p", wsocket)
+	log.Printf("wsocket closing %s", wsocket.RemoteAddr())
 	wsocket.Close()
 	delete(httpclients.Clients, wsocket)
 }
@@ -83,13 +82,14 @@ func Httpget(url string) (string, error) {
 func InfluxWrite(measurement string, tagName string, tagValue string, reading string) {
 	timeout := time.Duration(5 * time.Second)
 	client := http.Client{Timeout: timeout}
-	influx_url := config.C.QueryString("influx.url") + "/write?db=" + config.C.QueryString("influx.database")
+	db := config.C.QueryString("influx.database")
+	influx_url := config.C.QueryString("influx.url") + "/write?db=" + db
 	data := measurement + "," + tagName + "=" + tagValue + " value=" + reading
-	log.Printf("InfluxWrite %s %s\n", influx_url, data)
+	log.Printf("InfluxWrite db=%s %s\n", db, data)
 	response, err := client.Post(influx_url, "", strings.NewReader(data))
 	if err != nil {
 		log.Printf("Influx post err %v\n", err)
 	} else {
-		log.Printf("Influx response %s %s\n", response.Proto, response.Status)
+		//log.Printf("Influx response %s %s\n", response.Proto, response.Status)
 	}
 }
