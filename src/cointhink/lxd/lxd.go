@@ -105,6 +105,7 @@ type LxcSource struct {
 	Type        string `json:"type"`
 	Fingerprint string `json:"fingerprint"`
 	Source      string `json:"source"`
+	Alias       string `json:"alias"`
 }
 
 func Launch(lxc Lxc) *q.OperationResponse {
