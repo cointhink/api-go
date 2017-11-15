@@ -47,7 +47,7 @@ var Algorun_States_value = map[string]int32{
 func (x Algorun_States) String() string {
 	return proto1.EnumName(Algorun_States_name, int32(x))
 }
-func (Algorun_States) EnumDescriptor() ([]byte, []int) { return fileDescriptor17, []int{0, 0} }
+func (Algorun_States) EnumDescriptor() ([]byte, []int) { return fileDescriptor18, []int{0, 0} }
 
 type Algorun struct {
 	Id          string `protobuf:"bytes,1,opt,name=Id" json:"Id,omitempty"`
@@ -62,7 +62,7 @@ type Algorun struct {
 func (m *Algorun) Reset()                    { *m = Algorun{} }
 func (m *Algorun) String() string            { return proto1.CompactTextString(m) }
 func (*Algorun) ProtoMessage()               {}
-func (*Algorun) Descriptor() ([]byte, []int) { return fileDescriptor17, []int{0} }
+func (*Algorun) Descriptor() ([]byte, []int) { return fileDescriptor18, []int{0} }
 
 func (m *Algorun) GetId() string {
 	if m != nil {
@@ -118,9 +118,9 @@ func init() {
 	proto1.RegisterEnum("proto.Algorun_States", Algorun_States_name, Algorun_States_value)
 }
 
-func init() { proto1.RegisterFile("proto/algorun.proto", fileDescriptor17) }
+func init() { proto1.RegisterFile("proto/algorun.proto", fileDescriptor18) }
 
-var fileDescriptor17 = []byte{
+var fileDescriptor18 = []byte{
 	// 240 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x4c, 0x90, 0xcd, 0x4a, 0xc3, 0x40,
 	0x10, 0x80, 0x4d, 0x9a, 0x1f, 0x3b, 0x95, 0x12, 0x46, 0x91, 0x3d, 0x88, 0x94, 0x9e, 0x3c, 0xe9,

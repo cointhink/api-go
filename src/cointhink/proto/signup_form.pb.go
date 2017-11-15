@@ -14,6 +14,7 @@ It is generated from these files:
 	proto/schedule_run.proto
 	proto/notify.proto
 	proto/schedule_start.proto
+	proto/algorithm_detail_response.proto
 	proto/trade_signal.proto
 	proto/schedule_list_partial.proto
 	proto/schedule_list.proto
@@ -25,6 +26,7 @@ It is generated from these files:
 	proto/market_prices.proto
 	proto/algorun.proto
 	proto/algolog_list.proto
+	proto/algorithm_detail.proto
 	proto/rpc.proto
 	proto/algorithm_list_response.proto
 	proto/schedule.proto
@@ -52,6 +54,7 @@ It has these top-level messages:
 	ScheduleRun
 	Notify
 	ScheduleStart
+	AlgorithmDetailResponse
 	TradeSignal
 	ScheduleListPartial
 	ScheduleList
@@ -63,6 +66,7 @@ It has these top-level messages:
 	MarketPrices
 	Algorun
 	AlgologList
+	AlgorithmDetail
 	Rpc
 	AlgorithmListResponse
 	Schedule

@@ -20,7 +20,7 @@ type ScheduleStop struct {
 func (m *ScheduleStop) Reset()                    { *m = ScheduleStop{} }
 func (m *ScheduleStop) String() string            { return proto1.CompactTextString(m) }
 func (*ScheduleStop) ProtoMessage()               {}
-func (*ScheduleStop) Descriptor() ([]byte, []int) { return fileDescriptor15, []int{0} }
+func (*ScheduleStop) Descriptor() ([]byte, []int) { return fileDescriptor16, []int{0} }
 
 func (m *ScheduleStop) GetScheduleId() string {
 	if m != nil {
@@ -33,9 +33,9 @@ func init() {
 	proto1.RegisterType((*ScheduleStop)(nil), "proto.ScheduleStop")
 }
 
-func init() { proto1.RegisterFile("proto/schedule_stop.proto", fileDescriptor15) }
+func init() { proto1.RegisterFile("proto/schedule_stop.proto", fileDescriptor16) }
 
-var fileDescriptor15 = []byte{
+var fileDescriptor16 = []byte{
 	// 84 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x2c, 0x28, 0xca, 0x2f,
 	0xc9, 0xd7, 0x2f, 0x4e, 0xce, 0x48, 0x4d, 0x29, 0xcd, 0x49, 0x8d, 0x2f, 0x2e, 0xc9, 0x2f, 0xd0,
