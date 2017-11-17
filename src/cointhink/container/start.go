@@ -5,6 +5,7 @@ import "errors"
 
 import "cointhink/lxd"
 import "cointhink/model/algorun"
+import "cointhink/model/algolog"
 import "cointhink/model/algorithm"
 import "cointhink/model/token"
 import "cointhink/proto"
@@ -34,6 +35,9 @@ func Start(account proto.Account, schedule proto.Schedule) error {
 				algorun.Insert(&_algorun)
 				token_ := proto.Token{AccountId: account.Id, AlgorunId: _algorun.Id}
 				token.Insert(&token_)
+				_algolog := proto.Algolog{AlgorunId: _algorun.Id, Event: "launch", Level: "info",
+					Message: "launching " + schedule.AlgorithmId}
+				algolog.Insert(&_algolog)
 				op := lxd.Launch(lxd.Lxc{Name: _algorun.Id,
 					Profiles: []string{"cointhink"},
 					Source:   lxd.LxcSource{Type: "image", Alias: image}})
