@@ -36,7 +36,7 @@ func Start(account proto.Account, schedule proto.Schedule) error {
 				token_ := proto.Token{AccountId: account.Id, AlgorunId: _algorun.Id}
 				token.Insert(&token_)
 				_algolog := proto.Algolog{AlgorunId: _algorun.Id, Event: "launch", Level: "info",
-					Message: "launching " + schedule.AlgorithmId}
+					Message: "launching " + schedule.AlgorithmId + " on container " + image}
 				algolog.Insert(&_algolog)
 				op := lxd.Launch(lxd.Lxc{Name: _algorun.Id,
 					Profiles: []string{"cointhink"},
