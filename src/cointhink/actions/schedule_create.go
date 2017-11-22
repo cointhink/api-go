@@ -20,30 +20,52 @@ func DoScheduleCreate(scheduleCreate *proto.ScheduleCreate, accountId string) []
 	if err != nil {
 		responses = append(responses, &proto.ScheduleCreateResponse{Ok: false, Message: err.Error()})
 	} else {
-		if _account.ScheduleCredits > 0 {
-			log.Printf("creating schedule for algorithm %s", scheduleCreate.Schedule.AlgorithmId)
-			//	if algorithm.Owns(scheduleCreate.Schedule.AlgorithmId, accountId) {
-			_schedule := proto.Schedule{AccountId: accountId,
-				AlgorithmId:  scheduleCreate.Schedule.AlgorithmId,
-				Status:       proto.Schedule_disabled,
-				InitialState: scheduleCreate.Schedule.InitialState,
-				EnabledUntil: time.Now().UTC().Format(constants.ISO8601)}
-			log.Printf("inserting sched state %v", _schedule.Status)
-			err = schedule.Insert(&_schedule)
-			if err != nil {
-				responses = append(responses, &proto.ScheduleCreateResponse{Ok: false, Message: err.Error()})
-			} else {
-				c_err := schedule.EnableUntilNextMonth(&_schedule, &_account)
-				if c_err != nil {
-					log.Printf("DoScheduleCreate credit_journal Debit err %+v", c_err)
-				} else {
-					mailer.MailCreditDebit(_account.Email, _schedule.AlgorithmId)
-				}
-				responses = append(responses, &proto.ScheduleCreateResponse{Ok: true})
-			}
+		_schedule, err := schedule.Find(scheduleCreate.Schedule.Id)
+		if err != nil {
+			log.Printf("schedule new! %+v %+v", _schedule.Id, err)
+			responses = create(responses, _account, scheduleCreate.Schedule)
 		} else {
-			responses = append(responses, &proto.ScheduleCreateResponse{Ok: false, Message: "No remaining schedule credits."})
+			log.Printf("schedule update! %+v", _schedule.Id)
+			responses = update(responses, _account, scheduleCreate.Schedule)
 		}
+	}
+	return responses
+}
+
+func create(responses []gproto.Message, _account proto.Account, partialSchedule *proto.Schedule) []gproto.Message {
+	if _account.ScheduleCredits > 0 {
+		log.Printf("creating schedule for algorithm %s", partialSchedule.AlgorithmId)
+		//	if algorithm.Owns(schedule.AlgorithmId, accountId) {
+		_schedule := proto.Schedule{AccountId: _account.Id,
+			AlgorithmId:  partialSchedule.AlgorithmId,
+			Status:       proto.Schedule_disabled,
+			InitialState: partialSchedule.InitialState,
+			EnabledUntil: time.Now().UTC().Format(constants.ISO8601)}
+		log.Printf("inserting sched state %v", _schedule.Status)
+		err := schedule.Insert(&_schedule)
+		if err != nil {
+			responses = append(responses, &proto.ScheduleCreateResponse{Ok: false, Message: err.Error()})
+		} else {
+			c_err := schedule.EnableUntilNextMonth(&_schedule, &_account)
+			if c_err != nil {
+				log.Printf("DoScheduleCreate credit_journal Debit err %+v", c_err)
+			} else {
+				mailer.MailCreditDebit(_account.Email, _schedule.AlgorithmId)
+			}
+			responses = append(responses, &proto.ScheduleCreateResponse{Ok: true})
+		}
+	} else {
+		responses = append(responses, &proto.ScheduleCreateResponse{Ok: false, Message: "No remaining schedule credits."})
+	}
+	return responses
+}
+
+func update(responses []gproto.Message, _account proto.Account, item *proto.Schedule) []gproto.Message {
+	if item.AccountId == _account.Id {
+		schedule.UpdateInitialState(item, item.InitialState)
+		responses = append(responses, &proto.ScheduleCreateResponse{Ok: true})
+	} else {
+		responses = append(responses, &proto.AlgorithmDetailResponse{Ok: false, Message: "No permission"})
 	}
 	return responses
 }

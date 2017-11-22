@@ -31,6 +31,15 @@ func UpdateStatus(_schedule *proto.Schedule, newState proto.Schedule_States) {
 	}
 }
 
+func UpdateInitialState(_schedule *proto.Schedule, initialState string) {
+	log.Printf("schedule.UpdateInitialState %s to %v", _schedule.Id, initialState)
+	_, err := db.D.Handle.Exec("update schedules set initial_state = $1 where id = $2",
+		initialState, _schedule.Id)
+	if err != nil {
+		log.Printf("schedule.UpdateState err %v", err)
+	}
+}
+
 func UpdateEnabledUntil(_schedule *proto.Schedule, until time.Time) {
 	timeStr := until.UTC().Format(constants.ISO8601)
 	log.Printf("schedule.UpdateStatus %s to %v", _schedule.Id, timeStr)
