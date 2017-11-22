@@ -35,6 +35,10 @@ func DispatchAuth(class string, object *any.Any, accountId string) []gproto.Mess
 		it := proto.ScheduleDelete{}
 		ptypes.UnmarshalAny(object, &it)
 		resp = actions.DoScheduleDelete(&it, accountId)
+	case "ScheduleDetail":
+		it := proto.ScheduleDetail{}
+		ptypes.UnmarshalAny(object, &it)
+		resp = actions.DoScheduleDetail(&it, accountId)
 	case "Algolog":
 		it := proto.Algolog{}
 		ptypes.UnmarshalAny(object, &it)

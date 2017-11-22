@@ -27,6 +27,7 @@ It is generated from these files:
 	proto/algorun.proto
 	proto/algolog_list.proto
 	proto/algorithm_detail.proto
+	proto/schedule_detail.proto
 	proto/rpc.proto
 	proto/algorithm_list_response.proto
 	proto/schedule.proto
@@ -44,6 +45,7 @@ It is generated from these files:
 	proto/session_create.proto
 	proto/credit_journal.proto
 	proto/signin_email.proto
+	proto/schedule_detail_response.proto
 
 It has these top-level messages:
 	SignupForm
@@ -67,6 +69,7 @@ It has these top-level messages:
 	Algorun
 	AlgologList
 	AlgorithmDetail
+	ScheduleDetail
 	Rpc
 	AlgorithmListResponse
 	Schedule
@@ -84,6 +87,7 @@ It has these top-level messages:
 	SessionCreate
 	CreditJournal
 	SigninEmail
+	ScheduleDetailResponse
 */
 package proto
 
