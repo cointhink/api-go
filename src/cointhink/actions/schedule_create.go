@@ -23,16 +23,16 @@ func DoScheduleCreate(scheduleCreate *proto.ScheduleCreate, accountId string) []
 		_schedule, err := schedule.Find(scheduleCreate.Schedule.Id)
 		if err != nil {
 			log.Printf("schedule new! %+v %+v", _schedule.Id, err)
-			responses = create(responses, _account, scheduleCreate.Schedule)
+			responses = create(responses, &_account, scheduleCreate.Schedule)
 		} else {
 			log.Printf("schedule update! %+v", _schedule.Id)
-			responses = update(responses, _account, scheduleCreate.Schedule)
+			responses = update(responses, &_account, scheduleCreate.Schedule)
 		}
 	}
 	return responses
 }
 
-func create(responses []gproto.Message, _account proto.Account, partialSchedule *proto.Schedule) []gproto.Message {
+func create(responses []gproto.Message, _account *proto.Account, partialSchedule *proto.Schedule) []gproto.Message {
 	if _account.ScheduleCredits > 0 {
 		log.Printf("creating schedule for algorithm %s", partialSchedule.AlgorithmId)
 		//	if algorithm.Owns(schedule.AlgorithmId, accountId) {
@@ -46,13 +46,14 @@ func create(responses []gproto.Message, _account proto.Account, partialSchedule 
 		if err != nil {
 			responses = append(responses, &proto.ScheduleCreateResponse{Ok: false, Message: err.Error()})
 		} else {
-			c_err := schedule.EnableUntilNextMonth(&_schedule, &_account)
+			c_err := schedule.EnableUntilNextMonth(&_schedule, _account)
 			if c_err != nil {
 				log.Printf("DoScheduleCreate credit_journal Debit err %+v", c_err)
 			} else {
 				mailer.MailCreditDebit(_account.Email, _schedule.AlgorithmId)
 			}
-			responses = append(responses, &proto.ScheduleCreateResponse{Ok: true})
+			responses = append(responses, &proto.ScheduleCreateResponse{Ok: true,
+				ScheduleCredits: _account.ScheduleCredits})
 		}
 	} else {
 		responses = append(responses, &proto.ScheduleCreateResponse{Ok: false, Message: "No remaining schedule credits."})
@@ -60,10 +61,10 @@ func create(responses []gproto.Message, _account proto.Account, partialSchedule 
 	return responses
 }
 
-func update(responses []gproto.Message, _account proto.Account, item *proto.Schedule) []gproto.Message {
+func update(responses []gproto.Message, _account *proto.Account, item *proto.Schedule) []gproto.Message {
 	if item.AccountId == _account.Id {
 		schedule.UpdateInitialState(item, item.InitialState)
-		responses = append(responses, &proto.ScheduleCreateResponse{Ok: true})
+		responses = append(responses, &proto.ScheduleCreateResponse{Ok: true, ScheduleCredits: _account.ScheduleCredits})
 	} else {
 		responses = append(responses, &proto.AlgorithmDetailResponse{Ok: false, Message: "No permission"})
 	}
