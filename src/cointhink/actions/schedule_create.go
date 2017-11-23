@@ -53,10 +53,12 @@ func create(responses []gproto.Message, _account *proto.Account, partialSchedule
 				mailer.MailCreditDebit(_account.Email, _schedule.AlgorithmId)
 			}
 			responses = append(responses, &proto.ScheduleCreateResponse{Ok: true,
+				Message:         "Your algorithm is ready! Press the Start button.",
 				ScheduleCredits: _account.ScheduleCredits})
 		}
 	} else {
-		responses = append(responses, &proto.ScheduleCreateResponse{Ok: false, Message: "No remaining schedule credits."})
+		responses = append(responses, &proto.ScheduleCreateResponse{Ok: false,
+			Message: "No remaining schedule credits."})
 	}
 	return responses
 }
