@@ -13,12 +13,12 @@ func DoAlgorithmDetail(_algorithmDetail *proto.AlgorithmDetail, accountId string
 		log.Printf("algo err %+v", err)
 		responses = append(responses, &proto.AlgorithmDetailResponse{Ok: false, Message: "Not Found"})
 	} else {
-		if item.AccountId == accountId {
-			responses = append(responses, &proto.AlgorithmDetailResponse{Ok: true,
-				Algorithm: item})
-		} else {
-			responses = append(responses, &proto.AlgorithmDetailResponse{Ok: false, Message: "No permission"})
-		}
+		//if item.AccountId == accountId {
+		responses = append(responses, &proto.AlgorithmDetailResponse{Ok: true,
+			Algorithm: item})
+		//} else {
+		//	responses = append(responses, &proto.AlgorithmDetailResponse{Ok: false, Message: "No permission"})
+		//}
 	}
 	return responses
 }
