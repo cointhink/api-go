@@ -52,9 +52,11 @@ func create(responses []gproto.Message, _account *proto.Account, partialSchedule
 			} else {
 				mailer.MailCreditDebit(_account.Email, _schedule.AlgorithmId)
 			}
+			// autostart
 			responses = append(responses, &proto.ScheduleCreateResponse{Ok: true,
-				Message:         "Your algorithm is ready! Press the Start button.",
 				ScheduleCredits: _account.ScheduleCredits})
+			scheduleStart := proto.ScheduleStart{ScheduleId: _schedule.Id}
+			responses = append(responses, DoScheduleStart(&scheduleStart, _account.Id)...)
 		}
 	} else {
 		responses = append(responses, &proto.ScheduleCreateResponse{Ok: false,
