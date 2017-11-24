@@ -5,6 +5,8 @@ import "fmt"
 import "os"
 
 import "cointhink/config"
+import "cointhink/db"
+import "cointhink/model/account"
 
 import "github.com/ogier/pflag"
 
@@ -20,6 +22,14 @@ func main() {
 	}
 	log.Printf("config loaded %s", config_file)
 
+	// db
+	db_url := config.C.QueryString("db.url")
+	err = db.D.Open(db_url)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("db open %s", db_url)
+
 	if len(os.Args) > 1 {
 		cmd := os.Args[1]
 		doCmd(cmd)
@@ -32,10 +42,20 @@ func main() {
 func doCmd(cmd string) {
 	if cmd == "credit" {
 		if len(os.Args) > 2 {
-			acct := os.Args[2]
-			log.Printf("credit to %v", acct)
+			email := os.Args[2]
+			addCredit(email)
 		} else {
 			log.Printf("$ coinctl credit <email>")
 		}
+	}
+}
+
+func addCredit(email string) {
+	log.Printf("looking for %v", email)
+	account, err := account.FindByEmail(email)
+	if err != nil {
+		log.Printf("credit err %+v", err)
+	} else {
+		log.Printf("Account %v %v", account.Email, account.Id)
 	}
 }
