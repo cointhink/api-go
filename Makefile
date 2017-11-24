@@ -1,7 +1,8 @@
 all: main
 
 main: src/cointhink/**/*go
-	GOPATH=`pwd` go build -o cointhink src/cointhink/cmd/*.go
+	GOPATH=`pwd` go build src/cointhink/cmd/cointhink.go
+	GOPATH=`pwd` go build src/cointhink/cmd/coinctl.go
 
 install:
 	GOPATH=`pwd` go get github.com/elgs/gojq
