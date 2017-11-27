@@ -17,6 +17,9 @@ import (
 
 func DoSignupform(form *proto.SignupForm) []gproto.Message {
 	if form.Account != nil {
+		form.Account.Username = strings.TrimSpace(form.Account.Username)
+		form.Account.Email = strings.TrimSpace(form.Account.Email)
+
 		rows, _ := db.D.Handle.Query(
 			"select count(*) from accounts where email = $1",
 			form.Account.Email)
@@ -39,7 +42,7 @@ func DoSignupform(form *proto.SignupForm) []gproto.Message {
 			}
 		}
 
-		if len(strings.TrimSpace(form.Account.Username)) > 0 {
+		if len(form.Account.Username) > 0 {
 			rows, _ = db.D.Handle.Query(
 				"select count(*) from accounts where username = $1",
 				form.Account.Username)
@@ -47,10 +50,10 @@ func DoSignupform(form *proto.SignupForm) []gproto.Message {
 				var count int
 				rows.Scan(&count)
 				if count > 0 {
-					log.Printf("username check %d", count)
+					log.Printf("username check failed. %d existing rows", count)
 					return []gproto.Message{&proto.SignupFormResponse{Ok: false,
 						Reason:  proto.SignupFormResponse_USERNAME_ALERT,
-						Message: "email already in use"}}
+						Message: "username already in use"}}
 				}
 			}
 		}
