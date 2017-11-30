@@ -38,7 +38,7 @@ func create(responses []gproto.Message, _account *proto.Account, partialSchedule
 		//	if algorithm.Owns(schedule.AlgorithmId, accountId) {
 		_schedule := proto.Schedule{AccountId: _account.Id,
 			AlgorithmId:  partialSchedule.AlgorithmId,
-			Executor:     proto.Schedule_lambda,
+			Executor:     proto.Schedule_container,
 			Status:       proto.Schedule_disabled,
 			InitialState: partialSchedule.InitialState,
 			EnabledUntil: time.Now().UTC().Format(constants.ISO8601)}
