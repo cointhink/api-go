@@ -24,7 +24,7 @@ func Start(account proto.Account, schedule proto.Schedule) error {
 				log.Printf("Start err: %v", err)
 				return err
 			} else {
-				image := "container " + config.C.QueryString("lxd.container")
+				image := config.C.QueryString("lxd.container")
 				if schedule.Executor == proto.Schedule_lambda {
 					image = "lambda"
 				}
