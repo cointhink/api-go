@@ -34,11 +34,11 @@ func DoScheduleCreate(scheduleCreate *proto.ScheduleCreate, accountId string) []
 
 func create(responses []gproto.Message, _account *proto.Account, partialSchedule *proto.Schedule) []gproto.Message {
 	if _account.ScheduleCredits > 0 {
-		log.Printf("creating schedule for algorithm %s", partialSchedule.AlgorithmId)
+		executor := proto.Schedule_lambda
 		//	if algorithm.Owns(schedule.AlgorithmId, accountId) {
 		_schedule := proto.Schedule{AccountId: _account.Id,
 			AlgorithmId:  partialSchedule.AlgorithmId,
-			Executor:     proto.Schedule_container,
+			Executor:     executor,
 			Status:       proto.Schedule_disabled,
 			InitialState: partialSchedule.InitialState,
 			EnabledUntil: time.Now().UTC().Format(constants.ISO8601)}
@@ -47,6 +47,7 @@ func create(responses []gproto.Message, _account *proto.Account, partialSchedule
 		if err != nil {
 			responses = append(responses, &proto.ScheduleCreateResponse{Ok: false, Message: err.Error()})
 		} else {
+			log.Printf("new schedule %s algorithm %s executor %s", _schedule.Id, _schedule.AlgorithmId, _schedule.Executor)
 			c_err := schedule.EnableUntilNextMonth(&_schedule, _account)
 			if c_err != nil {
 				log.Printf("DoScheduleCreate credit_journal Debit err %+v", c_err)

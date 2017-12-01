@@ -8,15 +8,13 @@ import "log"
 import "time"
 import "errors"
 
-var Columns = "id, account_id, algorithm_id, status, initial_state, enabled_until"
-var Fields = ":id, :account_id, :algorithm_id, :status, :initial_state, :enabled_until"
-var Table = "schedules"
+var schema db.SqlDetail = db.Register(proto.Schedule{})
 
 func Insert(item *proto.Schedule) error {
-	item.Id = db.NewId(Table)
-	_, err := db.D.Handle.NamedExec("insert into "+Table+" ("+Columns+") "+"values ("+Fields+")", item)
+	item.Id = db.NewId(schema.Table)
+	_, err := db.D.Handle.NamedExec("insert into "+schema.Table+" ("+schema.Columns+") "+"values ("+schema.Fields+")", item)
 	if err != nil {
-		log.Printf(Table+" Create err: %v", err)
+		log.Printf(schema.Table+" Create err: %v", err)
 		return err
 	}
 	return nil
@@ -24,7 +22,7 @@ func Insert(item *proto.Schedule) error {
 
 func UpdateStatus(_schedule *proto.Schedule, newState proto.Schedule_States) {
 	log.Printf("schedule.UpdateStatus %s to %v", _schedule.Id, newState)
-	_, err := db.D.Handle.Exec("update schedules set status = $1 where id = $2",
+	_, err := db.D.Handle.Exec("update "+schema.Table+" set status = $1 where id = $2",
 		newState, _schedule.Id)
 	if err != nil {
 		log.Printf("schedule.UpdateState err %v", err)
@@ -33,7 +31,7 @@ func UpdateStatus(_schedule *proto.Schedule, newState proto.Schedule_States) {
 
 func UpdateInitialState(_schedule *proto.Schedule, initialState string) {
 	log.Printf("schedule.UpdateInitialState %s to %v", _schedule.Id, initialState)
-	_, err := db.D.Handle.Exec("update schedules set initial_state = $1 where id = $2",
+	_, err := db.D.Handle.Exec("update "+schema.Table+" set initial_state = $1 where id = $2",
 		initialState, _schedule.Id)
 	if err != nil {
 		log.Printf("schedule.UpdateState err %v", err)

@@ -18,7 +18,7 @@ func lxdPath(path string) string {
 
 func lxdCall(verb string, path string, bodyParts ...interface{}) (*http.Response, error) {
 	url := lxdPath(path)
-	log.Printf("lxdCall %s %s", verb, url)
+	//log.Printf("lxdCall %s %s", verb, url)
 	body := &bytes.Buffer{}
 	var mime string
 	if len(bodyParts) > 0 {
@@ -54,7 +54,7 @@ func lxdCall(verb string, path string, bodyParts ...interface{}) (*http.Response
 	if err != nil {
 		log.Printf("!lxdCall http error %+v", err)
 	} else {
-		log.Printf("lxdCall http result %d", httpResult.StatusCode)
+		//log.Printf("lxdCall http result %d", httpResult.StatusCode)
 	}
 	return httpResult, err
 }
