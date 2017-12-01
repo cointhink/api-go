@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"cointhink/mailer"
-	"cointhink/model"
+	"cointhink/model/account"
 	"cointhink/model/token"
 	"cointhink/proto"
 
@@ -15,13 +15,12 @@ func DoSigninEmail(msg *proto.SigninEmail) []gproto.Message {
 	responses := []gproto.Message{}
 
 	log.Printf("account lookup %s", msg.Email)
-	account_id, err := model.AccountFindByEmail(msg.Email)
+	account, err := account.FindByEmail(msg.Email)
 	if err != nil {
 		log.Printf("account lookup err %#v", err)
 		responses = append(responses, &proto.SigninEmailResponse{Ok: false, Message: "email not found"})
 	} else {
-
-		token_, err := token.FindByAccountId(account_id, "")
+		token_, err := token.FindByAccountId(account.Id, "")
 		if err != nil {
 			log.Printf("account has no token.")
 		} else {

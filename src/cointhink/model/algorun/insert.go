@@ -3,6 +3,9 @@ package algorun
 import "cointhink/proto"
 import "cointhink/db"
 import "log"
+import "cointhink/model"
+
+var Cz = model.PbFields(proto.Algorun{})
 
 var Columns = "id, algorithm_id, account_id, schedule_id, status, code, image"
 var Fields = ":id, :algorithm_id, :account_id, :schedule_id, :status, :code, :image"

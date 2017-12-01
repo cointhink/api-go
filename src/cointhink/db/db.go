@@ -19,7 +19,7 @@ func init() {
 func (db *Db) Open(db_url string) error {
 	var err error
 	db.Handle, err = sqlx.Open("postgres", db_url)
-	db.Handle.MapperFunc(camelCase) // StructField becomes struct_field in database
+	db.Handle.MapperFunc(CamelCase) // StructField becomes struct_field in database
 	return err
 }
 
@@ -29,7 +29,7 @@ func NewId(table_name string) string {
 }
 
 // alternate mapperfunc
-func camelCase(name string) string {
+func CamelCase(name string) string {
 	words, _ := regexp.Compile("([A-Z][a-z]+)")
 	camelFull := strings.ToLower(words.ReplaceAllString(name, "_$1"))
 	camel := strings.TrimPrefix(camelFull, "_")
