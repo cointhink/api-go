@@ -2,11 +2,10 @@ package algorun
 
 import "cointhink/proto"
 import "cointhink/db"
+import "cointhink/model"
 import "log"
 
-var Columns = "id, algorithm_id, account_id, schedule_id, status, code, image"
-var Fields = ":id, :algorithm_id, :account_id, :schedule_id, :status, :code, :image"
-var Table = "algoruns"
+var Table, Columns, Fields = model.SqlFields(proto.Algorun{})
 
 func Insert(item *proto.Algorun) error {
 	item.Id = db.NewId(Table)
