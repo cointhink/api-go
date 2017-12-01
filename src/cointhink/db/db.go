@@ -35,3 +35,7 @@ func CamelCase(name string) string {
 	camel := strings.TrimPrefix(camelFull, "_")
 	return camel
 }
+
+func Tabelize(name string) string {
+	return strings.ToLower(name) + "s"
+}
