@@ -26,9 +26,10 @@ It is generated from these files:
 	proto/market_prices.proto
 	proto/algorun.proto
 	proto/algolog_list.proto
-	proto/algorithm_detail.proto
+	proto/lambda.proto
 	proto/schedule_detail.proto
 	proto/rpc.proto
+	proto/algorithm_detail.proto
 	proto/algorithm_list_response.proto
 	proto/schedule.proto
 	proto/session_create_response.proto
@@ -68,9 +69,10 @@ It has these top-level messages:
 	MarketPrices
 	Algorun
 	AlgologList
-	AlgorithmDetail
+	Lambda
 	ScheduleDetail
 	Rpc
+	AlgorithmDetail
 	AlgorithmListResponse
 	Schedule
 	SessionCreateResponse

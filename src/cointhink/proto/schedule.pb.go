@@ -38,7 +38,7 @@ var Schedule_States_value = map[string]int32{
 func (x Schedule_States) String() string {
 	return proto1.EnumName(Schedule_States_name, int32(x))
 }
-func (Schedule_States) EnumDescriptor() ([]byte, []int) { return fileDescriptor24, []int{0, 0} }
+func (Schedule_States) EnumDescriptor() ([]byte, []int) { return fileDescriptor25, []int{0, 0} }
 
 type Schedule_Executors int32
 
@@ -59,7 +59,7 @@ var Schedule_Executors_value = map[string]int32{
 func (x Schedule_Executors) String() string {
 	return proto1.EnumName(Schedule_Executors_name, int32(x))
 }
-func (Schedule_Executors) EnumDescriptor() ([]byte, []int) { return fileDescriptor24, []int{0, 1} }
+func (Schedule_Executors) EnumDescriptor() ([]byte, []int) { return fileDescriptor25, []int{0, 1} }
 
 type Schedule struct {
 	Id           string             `protobuf:"bytes,1,opt,name=Id" json:"Id,omitempty"`
@@ -74,7 +74,7 @@ type Schedule struct {
 func (m *Schedule) Reset()                    { *m = Schedule{} }
 func (m *Schedule) String() string            { return proto1.CompactTextString(m) }
 func (*Schedule) ProtoMessage()               {}
-func (*Schedule) Descriptor() ([]byte, []int) { return fileDescriptor24, []int{0} }
+func (*Schedule) Descriptor() ([]byte, []int) { return fileDescriptor25, []int{0} }
 
 func (m *Schedule) GetId() string {
 	if m != nil {
@@ -131,9 +131,9 @@ func init() {
 	proto1.RegisterEnum("proto.Schedule_Executors", Schedule_Executors_name, Schedule_Executors_value)
 }
 
-func init() { proto1.RegisterFile("proto/schedule.proto", fileDescriptor24) }
+func init() { proto1.RegisterFile("proto/schedule.proto", fileDescriptor25) }
 
-var fileDescriptor24 = []byte{
+var fileDescriptor25 = []byte{
 	// 275 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x5c, 0x8e, 0xb1, 0x4e, 0xf3, 0x30,
 	0x14, 0x85, 0x9b, 0xf4, 0x6f, 0x9a, 0xdc, 0xf6, 0xaf, 0xac, 0x2b, 0x84, 0x8c, 0xc4, 0x10, 0x65,

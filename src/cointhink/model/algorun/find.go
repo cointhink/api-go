@@ -17,6 +17,7 @@ func Find(id string) (*proto.Algorun, error) {
 
 func FindFromSchedule(accountId string, scheduleId string) (*proto.Algorun, error) {
 	run := &proto.Algorun{}
+	// TODO: date order
 	err := db.D.Handle.Get(run,
 		"select "+Columns+" from algoruns where account_id = $1 and schedule_id = $2",
 		accountId, scheduleId)

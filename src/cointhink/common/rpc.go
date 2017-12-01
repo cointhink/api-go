@@ -9,10 +9,13 @@ import "cointhink/model/token"
 import "cointhink/q"
 import "cointhink/httpclients"
 import "cointhink/proto"
+import "cointhink/model/algorun"
+import "cointhink/model/schedule"
 
 import "github.com/golang/protobuf/jsonpb"
 import gproto "github.com/golang/protobuf/proto"
 import "github.com/gorilla/websocket"
+import "github.com/golang/protobuf/ptypes"
 
 // rpc
 var RPCq chan q.RpcMsg
@@ -48,9 +51,46 @@ func Rpc(msg *q.RpcMsg) {
 
 func RespondAll(msg gproto.Message) {
 	id := "respondall"
+	log.Printf("RespondAll http client count %d", len(httpclients.Clients))
 	for _, client := range httpclients.Clients {
 		q.OUTq <- q.RpcOut{Socket: client.Socket,
 			Response: &q.RpcResponse{Msg: msg, Id: id}}
+	}
+}
+
+func LambdaAll(marketPrice *proto.MarketPrices) {
+	id := "lambdaall"
+	for _, client := range httpclients.Clients {
+		if len(client.AlgorunId) > 0 {
+			log.Printf("lambdaall algorun %s", client.AlgorunId)
+			_algorun, err := algorun.Find(client.AlgorunId)
+			if err != nil {
+				log.Printf("lambdaall algorun schedule %s", _algorun.ScheduleId)
+				_schedule, err := schedule.Find(_algorun.ScheduleId)
+				if err != nil {
+					log.Printf("lambdaall algorun schedule executor %s", _schedule.Executor)
+					if _schedule.Executor == proto.Schedule_lambda {
+						if err != nil {
+							token, err := token.FindByAccountId(_schedule.AccountId, _algorun.Id)
+							if err != nil {
+								marketPrice_object, err := ptypes.MarshalAny(marketPrice)
+								if err != nil {
+									lambda := &proto.Lambda{
+										Token:   token.Token,
+										Method:  protoClassName(marketPrice),
+										Object:  marketPrice_object,
+										StateIn: _algorun.State}
+									q.OUTq <- q.RpcOut{Socket: client.Socket,
+										Response: &q.RpcResponse{Msg: lambda, Id: id}}
+									log.Printf("lambdaall algorun lambda %+v", lambda)
+								}
+							} else {
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -66,18 +106,7 @@ func Respond(out *q.RpcOut) {
 		}
 	} else {
 		method := protoClassName(out.Response.Msg)
-		marsh := jsonpb.Marshaler{}
-		objJson, err := marsh.MarshalToString(out.Response.Msg)
-		if err != nil {
-			log.Println("objJson:", err)
-			return
-		}
-		var jsonified interface{}
-		err = json.Unmarshal([]byte(objJson), &jsonified)
-		if err != nil {
-			log.Printf("unmarshal err: %s", err)
-			return
-		}
+		jsonified := protoAnon(out.Response.Msg)
 		resp := map[string]interface{}{"id": out.Response.Id,
 			"method": method,
 			"object": jsonified}
@@ -97,4 +126,20 @@ func Respond(out *q.RpcOut) {
 			}
 		}
 	}
+}
+
+func protoAnon(msg gproto.Message) interface{} {
+	marsh := jsonpb.Marshaler{}
+	objJson, err := marsh.MarshalToString(msg)
+	if err != nil {
+		log.Println("objJson:", err)
+		return nil
+	}
+	var jsonified interface{}
+	err = json.Unmarshal([]byte(objJson), &jsonified)
+	if err != nil {
+		log.Printf("unmarshal err: %s", err)
+		return nil
+	}
+	return jsonified
 }

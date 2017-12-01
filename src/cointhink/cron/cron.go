@@ -78,6 +78,7 @@ func marketPrices(time time.Time) {
 	}
 	fmt.Printf("coin price pump of %d prices.\n", len(pricePing.Prices))
 	common.RespondAll(pricePing)
+	common.LambdaAll(pricePing)
 }
 
 func coinFetch(name string) (CoinMarketCap, error) {
