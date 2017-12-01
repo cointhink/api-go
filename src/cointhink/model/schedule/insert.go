@@ -12,7 +12,8 @@ var schema db.SqlDetail = db.Register(proto.Schedule{})
 
 func Insert(item *proto.Schedule) error {
 	item.Id = db.NewId(schema.Table)
-	_, err := db.D.Handle.NamedExec("insert into "+schema.Table+" ("+schema.Columns+") "+"values ("+schema.Fields+")", item)
+	_, err := db.D.Handle.NamedExec("insert into "+schema.Table+
+		" ("+schema.ColumnsSql+") "+"values ("+schema.FieldsSql+")", item)
 	if err != nil {
 		log.Printf(schema.Table+" Create err: %v", err)
 		return err

@@ -7,7 +7,7 @@ import "log"
 func Find(id string) (*proto.Algorun, error) {
 	run := &proto.Algorun{}
 	err := db.D.Handle.Get(run,
-		"select "+schema.Columns+" from algoruns where id = $1", id)
+		"select "+schema.ColumnsSql+" from algoruns where id = $1", id)
 	if err != nil {
 		return run, err
 	} else {
@@ -19,7 +19,7 @@ func FindFromSchedule(accountId string, scheduleId string) (*proto.Algorun, erro
 	run := &proto.Algorun{}
 	// TODO: date order
 	err := db.D.Handle.Get(run,
-		"select "+schema.Columns+" from algoruns where account_id = $1 and schedule_id = $2",
+		"select "+schema.ColumnsSql+" from algoruns where account_id = $1 and schedule_id = $2",
 		accountId, scheduleId)
 	if err != nil {
 		return run, err
@@ -31,7 +31,7 @@ func FindFromSchedule(accountId string, scheduleId string) (*proto.Algorun, erro
 func FindReady(accountId string, scheduleId string) ([]*proto.Algorun, error) {
 	ids := []*proto.Algorun{}
 	err := db.D.Handle.Select(&ids,
-		"select "+schema.Columns+" from algoruns where status != 'deleted' and account_id = $1 and schedule_id = $2",
+		"select "+schema.ColumnsSql+" from algoruns where status != 'deleted' and account_id = $1 and schedule_id = $2",
 		accountId, scheduleId)
 	if err != nil {
 		return ids, err
@@ -43,7 +43,7 @@ func FindReady(accountId string, scheduleId string) ([]*proto.Algorun, error) {
 func List() ([]*proto.Algorun, error) {
 	items := []*proto.Algorun{}
 	err := db.D.Handle.Select(&items,
-		"select "+schema.Columns+" from algoruns")
+		"select "+schema.ColumnsSql+" from algoruns")
 	if err != nil {
 		log.Printf("ScheduleFind SQL: %v", err)
 		return items, err

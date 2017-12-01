@@ -13,9 +13,10 @@ type Db struct {
 }
 
 type SqlDetail struct {
-	Table   string
-	Columns string
-	Fields  string
+	Table      string
+	Columns    []string
+	ColumnsSql string
+	FieldsSql  string
 }
 
 var D Db = Db{}
@@ -35,16 +36,24 @@ type PsqlRow struct {
 }
 
 func schemaCheck() {
-	for table, _ := range registeredTables {
+	for table, registeredSchema := range registeredTables {
 		psqlRows := []PsqlRow{}
 		err := D.Handle.Select(&psqlRows, "SELECT table_name, column_name FROM information_schema.columns WHERE "+
 			"table_schema = 'public' AND table_name = $1", table)
 		if err != nil {
 			fmt.Printf("rows err %v\n", err)
 		} else {
-			// for _, row := range psqlRows {
-			// 	log.Printf("table %s check rows %v\n", table, row.ColumnName)
-			// }
+			for _, row := range psqlRows {
+				found := false
+				for _, registeredColumnName := range registeredSchema.Columns {
+					if row.ColumnName == registeredColumnName {
+						found = true
+					}
+				}
+				if !found {
+					fmt.Printf("WARNING: table %s check psql column %s is not in protobuf\n", table, row.ColumnName)
+				}
+			}
 		}
 	}
 }
@@ -67,26 +76,26 @@ func Tabelize(name string) string {
 }
 
 func Register(thing interface{}) SqlDetail {
-	detail := SqlFields(thing)
+	detail := SqlFieldsSql(thing)
 	registeredTables[detail.Table] = detail
-	fmt.Printf("model registered: %v | %v\n", detail.Table, detail.Columns)
+	fmt.Printf("model registered: %v | %v\n", detail.Table, detail.ColumnsSql)
 	return detail
 }
 
-func SqlFields(thing interface{}) SqlDetail {
+func SqlFieldsSql(thing interface{}) SqlDetail {
 	iFields := []string{}
 	s := reflect.TypeOf(thing)
 	for i := 0; i < s.NumField(); i++ {
 		f := s.Field(i)
 		iFields = append(iFields, CamelCase(f.Name))
 	}
-	sqlFields := []string{}
+	sqlFieldsSql := []string{}
 	for _, colName := range iFields {
-		sqlFields = append(sqlFields, ":"+colName)
+		sqlFieldsSql = append(sqlFieldsSql, ":"+colName)
 	}
 	table := Tabelize(s.Name())
-	columns := strings.Join(iFields, ", ")
-	fields := strings.Join(sqlFields, ", ")
+	ColumnsSql := strings.Join(iFields, ", ")
+	FieldsSql := strings.Join(sqlFieldsSql, ", ")
 
-	return SqlDetail{Table: table, Columns: columns, Fields: fields}
+	return SqlDetail{Table: table, Columns: iFields, ColumnsSql: ColumnsSql, FieldsSql: FieldsSql}
 }
