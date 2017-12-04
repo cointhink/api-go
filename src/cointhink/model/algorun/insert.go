@@ -9,7 +9,7 @@ var Schema db.SqlDetail = db.Register(proto.Algorun{})
 func Insert(item *proto.Algorun) error {
 	item.Id = db.NewId(Schema.Table)
 	_, err := db.D.Handle.NamedExec("insert into "+Schema.Table+
-		" ("+Schema.ColumnsSql+") "+"values ("+Schema.FieldsSql+")", item)
+		" ("+Schema.ColumnsInsertSql+") "+"values ("+Schema.FieldsSql+")", item)
 	if err != nil {
 		log.Printf("algorun Create err: %v", err)
 		return err
