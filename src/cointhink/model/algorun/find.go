@@ -2,12 +2,13 @@ package algorun
 
 import "cointhink/db"
 import "cointhink/proto"
+import "cointhink/model/schedule"
 import "log"
 
 func Find(id string) (*proto.Algorun, error) {
 	run := &proto.Algorun{}
 	err := db.D.Handle.Get(run,
-		"select "+schema.ColumnsSql+" from algoruns where id = $1", id)
+		"select "+Schema.ColumnsSql+" from algoruns where id = $1", id)
 	if err != nil {
 		return run, err
 	} else {
@@ -19,7 +20,7 @@ func FindFromSchedule(accountId string, scheduleId string) (*proto.Algorun, erro
 	run := &proto.Algorun{}
 	// TODO: date order
 	err := db.D.Handle.Get(run,
-		"select "+schema.ColumnsSql+" from algoruns where account_id = $1 and schedule_id = $2",
+		"select "+Schema.ColumnsSql+" from algoruns where account_id = $1 and schedule_id = $2",
 		accountId, scheduleId)
 	if err != nil {
 		return run, err
@@ -31,7 +32,8 @@ func FindFromSchedule(accountId string, scheduleId string) (*proto.Algorun, erro
 func FindReady(accountId string, scheduleId string) ([]*proto.Algorun, error) {
 	ids := []*proto.Algorun{}
 	err := db.D.Handle.Select(&ids,
-		"select "+schema.ColumnsSql+" from algoruns where status != 'deleted' and account_id = $1 and schedule_id = $2",
+		"select "+Schema.ColumnsSql+" from algoruns "+
+			"where status != 'deleted' and account_id = $1 and schedule_id = $2",
 		accountId, scheduleId)
 	if err != nil {
 		return ids, err
@@ -43,7 +45,7 @@ func FindReady(accountId string, scheduleId string) ([]*proto.Algorun, error) {
 func List() ([]*proto.Algorun, error) {
 	items := []*proto.Algorun{}
 	err := db.D.Handle.Select(&items,
-		"select "+schema.ColumnsSql+" from algoruns")
+		"select "+Schema.ColumnsSql+" from algoruns")
 	if err != nil {
 		log.Printf("ScheduleFind SQL: %v", err)
 		return items, err
@@ -54,5 +56,14 @@ func List() ([]*proto.Algorun, error) {
 
 func Lambdable() []*proto.Algorun {
 	items := []*proto.Algorun{}
+	sql := "select " + Schema.ColumnsSql + " from " +
+		Schema.Table + ", " + schedule.Schema.Table + " " +
+		"where " + Schema.Table + ".schedule_id = " + schedule.Schema.Table + ".id " +
+		"and " + Schema.Table + ".status = 'running' and " +
+		schedule.Schema.Table + ".executor = $1"
+	err := db.D.Handle.Select(&items, sql, proto.Schedule_lambda)
+	if err != nil {
+		log.Printf("!!Algorun Lambdbable SQL: %v\n%s", err, sql)
+	}
 	return items
 }

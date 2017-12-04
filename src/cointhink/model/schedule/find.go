@@ -10,7 +10,7 @@ import "time"
 func Find(scheduleId string) (proto.Schedule, error) {
 	schedule := proto.Schedule{}
 	err := db.D.Handle.Get(&schedule,
-		"select "+schema.ColumnsSql+" from schedules where id = $1",
+		"select "+Schema.ColumnsSql+" from schedules where id = $1",
 		scheduleId)
 	if err != nil {
 		log.Printf("schedule.Find SQL: %v", err)
@@ -23,7 +23,7 @@ func Find(scheduleId string) (proto.Schedule, error) {
 func FindWithAccount(scheduleId string, accountId string) (proto.Schedule, error) {
 	schedule := proto.Schedule{}
 	err := db.D.Handle.Get(&schedule,
-		"select "+schema.ColumnsSql+" from schedules where id = $1 and account_id = $2",
+		"select "+Schema.ColumnsSql+" from schedules where id = $1 and account_id = $2",
 		scheduleId, accountId)
 	if err != nil {
 		log.Printf("schedule.FindWithAccount SQL: %v", err)
@@ -36,7 +36,7 @@ func FindWithAccount(scheduleId string, accountId string) (proto.Schedule, error
 func List(accountId string) ([]*proto.Schedule, error) {
 	schedules := []*proto.Schedule{}
 	err := db.D.Handle.Select(&schedules,
-		"select "+schema.ColumnsSql+" from schedules where status != "+
+		"select "+Schema.ColumnsSql+" from schedules where status != "+
 			strconv.FormatInt(int64(proto.Schedule_States_value["deleted"]), 10)+" and account_id = $1",
 		accountId)
 	if err != nil {
@@ -62,7 +62,7 @@ func EnabledNow(_schedule *proto.Schedule) bool {
 func RunningExpireds(time time.Time) []*proto.Schedule {
 	schedules := []*proto.Schedule{}
 	err := db.D.Handle.Select(&schedules,
-		"select "+schema.ColumnsSql+" from schedules where status = "+
+		"select "+Schema.ColumnsSql+" from schedules where status = "+
 			strconv.FormatInt(int64(proto.Schedule_States_value["enabled"]), 10)+" and "+
 			" enabled_until < $1", time)
 	if err != nil {

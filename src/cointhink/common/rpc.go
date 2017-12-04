@@ -60,51 +60,67 @@ func RespondAll(msg gproto.Message) {
 
 func LambdaAll(marketPrice *proto.MarketPrices) {
 	id := "lambdaall"
-	executors := LambdaExecutors()
-	log.Printf("lambdaall has %d executors", len(executors))
-
-	for _, _algorun := range algorun.Lambdable() {
-		token, err := token.FindByAccountId(_algorun.AccountId, _algorun.Id)
+	lambdables := algorun.Lambdable()
+	log.Printf("**lambdaall working on  %d lambdables", len(lambdables))
+	for _, _algorun := range lambdables {
+		_schedule, err := schedule.Find(_algorun.ScheduleId)
 		if err != nil {
 		} else {
-			for _, e := range executors {
+			executor := LambdaExecutor(_schedule.AlgorithmId)
+			if executor == nil {
+				log.Printf("!!lambdaall NO executor for algorithm %s", _schedule.AlgorithmId)
+			} else {
+				log.Printf("lambdaall has executor %s for algorithm %s", _schedule.Id, _schedule.AlgorithmId)
 				marketPrice_object, err := ptypes.MarshalAny(marketPrice)
 				if err != nil {
-					log.Printf("lambdaall algorun %+v schedule %+v", _algorun.Id, _algorun.ScheduleId)
-					lambda := &proto.Lambda{
-						Token:   token.Token,
-						Method:  protoClassName(marketPrice),
-						Object:  marketPrice_object,
-						StateIn: _algorun.State}
-					q.OUTq <- q.RpcOut{Socket: e.Socket,
-						Response: &q.RpcResponse{Msg: lambda, Id: id}}
+					token, err := token.FindByAccountId(_algorun.AccountId, _algorun.Id)
+					if err != nil {
+						log.Printf("lambdaall no token accountId %+v algorunId %+v", _algorun.AccountId,
+							_algorun.Id)
+					} else {
+						log.Printf("lambdaall token algorun %+v schedule %+v", _algorun.Id, _algorun.ScheduleId)
+						lambda := &proto.Lambda{
+							Token:   token.Token,
+							Method:  protoClassName(marketPrice),
+							Object:  marketPrice_object,
+							StateIn: _algorun.State}
+						q.OUTq <- q.RpcOut{Socket: executor.Socket,
+							Response: &q.RpcResponse{Msg: lambda, Id: id}}
+					}
 				}
 			}
 		}
 	}
 }
 
-func LambdaExecutors() []*httpclients.Httpclient {
-	executors := []*httpclients.Httpclient{}
+func LambdaExecutor(_algorithmId string) *httpclients.Httpclient {
+	log.Printf("**lambdaexecutor search %d connected clients for lambda master algo %s", len(httpclients.Clients), _algorithmId)
 	for _, client := range httpclients.Clients {
 		if len(client.AlgorunId) > 0 {
-			log.Printf("lambdaexecutors algorun %s", client.AlgorunId)
 			_algorun, err := algorun.Find(client.AlgorunId)
 			if err != nil {
-				log.Printf("lambdaexecutors algorun schedule %s", _algorun.ScheduleId)
+				log.Printf("!!lambdaexecutor algorun %s", err)
+			} else {
 				_schedule, err := schedule.Find(_algorun.ScheduleId)
 				if err != nil {
-					log.Printf("lambdaexecutors algorun schedule executor %s algorithm", _schedule.Executor, _schedule.AlgorithmId)
-					if _schedule.Executor == proto.Schedule_lambda {
-						if err != nil {
-							executors = append(executors, &client)
+					log.Printf("!!lambdaexecutor algorun %s", err)
+				} else {
+					log.Printf("lambdaexecutors algorun schedule executor %s algorithm %s", _schedule.Executor, _schedule.AlgorithmId)
+					if _schedule.AlgorithmId == _algorithmId {
+						if _schedule.Executor == proto.Schedule_lambda_master {
+							log.Printf("lambdaexecutors lambda_master found")
+							return &client
+						} else {
+							log.Printf("lambdaexecutors not master %d", _schedule.Executor)
 						}
+					} else {
+						log.Printf("lambdaexecutors wrong algorithm %s", _schedule.AlgorithmId)
 					}
 				}
 			}
 		}
 	}
-	return executors
+	return nil
 }
 
 func protoClassName(proto gproto.Message) string {

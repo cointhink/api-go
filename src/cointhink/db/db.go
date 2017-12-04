@@ -13,10 +13,11 @@ type Db struct {
 }
 
 type SqlDetail struct {
-	Table      string
-	Columns    []string
-	ColumnsSql string
-	FieldsSql  string
+	Table            string
+	Columns          []string
+	ColumnsSql       string
+	ColumnsInsertSql string
+	FieldsSql        string
 }
 
 var D Db = Db{}
@@ -83,8 +84,9 @@ func Register(thing interface{}) SqlDetail {
 }
 
 func SqlFieldsSql(thing interface{}) SqlDetail {
-	iFields := []string{}
 	s := reflect.TypeOf(thing)
+	table := Tabelize(s.Name())
+	iFields := []string{}
 	for i := 0; i < s.NumField(); i++ {
 		f := s.Field(i)
 		iFields = append(iFields, CamelCase(f.Name))
@@ -93,9 +95,17 @@ func SqlFieldsSql(thing interface{}) SqlDetail {
 	for _, colName := range iFields {
 		sqlFieldsSql = append(sqlFieldsSql, ":"+colName)
 	}
-	table := Tabelize(s.Name())
-	ColumnsSql := strings.Join(iFields, ", ")
-	FieldsSql := strings.Join(sqlFieldsSql, ", ")
+	tableFields := []string{}
+	for _, iField := range iFields {
+		tableFields = append(tableFields, table+"."+iField)
+	}
+	columnsSql := strings.Join(tableFields, ", ")
+	columnsInsertSql := strings.Join(iFields, ", ")
+	fieldsSql := strings.Join(sqlFieldsSql, ", ")
 
-	return SqlDetail{Table: table, Columns: iFields, ColumnsSql: ColumnsSql, FieldsSql: FieldsSql}
+	return SqlDetail{Table: table,
+		Columns:          iFields,
+		ColumnsSql:       columnsSql,
+		ColumnsInsertSql: columnsInsertSql,
+		FieldsSql:        fieldsSql}
 }
