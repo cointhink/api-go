@@ -51,3 +51,8 @@ func List() ([]*proto.Algorun, error) {
 		return items, nil
 	}
 }
+
+func Lambdable() []*proto.Algorun {
+	items := []*proto.Algorun{}
+	return items
+}

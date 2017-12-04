@@ -11,7 +11,7 @@ func SyncAll() {
 	if err != nil {
 	}
 
-	log.Printf("Syncing %d algoruns", len(runs))
+	log.Printf("*Syncing %d algoruns", len(runs))
 	for _, run := range runs {
 		Sync(run)
 	}
@@ -22,8 +22,10 @@ func Sync(run *proto.Algorun) {
 	if err != nil {
 		log.Printf("sync err %v %v", run.Id, err)
 	} else {
-		log.Printf("container.Sync: RunId:%v RunStatus:%s LxdStatus:%s LxdErr:%d", run.Id, run.Status, response.Metadata.Status,
-			response.ErrorCode)
+		if !(run.Status == proto.Algorun_States_name[int32(proto.Algorun_deleted)] && response.ErrorCode == 404) {
+			log.Printf("container.Sync: RunId:%v RunStatus:%s LxdStatus:%s LxdErr:%d", run.Id, run.Status, response.Metadata.Status,
+				response.ErrorCode)
+		}
 		if response.ErrorCode == 404 {
 			algorun.UpdateStatus(run, proto.Algorun_deleted)
 		} else if response.StatusCode == 200 {

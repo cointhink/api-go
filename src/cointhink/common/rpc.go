@@ -60,38 +60,51 @@ func RespondAll(msg gproto.Message) {
 
 func LambdaAll(marketPrice *proto.MarketPrices) {
 	id := "lambdaall"
+	executors := LambdaExecutors()
+	log.Printf("lambdaall has %d executors", len(executors))
+
+	for _, _algorun := range algorun.Lambdable() {
+		token, err := token.FindByAccountId(_algorun.AccountId, _algorun.Id)
+		if err != nil {
+		} else {
+			for _, e := range executors {
+				marketPrice_object, err := ptypes.MarshalAny(marketPrice)
+				if err != nil {
+					log.Printf("lambdaall algorun %+v schedule %+v", _algorun.Id, _algorun.ScheduleId)
+					lambda := &proto.Lambda{
+						Token:   token.Token,
+						Method:  protoClassName(marketPrice),
+						Object:  marketPrice_object,
+						StateIn: _algorun.State}
+					q.OUTq <- q.RpcOut{Socket: e.Socket,
+						Response: &q.RpcResponse{Msg: lambda, Id: id}}
+				}
+			}
+		}
+	}
+}
+
+func LambdaExecutors() []*httpclients.Httpclient {
+	executors := []*httpclients.Httpclient{}
 	for _, client := range httpclients.Clients {
 		if len(client.AlgorunId) > 0 {
-			log.Printf("lambdaall algorun %s", client.AlgorunId)
+			log.Printf("lambdaexecutors algorun %s", client.AlgorunId)
 			_algorun, err := algorun.Find(client.AlgorunId)
 			if err != nil {
-				log.Printf("lambdaall algorun schedule %s", _algorun.ScheduleId)
+				log.Printf("lambdaexecutors algorun schedule %s", _algorun.ScheduleId)
 				_schedule, err := schedule.Find(_algorun.ScheduleId)
 				if err != nil {
-					log.Printf("lambdaall algorun schedule executor %s", _schedule.Executor)
+					log.Printf("lambdaexecutors algorun schedule executor %s algorithm", _schedule.Executor, _schedule.AlgorithmId)
 					if _schedule.Executor == proto.Schedule_lambda {
 						if err != nil {
-							token, err := token.FindByAccountId(_schedule.AccountId, _algorun.Id)
-							if err != nil {
-								marketPrice_object, err := ptypes.MarshalAny(marketPrice)
-								if err != nil {
-									lambda := &proto.Lambda{
-										Token:   token.Token,
-										Method:  protoClassName(marketPrice),
-										Object:  marketPrice_object,
-										StateIn: _algorun.State}
-									q.OUTq <- q.RpcOut{Socket: client.Socket,
-										Response: &q.RpcResponse{Msg: lambda, Id: id}}
-									log.Printf("lambdaall algorun lambda %+v", lambda)
-								}
-							} else {
-							}
+							executors = append(executors, &client)
 						}
 					}
 				}
 			}
 		}
 	}
+	return executors
 }
 
 func protoClassName(proto gproto.Message) string {
