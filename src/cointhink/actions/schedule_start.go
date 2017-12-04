@@ -40,9 +40,15 @@ func DoScheduleStart(scheduleStart *proto.ScheduleStart, accountId string) []gpr
 
 				if enabled {
 					schedule.UpdateStatus(&_schedule, proto.Schedule_enabled)
-					err = container.Start(_account, _schedule)
+					_algorun, err := container.Start(_account, _schedule)
 					if err != nil {
 						responses = append(responses, &proto.ScheduleStartResponse{Ok: false, Message: err.Error()})
+					} else {
+						if _schedule.Executor == proto.Schedule_lambda {
+							sr := proto.ScheduleRun{Schedule: &_schedule, Run: _algorun}
+							responses = append(responses, &proto.ScheduleListPartial{ScheduleRun: &sr})
+						}
+						responses = append(responses, &proto.ScheduleStartResponse{Ok: true})
 					}
 				}
 			}

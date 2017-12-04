@@ -24,6 +24,7 @@ func Insert(item *proto.Schedule) error {
 
 func UpdateStatus(_schedule *proto.Schedule, newState proto.Schedule_States) {
 	log.Printf("schedule.UpdateStatus %s to %v", _schedule.Id, newState)
+	_schedule.Status = newState
 	_, err := db.D.Handle.Exec("update "+Schema.Table+" set status = $1 where id = $2",
 		newState, _schedule.Id)
 	if err != nil {

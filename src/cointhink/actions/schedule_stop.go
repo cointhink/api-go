@@ -4,7 +4,6 @@ import (
 	"log"
 
 	"cointhink/container"
-	"cointhink/lxd"
 	"cointhink/model/algorun"
 	"cointhink/model/schedule"
 	"cointhink/proto"
@@ -28,23 +27,16 @@ func DoScheduleStop(scheduleStop *proto.ScheduleStop, accountId string) []gproto
 		schedule.UpdateStatus(&_schedule, proto.Schedule_disabled)
 
 		// move
-		boxes, err := algorun.FindReady(accountId, _schedule.Id)
+		_algoruns, err := algorun.FindReady(accountId, _schedule.Id)
 		if err != nil {
-			log.Print("LxdStatus: ", err)
+			log.Print("scheduleStop findReady: ", err)
 			responses = append(responses, &proto.ScheduleStartResponse{Ok: false, Message: "unknown status"})
 		} else {
-			if len(boxes) > 0 {
-				box := boxes[0]
-				stat, err := lxd.Status(box.Id)
-				if err != nil {
-					log.Print("LxdStatus: ", err)
-					responses = append(responses, &proto.ScheduleStartResponse{Ok: false, Message: "unknown status"})
-				}
-				log.Printf("ScheduleStop LxdStatus errCode:%d status:%v", stat.ErrorCode, stat.Metadata.Status)
-				algorun.UpdateStatus(box, proto.Algorun_deleted)
-				if stat.ErrorCode != 404 {
-					container.Stop(box)
-				}
+			if len(_algoruns) > 0 {
+				_algorun := _algoruns[0]
+				container.Stop(_algorun)
+				sr := proto.ScheduleRun{Schedule: &_schedule, Run: _algorun}
+				responses = append(responses, &proto.ScheduleListPartial{ScheduleRun: &sr})
 			}
 		}
 	}
