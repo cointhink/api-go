@@ -131,7 +131,8 @@ func protoClassName(proto gproto.Message) string {
 func Respond(out *q.RpcOut) {
 	if out.Response == nil {
 		if err := out.Socket.WriteMessage(websocket.PingMessage, []byte("cointhink")); err != nil {
-			log.Printf("Ping send err %+v!\n", err)
+			log.Printf("Ping send err %+v! dropping client\n", err)
+			httpclients.Clients.Remove(out.Socket)
 		}
 	} else {
 		method := protoClassName(out.Response.Msg)

@@ -14,7 +14,13 @@ type Httpclient struct {
 	Out       []*q.RpcOut
 }
 
-var Clients map[*websocket.Conn]Httpclient
+type ClientList map[*websocket.Conn]Httpclient
+
+var Clients ClientList = ClientList{}
+
+func (list ClientList) Remove(socket *websocket.Conn) {
+	delete(list, socket)
+}
 
 func AccountIdToWebSockets(accountId string) []*websocket.Conn {
 	var list []*websocket.Conn

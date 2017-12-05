@@ -18,7 +18,6 @@ import (
 func Httploop(listen_address string) {
 	http.HandleFunc("/", Upgrade)
 	http.HandleFunc("/stripe", Stripe)
-	httpclients.Clients = map[*websocket.Conn]httpclients.Httpclient{}
 	http.ListenAndServe(listen_address, nil)
 }
 
@@ -66,7 +65,7 @@ func Upgrade(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Printf("wsocket closing %s", wsocket.RemoteAddr())
 	wsocket.Close()
-	delete(httpclients.Clients, wsocket)
+	httpclients.Clients.Remove(wsocket)
 }
 
 func Httpget(url string) (string, error) {
