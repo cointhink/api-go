@@ -71,11 +71,12 @@ func LambdaAll(marketPrice *proto.MarketPrices) {
 		} else {
 			executor := LambdaExecutor(_schedule.AlgorithmId)
 			if executor == nil {
-				log.Printf("!!lambdaall NO executor for algorithm %s", _schedule.AlgorithmId)
+				log.Printf("!!lambdaall NO executor found for algorithm %s", _schedule.AlgorithmId)
 			} else {
 				log.Printf("lambdaall has executor %s for algorithm %s", _schedule.Id, _schedule.AlgorithmId)
 				marketPrice_object, err := ptypes.MarshalAny(marketPrice)
 				if err != nil {
+				} else {
 					token, err := token.FindByAccountId(_algorun.AccountId, _algorun.Id)
 					if err != nil {
 						log.Printf("lambdaall no token accountId %+v algorunId %+v", _algorun.AccountId,
@@ -99,7 +100,6 @@ func LambdaAll(marketPrice *proto.MarketPrices) {
 func LambdaExecutor(_algorithmId string) *httpclients.Httpclient {
 	log.Printf("**lambdaexecutor search %d connected clients for lambda master algo %s", len(httpclients.Clients), _algorithmId)
 	for _, client := range httpclients.Clients {
-		log.Printf("lambdaexecutor client check %s %+v %+v", client.Socket.RemoteAddr().String(), client.AccountId, client.AlgorunId)
 		if len(client.AlgorunId) > 0 {
 			_algorun, err := algorun.Find(client.AlgorunId)
 			if err != nil {
