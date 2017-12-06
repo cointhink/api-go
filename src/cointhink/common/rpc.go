@@ -39,7 +39,7 @@ func Rpc(msg *q.RpcMsg) {
 			httpclient.AccountId = token_.AccountId
 			httpclient.AlgorunId = token_.AlgorunId
 			httpclients.Clients[msg.Socket] = httpclient
-			responses = DispatchAuth(call.Method, call.Object, token_.AccountId)
+			responses = DispatchAuth(call.Method, call.Object, token_)
 			log.Printf("%s -> %#v (auth) AccountId:%#v Algorun:%#v", msg.Socket.RemoteAddr().String(), call.Method, token_.AccountId, token_.AlgorunId)
 		} else {
 			log.Printf("%s -> %#v (public)", msg.Socket.RemoteAddr().String(), call.Method)
@@ -64,7 +64,7 @@ func RespondAll(msg gproto.Message) {
 func LambdaAll(marketPrice *proto.MarketPrices) {
 	id := "lambdaall"
 	lambdables := algorun.Lambdable()
-	log.Printf("**lambdaall working on  %d lambdables", len(lambdables))
+	log.Printf("**lambdaall working on %d lambdables", len(lambdables))
 	for _, _algorun := range lambdables {
 		_schedule, err := schedule.Find(_algorun.ScheduleId)
 		if err != nil {
@@ -109,10 +109,8 @@ func LambdaExecutor(_algorithmId string) *httpclients.Httpclient {
 				if err != nil {
 					log.Printf("!!lambdaexecutor schedule %s", err)
 				} else {
-					log.Printf("lambdaexecutors algorun schedule executor %s algorithm %s", _schedule.Executor, _schedule.AlgorithmId)
 					if _schedule.AlgorithmId == _algorithmId {
 						if _schedule.Executor == proto.Schedule_lambda_master {
-							log.Printf("lambdaexecutors lambda_master found")
 							return &client
 						} else {
 							log.Printf("lambdaexecutors not master %d", _schedule.Executor)
