@@ -20,7 +20,7 @@ type MarketPrices struct {
 func (m *MarketPrices) Reset()                    { *m = MarketPrices{} }
 func (m *MarketPrices) String() string            { return proto1.CompactTextString(m) }
 func (*MarketPrices) ProtoMessage()               {}
-func (*MarketPrices) Descriptor() ([]byte, []int) { return fileDescriptor17, []int{0} }
+func (*MarketPrices) Descriptor() ([]byte, []int) { return fileDescriptor18, []int{0} }
 
 func (m *MarketPrices) GetPrices() []*MarketPrice {
 	if m != nil {
@@ -33,9 +33,9 @@ func init() {
 	proto1.RegisterType((*MarketPrices)(nil), "proto.MarketPrices")
 }
 
-func init() { proto1.RegisterFile("proto/market_prices.proto", fileDescriptor17) }
+func init() { proto1.RegisterFile("proto/market_prices.proto", fileDescriptor18) }
 
-var fileDescriptor17 = []byte{
+var fileDescriptor18 = []byte{
 	// 94 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x2c, 0x28, 0xca, 0x2f,
 	0xc9, 0xd7, 0xcf, 0x4d, 0x2c, 0xca, 0x4e, 0x2d, 0x89, 0x2f, 0x28, 0xca, 0x4c, 0x4e, 0x2d, 0xd6,

@@ -33,7 +33,7 @@ func (x SignupFormResponse_Reasons) String() string {
 	return proto1.EnumName(SignupFormResponse_Reasons_name, int32(x))
 }
 func (SignupFormResponse_Reasons) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor28, []int{0, 0}
+	return fileDescriptor29, []int{0, 0}
 }
 
 type SignupFormResponse struct {
@@ -46,7 +46,7 @@ type SignupFormResponse struct {
 func (m *SignupFormResponse) Reset()                    { *m = SignupFormResponse{} }
 func (m *SignupFormResponse) String() string            { return proto1.CompactTextString(m) }
 func (*SignupFormResponse) ProtoMessage()               {}
-func (*SignupFormResponse) Descriptor() ([]byte, []int) { return fileDescriptor28, []int{0} }
+func (*SignupFormResponse) Descriptor() ([]byte, []int) { return fileDescriptor29, []int{0} }
 
 func (m *SignupFormResponse) GetOk() bool {
 	if m != nil {
@@ -81,9 +81,9 @@ func init() {
 	proto1.RegisterEnum("proto.SignupFormResponse_Reasons", SignupFormResponse_Reasons_name, SignupFormResponse_Reasons_value)
 }
 
-func init() { proto1.RegisterFile("proto/signup_form_response.proto", fileDescriptor28) }
+func init() { proto1.RegisterFile("proto/signup_form_response.proto", fileDescriptor29) }
 
-var fileDescriptor28 = []byte{
+var fileDescriptor29 = []byte{
 	// 198 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0x28, 0x28, 0xca, 0x2f,
 	0xc9, 0xd7, 0x2f, 0xce, 0x4c, 0xcf, 0x2b, 0x2d, 0x88, 0x4f, 0xcb, 0x2f, 0xca, 0x8d, 0x2f, 0x4a,

@@ -21,7 +21,7 @@ type ScheduleDeleteResponse struct {
 func (m *ScheduleDeleteResponse) Reset()                    { *m = ScheduleDeleteResponse{} }
 func (m *ScheduleDeleteResponse) String() string            { return proto1.CompactTextString(m) }
 func (*ScheduleDeleteResponse) ProtoMessage()               {}
-func (*ScheduleDeleteResponse) Descriptor() ([]byte, []int) { return fileDescriptor31, []int{0} }
+func (*ScheduleDeleteResponse) Descriptor() ([]byte, []int) { return fileDescriptor32, []int{0} }
 
 func (m *ScheduleDeleteResponse) GetOk() bool {
 	if m != nil {
@@ -41,9 +41,9 @@ func init() {
 	proto1.RegisterType((*ScheduleDeleteResponse)(nil), "proto.ScheduleDeleteResponse")
 }
 
-func init() { proto1.RegisterFile("proto/schedule_delete_response.proto", fileDescriptor31) }
+func init() { proto1.RegisterFile("proto/schedule_delete_response.proto", fileDescriptor32) }
 
-var fileDescriptor31 = []byte{
+var fileDescriptor32 = []byte{
 	// 116 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0x29, 0x28, 0xca, 0x2f,
 	0xc9, 0xd7, 0x2f, 0x4e, 0xce, 0x48, 0x4d, 0x29, 0xcd, 0x49, 0x8d, 0x4f, 0x49, 0xcd, 0x49, 0x2d,

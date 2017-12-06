@@ -22,7 +22,7 @@ type NotifyResponse struct {
 func (m *NotifyResponse) Reset()                    { *m = NotifyResponse{} }
 func (m *NotifyResponse) String() string            { return proto1.CompactTextString(m) }
 func (*NotifyResponse) ProtoMessage()               {}
-func (*NotifyResponse) Descriptor() ([]byte, []int) { return fileDescriptor29, []int{0} }
+func (*NotifyResponse) Descriptor() ([]byte, []int) { return fileDescriptor30, []int{0} }
 
 func (m *NotifyResponse) GetOk() bool {
 	if m != nil {
@@ -49,9 +49,9 @@ func init() {
 	proto1.RegisterType((*NotifyResponse)(nil), "proto.NotifyResponse")
 }
 
-func init() { proto1.RegisterFile("proto/notify_response.proto", fileDescriptor29) }
+func init() { proto1.RegisterFile("proto/notify_response.proto", fileDescriptor30) }
 
-var fileDescriptor29 = []byte{
+var fileDescriptor30 = []byte{
 	// 121 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x2e, 0x28, 0xca, 0x2f,
 	0xc9, 0xd7, 0xcf, 0xcb, 0x2f, 0xc9, 0x4c, 0xab, 0x8c, 0x2f, 0x4a, 0x2d, 0x2e, 0xc8, 0xcf, 0x2b,

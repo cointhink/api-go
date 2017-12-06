@@ -12,6 +12,7 @@ It is generated from these files:
 	proto/schedule_delete.proto
 	proto/schedule_stop_response.proto
 	proto/schedule_run.proto
+	proto/heartbeat.proto
 	proto/notify.proto
 	proto/schedule_start.proto
 	proto/algorithm_detail_response.proto
@@ -55,6 +56,7 @@ It has these top-level messages:
 	ScheduleDelete
 	ScheduleStopResponse
 	ScheduleRun
+	Heartbeat
 	Notify
 	ScheduleStart
 	AlgorithmDetailResponse

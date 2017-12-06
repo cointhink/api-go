@@ -24,7 +24,7 @@ type Token struct {
 func (m *Token) Reset()                    { *m = Token{} }
 func (m *Token) String() string            { return proto1.CompactTextString(m) }
 func (*Token) ProtoMessage()               {}
-func (*Token) Descriptor() ([]byte, []int) { return fileDescriptor27, []int{0} }
+func (*Token) Descriptor() ([]byte, []int) { return fileDescriptor28, []int{0} }
 
 func (m *Token) GetId() string {
 	if m != nil {
@@ -65,9 +65,9 @@ func init() {
 	proto1.RegisterType((*Token)(nil), "proto.Token")
 }
 
-func init() { proto1.RegisterFile("proto/token.proto", fileDescriptor27) }
+func init() { proto1.RegisterFile("proto/token.proto", fileDescriptor28) }
 
-var fileDescriptor27 = []byte{
+var fileDescriptor28 = []byte{
 	// 135 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x2c, 0x28, 0xca, 0x2f,
 	0xc9, 0xd7, 0x2f, 0xc9, 0xcf, 0x4e, 0xcd, 0xd3, 0x03, 0xb3, 0x85, 0x58, 0xc1, 0x94, 0x52, 0x3b,

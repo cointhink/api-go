@@ -1,8 +1,6 @@
 package common
 
 import (
-	"log"
-
 	"cointhink/actions"
 	"cointhink/proto"
 
@@ -12,7 +10,6 @@ import (
 )
 
 func DispatchAuth(class string, object *any.Any, accountId string) []gproto.Message {
-	log.Printf("*- dispatch-auth Method:%#v Type:%#v AccountId:%#v", class, object.TypeUrl, accountId)
 	var resp []gproto.Message
 	switch class {
 	case "ScheduleCreate":

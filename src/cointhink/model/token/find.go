@@ -18,7 +18,6 @@ func FindByAccountId(accountId string, algorunId string) (*proto.Token, error) {
 }
 
 func FindByToken(token_str string) (*proto.Token, error) {
-	log.Printf("token.FindByToken token %+v", token_str)
 	item := &proto.Token{}
 	err := db.D.Handle.Get(item,
 		"select "+Columns+" from "+Table+" where token = $1", token_str)
