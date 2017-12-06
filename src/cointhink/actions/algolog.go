@@ -14,7 +14,7 @@ func DoAlgolog(_algolog *proto.Algolog, token *proto.Token) []gproto.Message {
 
 	_algolog.AlgorunId = token.AlgorunId
 	algolog.Insert(_algolog)
-	log.Printf("log inserted %s", _algolog.Id)
+	log.Printf("Algolog %s inserted %s", token.AlgorunId, _algolog.Id)
 	// load back the same row, for create date
 	log_readback, err := algolog.Find(_algolog.Id)
 	if err != nil {

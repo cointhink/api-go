@@ -29,7 +29,9 @@ func Rpc(msg *q.RpcMsg) {
 		log.Printf("ws rpc parse err:%+v", err)
 	} else {
 		responses = DispatchPublic(call.Method, call.Object)
-		if responses == nil {
+		if responses != nil {
+			log.Printf("%s -> %#v (public)", msg.Socket.RemoteAddr().String(), call.Method)
+		} else {
 			token_, err := token.FindByToken(call.Token)
 			if err != nil {
 				log.Printf("common.Rpc token %s BAD %+v", call.Token, err)
@@ -39,10 +41,8 @@ func Rpc(msg *q.RpcMsg) {
 			httpclient.AccountId = token_.AccountId
 			httpclient.AlgorunId = token_.AlgorunId
 			httpclients.Clients[msg.Socket] = httpclient
-			responses = DispatchAuth(call.Method, call.Object, token_)
 			log.Printf("%s -> %#v (auth) AccountId:%#v Algorun:%#v", msg.Socket.RemoteAddr().String(), call.Method, token_.AccountId, token_.AlgorunId)
-		} else {
-			log.Printf("%s -> %#v (public)", msg.Socket.RemoteAddr().String(), call.Method)
+			responses = DispatchAuth(call.Method, call.Object, token_)
 		}
 	}
 	log.Printf("%s <- %#v response %d msg", msg.Socket.RemoteAddr().String(), call.Method, len(responses))
