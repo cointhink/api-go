@@ -60,6 +60,10 @@ func DispatchAuth(class string, object *any.Any, token *proto.Token) []gproto.Me
 		it := proto.Notify{}
 		ptypes.UnmarshalAny(object, &it)
 		resp = actions.DoNotify(&it, token.AccountId)
+	case "LambdaResponse":
+		it := proto.LambdaResponse{}
+		ptypes.UnmarshalAny(object, &it)
+		resp = actions.DoLambdaResponse(&it, token)
 	default:
 		//log.Printf("unknown private method: %s", class)
 	}
