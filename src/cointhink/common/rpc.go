@@ -38,8 +38,12 @@ func Rpc(msg *q.RpcMsg) {
 				return
 			}
 			httpclient := httpclients.Clients[msg.Socket]
-			httpclient.AccountId = token_.AccountId
-			httpclient.AlgorunId = token_.AlgorunId
+			// lambdamaster heartbeat defines the socket ownership.
+			// ignore lambda tokens that come later
+			if len(httpclient.AccountId) == 0 {
+				httpclient.AccountId = token_.AccountId
+				httpclient.AlgorunId = token_.AlgorunId
+			}
 			httpclients.Clients[msg.Socket] = httpclient
 			log.Printf("%s -> %#v (auth) AccountId:%#v Algorun:%#v", msg.Socket.RemoteAddr().String(), call.Method, token_.AccountId, token_.AlgorunId)
 			responses = DispatchAuth(call.Method, call.Object, token_)

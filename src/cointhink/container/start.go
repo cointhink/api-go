@@ -34,7 +34,8 @@ func Start(account proto.Account, _schedule proto.Schedule) (*proto.Algorun, err
 					ScheduleId:  _schedule.Id,
 					Status:      proto.Algorun_States_name[int32(proto.Algorun_building)],
 					Code:        _algorithm.Code,
-					Image:       image}
+					Image:       image,
+					State:       _schedule.InitialState}
 				if _schedule.Executor == proto.Schedule_lambda {
 					_algorun.Status = proto.Algorun_States_name[int32(proto.Algorun_running)]
 				}
