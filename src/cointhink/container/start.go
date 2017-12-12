@@ -42,8 +42,9 @@ func Start(account proto.Account, _schedule proto.Schedule) (*proto.Algorun, err
 				algorun.Insert(&_algorun)
 				token_ := proto.Token{AccountId: account.Id, AlgorunId: _algorun.Id}
 				token.Insert(&token_)
+				logmsg := "launching " + _schedule.AlgorithmId + " on " + image + " with initial state " + _algorun.State
 				_algolog := proto.Algolog{AlgorunId: _algorun.Id, Event: "launch", Level: "info",
-					Message: "launching " + _schedule.AlgorithmId + " on " + image}
+					Message: logmsg}
 				algolog.Insert(&_algolog)
 				if _schedule.Executor == proto.Schedule_container ||
 					_schedule.Executor == proto.Schedule_lambda_master {
