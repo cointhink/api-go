@@ -17,6 +17,19 @@ func Insert(item *proto.Algorun) error {
 	return nil
 }
 
+func UpdateState(_algorun *proto.Algorun, newState string) error {
+	_, err := db.D.Handle.Exec("update "+Schema.Table+" set state = $1 where id = $2",
+		newState, _algorun.Id)
+	if err != nil {
+		log.Printf("%v", err)
+		return err
+	} else {
+		log.Printf("algorun %s state updated from %s to %s", _algorun.Id, _algorun.State, newState)
+		_algorun.State = newState
+		return nil
+	}
+}
+
 func UpdateStatus(algorunInstance *proto.Algorun, newStatus proto.Algorun_States) error {
 	stateName := algorunInstance.Status
 	newStateName := proto.Algorun_States_name[int32(newStatus)]
