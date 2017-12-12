@@ -24,7 +24,7 @@ type Lambda struct {
 func (m *Lambda) Reset()                    { *m = Lambda{} }
 func (m *Lambda) String() string            { return proto1.CompactTextString(m) }
 func (*Lambda) ProtoMessage()               {}
-func (*Lambda) Descriptor() ([]byte, []int) { return fileDescriptor21, []int{0} }
+func (*Lambda) Descriptor() ([]byte, []int) { return fileDescriptor22, []int{0} }
 
 func (m *Lambda) GetToken() string {
 	if m != nil {
@@ -58,9 +58,9 @@ func init() {
 	proto1.RegisterType((*Lambda)(nil), "proto.Lambda")
 }
 
-func init() { proto1.RegisterFile("proto/lambda.proto", fileDescriptor21) }
+func init() { proto1.RegisterFile("proto/lambda.proto", fileDescriptor22) }
 
-var fileDescriptor21 = []byte{
+var fileDescriptor22 = []byte{
 	// 158 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x2a, 0x28, 0xca, 0x2f,
 	0xc9, 0xd7, 0xcf, 0x49, 0xcc, 0x4d, 0x4a, 0x49, 0xd4, 0x03, 0x73, 0x84, 0x58, 0xc1, 0x94, 0x94,

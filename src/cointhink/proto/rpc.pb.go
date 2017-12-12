@@ -24,7 +24,7 @@ type Rpc struct {
 func (m *Rpc) Reset()                    { *m = Rpc{} }
 func (m *Rpc) String() string            { return proto1.CompactTextString(m) }
 func (*Rpc) ProtoMessage()               {}
-func (*Rpc) Descriptor() ([]byte, []int) { return fileDescriptor23, []int{0} }
+func (*Rpc) Descriptor() ([]byte, []int) { return fileDescriptor24, []int{0} }
 
 func (m *Rpc) GetId() string {
 	if m != nil {
@@ -58,9 +58,9 @@ func init() {
 	proto1.RegisterType((*Rpc)(nil), "proto.Rpc")
 }
 
-func init() { proto1.RegisterFile("proto/rpc.proto", fileDescriptor23) }
+func init() { proto1.RegisterFile("proto/rpc.proto", fileDescriptor24) }
 
-var fileDescriptor23 = []byte{
+var fileDescriptor24 = []byte{
 	// 151 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2f, 0x28, 0xca, 0x2f,
 	0xc9, 0xd7, 0x2f, 0x2a, 0x48, 0xd6, 0x03, 0xb3, 0x84, 0x58, 0xc1, 0x94, 0x94, 0x64, 0x7a, 0x7e,

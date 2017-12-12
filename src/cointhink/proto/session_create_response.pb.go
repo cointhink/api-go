@@ -21,7 +21,7 @@ type SessionCreateResponse struct {
 func (m *SessionCreateResponse) Reset()                    { *m = SessionCreateResponse{} }
 func (m *SessionCreateResponse) String() string            { return proto1.CompactTextString(m) }
 func (*SessionCreateResponse) ProtoMessage()               {}
-func (*SessionCreateResponse) Descriptor() ([]byte, []int) { return fileDescriptor27, []int{0} }
+func (*SessionCreateResponse) Descriptor() ([]byte, []int) { return fileDescriptor28, []int{0} }
 
 func (m *SessionCreateResponse) GetOk() bool {
 	if m != nil {
@@ -41,9 +41,9 @@ func init() {
 	proto1.RegisterType((*SessionCreateResponse)(nil), "proto.SessionCreateResponse")
 }
 
-func init() { proto1.RegisterFile("proto/session_create_response.proto", fileDescriptor27) }
+func init() { proto1.RegisterFile("proto/session_create_response.proto", fileDescriptor28) }
 
-var fileDescriptor27 = []byte{
+var fileDescriptor28 = []byte{
 	// 131 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0x2e, 0x28, 0xca, 0x2f,
 	0xc9, 0xd7, 0x2f, 0x4e, 0x2d, 0x2e, 0xce, 0xcc, 0xcf, 0x8b, 0x4f, 0x2e, 0x4a, 0x4d, 0x2c, 0x49,

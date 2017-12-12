@@ -39,6 +39,7 @@ func Rpc(msg *q.RpcMsg) {
 			}
 			httpclient := httpclients.Clients[msg.Socket]
 			// lambdamaster heartbeat defines the socket ownership.
+			// lambdamaster token needed for executor search.
 			// ignore lambda tokens that come later
 			if len(httpclient.AccountId) == 0 {
 				httpclient.AccountId = token_.AccountId

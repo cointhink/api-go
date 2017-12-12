@@ -8,6 +8,7 @@ Package proto is a generated protocol buffer package.
 It is generated from these files:
 	proto/signup_form.proto
 	proto/tick_tock.proto
+	proto/session_create.proto
 	proto/schedule_create_response.proto
 	proto/schedule_delete.proto
 	proto/schedule_stop_response.proto
@@ -15,7 +16,7 @@ It is generated from these files:
 	proto/heartbeat.proto
 	proto/notify.proto
 	proto/schedule_start.proto
-	proto/algorithm_detail_response.proto
+	proto/lambda_response.proto
 	proto/trade_signal.proto
 	proto/schedule_list_partial.proto
 	proto/schedule_list.proto
@@ -44,7 +45,7 @@ It is generated from these files:
 	proto/signin_email_response.proto
 	proto/schedule_start_response.proto
 	proto/trade_signal_response.proto
-	proto/session_create.proto
+	proto/algorithm_detail_response.proto
 	proto/credit_journal.proto
 	proto/signin_email.proto
 	proto/schedule_detail_response.proto
@@ -52,6 +53,7 @@ It is generated from these files:
 It has these top-level messages:
 	SignupForm
 	TickTock
+	SessionCreate
 	ScheduleCreateResponse
 	ScheduleDelete
 	ScheduleStopResponse
@@ -59,7 +61,7 @@ It has these top-level messages:
 	Heartbeat
 	Notify
 	ScheduleStart
-	AlgorithmDetailResponse
+	LambdaResponse
 	TradeSignal
 	ScheduleListPartial
 	ScheduleList
@@ -88,7 +90,7 @@ It has these top-level messages:
 	SigninEmailResponse
 	ScheduleStartResponse
 	TradeSignalResponse
-	SessionCreate
+	AlgorithmDetailResponse
 	CreditJournal
 	SigninEmail
 	ScheduleDetailResponse

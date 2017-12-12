@@ -23,7 +23,7 @@ type Notify struct {
 func (m *Notify) Reset()                    { *m = Notify{} }
 func (m *Notify) String() string            { return proto1.CompactTextString(m) }
 func (*Notify) ProtoMessage()               {}
-func (*Notify) Descriptor() ([]byte, []int) { return fileDescriptor7, []int{0} }
+func (*Notify) Descriptor() ([]byte, []int) { return fileDescriptor8, []int{0} }
 
 func (m *Notify) GetRecipient() string {
 	if m != nil {
@@ -57,9 +57,9 @@ func init() {
 	proto1.RegisterType((*Notify)(nil), "proto.Notify")
 }
 
-func init() { proto1.RegisterFile("proto/notify.proto", fileDescriptor7) }
+func init() { proto1.RegisterFile("proto/notify.proto", fileDescriptor8) }
 
-var fileDescriptor7 = []byte{
+var fileDescriptor8 = []byte{
 	// 124 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x2a, 0x28, 0xca, 0x2f,
 	0xc9, 0xd7, 0xcf, 0xcb, 0x2f, 0xc9, 0x4c, 0xab, 0xd4, 0x03, 0x73, 0x84, 0x58, 0xc1, 0x94, 0x52,

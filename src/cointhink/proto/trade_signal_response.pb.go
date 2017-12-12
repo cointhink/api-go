@@ -22,7 +22,7 @@ type TradeSignalResponse struct {
 func (m *TradeSignalResponse) Reset()                    { *m = TradeSignalResponse{} }
 func (m *TradeSignalResponse) String() string            { return proto1.CompactTextString(m) }
 func (*TradeSignalResponse) ProtoMessage()               {}
-func (*TradeSignalResponse) Descriptor() ([]byte, []int) { return fileDescriptor37, []int{0} }
+func (*TradeSignalResponse) Descriptor() ([]byte, []int) { return fileDescriptor38, []int{0} }
 
 func (m *TradeSignalResponse) GetOk() bool {
 	if m != nil {
@@ -49,9 +49,9 @@ func init() {
 	proto1.RegisterType((*TradeSignalResponse)(nil), "proto.TradeSignalResponse")
 }
 
-func init() { proto1.RegisterFile("proto/trade_signal_response.proto", fileDescriptor37) }
+func init() { proto1.RegisterFile("proto/trade_signal_response.proto", fileDescriptor38) }
 
-var fileDescriptor37 = []byte{
+var fileDescriptor38 = []byte{
 	// 128 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0x2c, 0x28, 0xca, 0x2f,
 	0xc9, 0xd7, 0x2f, 0x29, 0x4a, 0x4c, 0x49, 0x8d, 0x2f, 0xce, 0x4c, 0xcf, 0x4b, 0xcc, 0x89, 0x2f,

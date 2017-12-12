@@ -22,7 +22,7 @@ type AlgorithmDetailResponse struct {
 func (m *AlgorithmDetailResponse) Reset()                    { *m = AlgorithmDetailResponse{} }
 func (m *AlgorithmDetailResponse) String() string            { return proto1.CompactTextString(m) }
 func (*AlgorithmDetailResponse) ProtoMessage()               {}
-func (*AlgorithmDetailResponse) Descriptor() ([]byte, []int) { return fileDescriptor9, []int{0} }
+func (*AlgorithmDetailResponse) Descriptor() ([]byte, []int) { return fileDescriptor39, []int{0} }
 
 func (m *AlgorithmDetailResponse) GetOk() bool {
 	if m != nil {
@@ -49,9 +49,9 @@ func init() {
 	proto1.RegisterType((*AlgorithmDetailResponse)(nil), "proto.AlgorithmDetailResponse")
 }
 
-func init() { proto1.RegisterFile("proto/algorithm_detail_response.proto", fileDescriptor9) }
+func init() { proto1.RegisterFile("proto/algorithm_detail_response.proto", fileDescriptor39) }
 
-var fileDescriptor9 = []byte{
+var fileDescriptor39 = []byte{
 	// 145 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0x2d, 0x28, 0xca, 0x2f,
 	0xc9, 0xd7, 0x4f, 0xcc, 0x49, 0xcf, 0x2f, 0xca, 0x2c, 0xc9, 0xc8, 0x8d, 0x4f, 0x49, 0x2d, 0x49,

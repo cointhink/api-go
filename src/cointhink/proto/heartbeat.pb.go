@@ -20,7 +20,7 @@ type Heartbeat struct {
 func (m *Heartbeat) Reset()                    { *m = Heartbeat{} }
 func (m *Heartbeat) String() string            { return proto1.CompactTextString(m) }
 func (*Heartbeat) ProtoMessage()               {}
-func (*Heartbeat) Descriptor() ([]byte, []int) { return fileDescriptor6, []int{0} }
+func (*Heartbeat) Descriptor() ([]byte, []int) { return fileDescriptor7, []int{0} }
 
 func (m *Heartbeat) GetChallenge() string {
 	if m != nil {
@@ -33,9 +33,9 @@ func init() {
 	proto1.RegisterType((*Heartbeat)(nil), "proto.Heartbeat")
 }
 
-func init() { proto1.RegisterFile("proto/heartbeat.proto", fileDescriptor6) }
+func init() { proto1.RegisterFile("proto/heartbeat.proto", fileDescriptor7) }
 
-var fileDescriptor6 = []byte{
+var fileDescriptor7 = []byte{
 	// 81 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x2d, 0x28, 0xca, 0x2f,
 	0xc9, 0xd7, 0xcf, 0x48, 0x4d, 0x2c, 0x2a, 0x49, 0x4a, 0x4d, 0x2c, 0xd1, 0x03, 0xf3, 0x85, 0x58,
