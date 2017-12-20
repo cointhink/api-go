@@ -43,7 +43,9 @@ func CronMinute(time time.Time) {
 		go marketPrices(time)
 	}
 
-	if time.Minute()%int(config.C.QueryNumber("cron.schedule_reaper_minutes")) == 0 {
+	reaper_minutes := int(config.C.QueryNumber("cron.schedule_reaper_minutes"))
+	if time.Minute()%reaper_minutes == 0 {
+		go scheduleWarn(time, reaper_minutes)
 		go scheduleReaper(time)
 	}
 
@@ -117,6 +119,13 @@ type CoinMarketCap struct {
 	PriceEur         string `json:"price_eur"`
 	Two4HVolumeEur   string `json:"24h_volume_eur"`
 	MarketCapEur     string `json:"market_cap_eur"`
+}
+
+func scheduleWarn(_time time.Time, windowMinutes int) {
+	//halfWindow := 30 //time.Duration(windowMinutes / 2)
+	//start := _time.Add(halfWindow * time.Minute)
+	//end := _time.Sub(halfWindow * time.Minute)
+	//nearlyExpiredSchedules := schedule.RunningExpireds(_time, _time)
 }
 
 func scheduleReaper(time time.Time) {
