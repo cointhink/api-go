@@ -34,8 +34,8 @@ func DoScheduleCreate(scheduleCreate *proto.ScheduleCreate, accountId string) []
 
 func create(responses []gproto.Message, _account *proto.Account, partialSchedule *proto.Schedule) []gproto.Message {
 	if _account.ScheduleCredits > 0 {
-		//executor := proto.Schedule_container
-		executor := proto.Schedule_lambda
+		executor := proto.Schedule_container
+		//executor := proto.Schedule_lambda
 		_schedule := proto.Schedule{AccountId: _account.Id,
 			AlgorithmId:  partialSchedule.AlgorithmId,
 			Executor:     executor,
