@@ -13,6 +13,7 @@ type Db struct {
 }
 
 type SqlDetail struct {
+	Model            string
 	Table            string
 	Columns          []string
 	ColumnsSql       string
@@ -79,13 +80,14 @@ func Tabelize(name string) string {
 func Register(thing interface{}) SqlDetail {
 	detail := SqlFieldsSql(thing)
 	registeredTables[detail.Table] = detail
-	fmt.Printf("model registered: %v | %v\n", detail.Table, detail.ColumnsSql)
+	fmt.Printf("model %v | %v - %v\n", detail.Model, detail.Table, detail.ColumnsSql)
 	return detail
 }
 
 func SqlFieldsSql(thing interface{}) SqlDetail {
 	s := reflect.TypeOf(thing)
-	table := Tabelize(s.Name())
+	model := s.Name()
+	table := Tabelize(model)
 	iFields := []string{}
 	for i := 0; i < s.NumField(); i++ {
 		f := s.Field(i)
@@ -103,7 +105,7 @@ func SqlFieldsSql(thing interface{}) SqlDetail {
 	columnsInsertSql := strings.Join(iFields, ", ")
 	fieldsSql := strings.Join(sqlFieldsSql, ", ")
 
-	return SqlDetail{Table: table,
+	return SqlDetail{Model: model, Table: table,
 		Columns:          iFields,
 		ColumnsSql:       columnsSql,
 		ColumnsInsertSql: columnsInsertSql,

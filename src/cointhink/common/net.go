@@ -4,6 +4,8 @@ import (
 	"cointhink/billing"
 	"cointhink/config"
 	"cointhink/httpclients"
+	"cointhink/model/account"
+	"cointhink/model/token"
 	"cointhink/q"
 
 	"io/ioutil"
@@ -30,13 +32,20 @@ func Stripe(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Print("/stripe form err", err)
 	} else {
-		log.Printf("stripe %+v", r.Form)
+		_token, err := token.FindByToken(r.Form["cointhink-token"][0])
+		if err != nil {
+		} else {
+			if _token != nil {
+				_account, err := account.Find(_token.AccountId)
+				if err != nil {
+				} else {
+					log.Printf("/stripe FORM %+v", r.Form)
+					billing.StripePay(r.Form["stripeToken"][0], _account)
+					http.Redirect(w, r, "/", 303)
+				}
+			}
+		}
 	}
-
-	billing.StripePay(r.Form["stripeToken"][0],
-		r.Form["stripeEmail"][0],
-		r.Form["stripeTokenType"][0])
-	http.Redirect(w, r, "/", 303)
 }
 
 func Upgrade(w http.ResponseWriter, r *http.Request) {

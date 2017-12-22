@@ -4,16 +4,27 @@ import "cointhink/proto"
 import "cointhink/db"
 import "log"
 
-var Columns = "id, fullname, email, time_zone, schedule_credits"
-var Fields = ":id, :fullname, :email, :time_zone, :schedule_credits"
-var Table = "accounts"
+var Schema db.SqlDetail = db.Register(proto.Account{})
 
 func Insert(item *proto.Account) error {
-	item.Id = db.NewId(Table)
-	_, err := db.D.Handle.NamedExec("insert into "+Table+" ("+Columns+") "+"values ("+Fields+")", item)
+	item.Id = db.NewId(Schema.Table)
+	sql := "insert into " + Schema.Table + " (" + Schema.ColumnsInsertSql + ") " +
+		"values (" + Schema.FieldsSql + ")"
+	_, err := db.D.Handle.NamedExec(sql, item)
 	if err != nil {
-		log.Printf(Table+" Create err: %v", err)
+		log.Printf(Schema.Table+" Create err: %v\n%s", err, sql)
 		return err
 	}
+	return nil
+}
+
+func UpdateStripe(_account *proto.Account, newStripe string) error {
+	sql := "update " + Schema.Table + " set stripe = $1 where id = $2"
+	_, err := db.D.Handle.Exec(sql, newStripe, _account.Id)
+	if err != nil {
+		log.Printf("account.UpdateStripe err %v", err)
+		return err
+	}
+	_account.Stripe = newStripe
 	return nil
 }
