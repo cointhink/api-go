@@ -13,7 +13,7 @@ func MailScheduleStopped(to string, name string) {
 	m := gomail.NewMessage()
 	m.SetHeader("To", to)
 	m.SetHeader("Subject", "Schedule "+name+" stopped due to credit balance.")
-	m.SetBody("text/plain", "")
+	m.SetBody("text/plain", "To restore service, add additional credits at the website, then press start on the scheduled algorithm.")
 
 	deliver(m)
 }
