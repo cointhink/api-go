@@ -2,7 +2,6 @@ package common
 
 import (
 	"cointhink/billing"
-	"cointhink/config"
 	"cointhink/httpclients"
 	"cointhink/model/account"
 	"cointhink/model/token"
@@ -11,7 +10,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -87,20 +85,5 @@ func Httpget(url string) (string, error) {
 		defer response.Body.Close()
 		body, _ := ioutil.ReadAll(response.Body)
 		return string(body), nil
-	}
-}
-
-func InfluxWrite(measurement string, tagName string, tagValue string, reading string) {
-	timeout := time.Duration(5 * time.Second)
-	client := http.Client{Timeout: timeout}
-	db := config.C.QueryString("influx.database")
-	influx_url := config.C.QueryString("influx.url") + "/write?db=" + db
-	data := measurement + "," + tagName + "=" + tagValue + " value=" + reading
-	log.Printf("InfluxWrite db=%s %s\n", db, data)
-	_, err := client.Post(influx_url, "", strings.NewReader(data))
-	if err != nil {
-		log.Printf("Influx post err %v\n", err)
-	} else {
-		//log.Printf("Influx response %s %s\n", response.Proto, response.Status)
 	}
 }

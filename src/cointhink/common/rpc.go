@@ -4,6 +4,8 @@ import "encoding/json"
 import "strings"
 import "reflect"
 import "log"
+import "time"
+import "strconv"
 
 import "cointhink/model/token"
 import "cointhink/q"
@@ -23,6 +25,7 @@ var RPCq chan q.RpcMsg
 func Rpc(msg *q.RpcMsg) {
 	var responses []gproto.Message
 
+	now := time.Now()
 	call := proto.Rpc{}
 	err := jsonpb.UnmarshalString(string(msg.Payload), &call)
 	if err != nil {
@@ -55,6 +58,8 @@ func Rpc(msg *q.RpcMsg) {
 		q.OUTq <- q.RpcOut{Socket: msg.Socket,
 			Response: &q.RpcResponse{Msg: response, Id: call.Id}}
 	}
+	delay := time.Now().Sub(now).Nanoseconds() / 1000000 //millisec
+	go InfluxWrite("rpc", "method", call.Method, strconv.FormatInt(delay, 10))
 }
 
 func RespondAll(msg gproto.Message) {
